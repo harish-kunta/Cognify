@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Primary Theme Colors -->
-    <color name="primary">#6366F1</color>
-    <color name="primary_dark">#4F46E5</color>
+    <color name="primary">#0649A2</color>
+    <color name="primary_dark">#0C126B</color>
     <color name="accent">#F59E0B</color>
     <color name="background">#F8FAFC</color>
 
@@ -34,7 +34,7 @@
     <color name="text_white">@color/white</color>
     
     <!-- Button colors -->
-    <color name="button_enabled">@color/primary</color>
+    <color name="button_enabled">#FE1F66</color>
     <color name="button_disabled">#E2E8F0</color>
     <color name="button_pressed">@color/primary_dark</color>
     
@@ -42,4 +42,7 @@
     <color name="success">#10B981</color>
     <color name="error">#EF4444</color>
     <color name="warning">#F59E0B</color>
+
+    <!-- Carousal colors -->
+    <color name="bg_color">#0C126B</color>
 </resources>

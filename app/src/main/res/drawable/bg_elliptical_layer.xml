@@ -1,0 +1,12 @@
+<!-- res/drawable/bg_elliptical_layer.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/bg_color" />
+    <item>
+        <bitmap
+            android:src="@drawable/masking"
+            android:gravity="fill"
+            android:tileMode="disabled"
+            />
+    </item>
+
+</layer-list>

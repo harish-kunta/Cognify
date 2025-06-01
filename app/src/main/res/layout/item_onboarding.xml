@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:padding="32dp">
 
     <ImageView
@@ -10,6 +11,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="32dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
         android:contentDescription="@null"
         app:layout_constraintBottom_toTopOf="@id/titleText"
         app:layout_constraintDimensionRatio="1:1"
@@ -26,6 +29,7 @@
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         android:textStyle="bold"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/descriptionText"
         app:layout_constraintTop_toBottomOf="@id/imageView" />
 
@@ -34,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textColor="@color/white"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleText" />

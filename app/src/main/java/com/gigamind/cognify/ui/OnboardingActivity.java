@@ -81,6 +81,20 @@ public class OnboardingActivity extends AppCompatActivity {
                 (tab, position) -> {
                     // Optional: customize tab here
                 }).attach();
+
+        binding.tabLayout.post(() -> {
+            ViewGroup tabStrip = (ViewGroup) binding.tabLayout.getChildAt(0);
+            for (int i = 0; i < tabStrip.getChildCount(); i++) {
+                View tabView = tabStrip.getChildAt(i);
+                ViewGroup.LayoutParams lp = tabView.getLayoutParams();
+                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT; // 🔑 KEY FIX
+                tabView.setLayoutParams(lp);
+
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) tabView.getLayoutParams();
+                params.setMargins(12, 0, 12, 0); // spacing between dots
+                tabView.requestLayout();
+            }
+        });
     }
 
     private void setupButtons() {
