@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#F8F9FA</color>
-    <color name="primary">#5A31F4</color>
-    <color name="text_primary">#1E1E1E</color>
-    <color name="text_secondary">#6B7280</color>
+    <color name="primary">#4A90E2</color>
+    <color name="primary_dark">#357ABD</color>
+    <color name="accent">#FF5252</color>
+    <color name="background">#F5F6FA</color>
+
     <color name="button_background">#E5E7EB</color>
-    <color name="success">#10B981</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="colorPrimary">#6200EE</color>
@@ -13,4 +13,28 @@
     <color name="colorPrimaryLight">#BB86FC</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="gray">#757575</color>
+
+
+    <!-- Game specific colors -->
+    <color name="word_game_primary">#8E44AD</color>
+    <color name="math_game_primary">#2ECC71</color>
+    
+    <!-- Card colors -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_shadow">#20000000</color>
+    
+    <!-- Text colors -->
+    <color name="text_primary">#2C3E50</color>
+    <color name="text_secondary">#7F8C8D</color>
+    <color name="text_white">#FFFFFF</color>
+    
+    <!-- Button colors -->
+    <color name="button_enabled">#4A90E2</color>
+    <color name="button_disabled">#BDBDBD</color>
+    <color name="button_pressed">#357ABD</color>
+    
+    <!-- Status colors -->
+    <color name="success">#2ECC71</color>
+    <color name="error">#E74C3C</color>
+    <color name="warning">#F1C40F</color>
 </resources>

@@ -97,6 +97,7 @@ public class QuickMathActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra(Constants.INTENT_SCORE, currentScore);
         intent.putExtra(Constants.INTENT_TIME, questionCount);
+        intent.putExtra(Constants.INTENT_TYPE, Constants.TYPE_QUICK_MATH);
         startActivity(intent);
         finish();
     }

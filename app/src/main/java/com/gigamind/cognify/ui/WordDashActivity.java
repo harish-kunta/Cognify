@@ -156,6 +156,7 @@ public class WordDashActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra(Constants.INTENT_SCORE, currentScore);
         intent.putExtra(Constants.INTENT_TIME, Constants.WORD_DASH_DURATION_MS / 1000);
+        intent.putExtra(Constants.INTENT_TYPE, Constants.GAME_TYPE_WORD_DASH);
         startActivity(intent);
         finish();
     }

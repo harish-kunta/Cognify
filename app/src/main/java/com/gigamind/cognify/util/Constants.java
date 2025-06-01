@@ -7,4 +7,7 @@ public class Constants {
     public static final String INTENT_SCORE = "score";
     public static final String INTENT_TIME = "time";
     public static final String INTENT_STREAK = "streak";
-} 
+    public static final String INTENT_TYPE = "type";
+    public static final String TYPE_QUICK_MATH = "quick_math";
+    public static final String GAME_TYPE_WORD_DASH = "word_dash";
+}
