@@ -1,27 +1,42 @@
 package com.gigamind.cognify.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.databinding.FragmentHomeBinding;
-import com.google.android.material.card.MaterialCardView;
+import com.gigamind.cognify.ui.WordDashActivity;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private Handler timerHandler;
     private Runnable timerRunnable;
+
+    private CardView dailyChallengeCard;
+    private TextView dailyChallengeTitle;
+    private MaterialButton playDailyChallengeButton;
+    private MaterialButton playWordDashButton;
+    private MaterialButton playQuickMathButton;
+    private MediaPlayer buttonSound;
+    private SharedPreferences prefs;
 
     @Nullable
     @Override
@@ -34,64 +49,88 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Set up streak
-        int streak = requireActivity().getSharedPreferences("AppPrefs", 0).getInt("streak", 0);
-        binding.streakText.setText(getString(R.string.streak_count, streak));
+        // Initialize views
+        initializeViews();
 
-        // Set up daily challenge card
+        // Initialize SharedPreferences
+        prefs = getContext().getSharedPreferences("GamePrefs", MODE_PRIVATE);
+
+        // Set up daily challenge
         setupDailyChallenge();
 
-        // Set up timer for next challenge
-        setupNextChallengeTimer();
+        setupClickListeners();
+    }
+
+    private void initializeViews() {
+        dailyChallengeCard = binding.dailyChallengeCard;
+        dailyChallengeTitle = binding.dailyChallengeTitle;
+        playDailyChallengeButton = binding.playDailyChallengeButton;
+        playWordDashButton = binding.playWordDashButton;
+        playQuickMathButton = binding.playQuickMathButton;
     }
 
     private void setupDailyChallenge() {
-        binding.challengeCard.setOnClickListener(v -> {
-            // Start daily challenge activity
-            // TODO: Implement challenge activity navigation
-        });
+        // Determine today's challenge type based on day of week
+        Calendar calendar = Calendar.getInstance();
+        boolean isWordDay = calendar.get(Calendar.DAY_OF_WEEK) % 2 == 0;
 
-        // Animate card on touch
-        binding.challengeCard.setOnTouchListener((v, event) -> {
-            MaterialCardView card = (MaterialCardView) v;
-            switch (event.getAction()) {
-                case android.view.MotionEvent.ACTION_DOWN:
-                    card.setCardElevation(0f);
-                    card.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
-                    break;
-                case android.view.MotionEvent.ACTION_UP:
-                case android.view.MotionEvent.ACTION_CANCEL:
-                    card.setCardElevation(8f);
-                    card.animate().scaleX(1f).scaleY(1f).setDuration(100).start();
-                    break;
-            }
-            return false;
-        });
+        String challengeType = isWordDay ? "Word Dash" : "Quick Math";
+        dailyChallengeTitle.setText(challengeType);
+
+        // Check if daily challenge is already completed
+        String today = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.DAY_OF_YEAR);
+        boolean isDailyCompleted = prefs.getBoolean("daily_completed_" + today, false);
+
+        if (isDailyCompleted) {
+            playDailyChallengeButton.setText("Completed Today");
+            playDailyChallengeButton.setEnabled(false);
+        }
+
+        // Disable the corresponding game in More Games section if it's the daily challenge
+        if (isWordDay) {
+            playWordDashButton.setEnabled(!isDailyCompleted);
+            playWordDashButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
+        } else {
+            playQuickMathButton.setEnabled(!isDailyCompleted);
+            playQuickMathButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
+        }
     }
 
-    private void setupNextChallengeTimer() {
-        timerHandler = new Handler(Looper.getMainLooper());
-        timerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                Calendar now = Calendar.getInstance();
-                Calendar nextDay = Calendar.getInstance();
-                nextDay.add(Calendar.DAY_OF_MONTH, 1);
-                nextDay.set(Calendar.HOUR_OF_DAY, 0);
-                nextDay.set(Calendar.MINUTE, 0);
-                nextDay.set(Calendar.SECOND, 0);
+    private void setupClickListeners() {
+        View.OnClickListener animatedClickListener = v -> {
 
-                long diff = nextDay.getTimeInMillis() - now.getTimeInMillis();
-                String timeLeft = String.format("%02d:%02d:%02d",
-                        TimeUnit.MILLISECONDS.toHours(diff),
-                        TimeUnit.MILLISECONDS.toMinutes(diff) % 60,
-                        TimeUnit.MILLISECONDS.toSeconds(diff) % 60);
+            // Apply bounce animation
+            v.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.button_bounce));
 
-                binding.nextChallengeText.setText(getString(R.string.next_challenge, timeLeft));
-                timerHandler.postDelayed(this, 1000);
-            }
+            // Handle click after animation delay
+            v.postDelayed(() -> handleGameLaunch(v), 200);
         };
-        timerHandler.post(timerRunnable);
+
+        playDailyChallengeButton.setOnClickListener(animatedClickListener);
+        playWordDashButton.setOnClickListener(animatedClickListener);
+        playQuickMathButton.setOnClickListener(animatedClickListener);
+    }
+
+    private void handleGameLaunch(View v) {
+        Intent intent = new Intent(getContext(), WordDashActivity.class);
+        boolean isDaily = v.getId() == R.id.playDailyChallengeButton;
+
+        if (v.getId() == R.id.playWordDashButton ||
+                (isDaily && dailyChallengeTitle.getText().toString().equals("Word Dash"))) {
+            intent.putExtra("GAME_TYPE", "WORD");
+        } else {
+            intent.putExtra("GAME_TYPE", "MATH");
+        }
+
+        intent.putExtra("IS_DAILY_CHALLENGE", isDaily);
+        startActivity(intent);
+
+        // If it's a daily challenge, mark it as completed
+        if (isDaily) {
+            Calendar calendar = Calendar.getInstance();
+            String today = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.DAY_OF_YEAR);
+            prefs.edit().putBoolean("daily_completed_" + today, true).apply();
+        }
     }
 
     @Override
