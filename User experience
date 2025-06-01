@@ -1,0 +1,143 @@
+Build a Android application using java with clear, dopamine-driving user experience from the moment a user installs your app. We'll design it to feel rewarding, animated, optional-login-friendly, and repeatable — just like Duolingo, Phantom, or Revolut.
+
+---
+
+## 🎬 **FIRST OPEN EXPERIENCE (New User Flow)**
+
+### ✅ 1. **Animated Splash Screen (1–2s)**
+
+- Show your logo with playful music or “brain loading…” animation
+- Lottie confetti or animated neurons/lightbulbs
+- Establish brand vibe: fun, brainy, modern
+
+---
+
+### ✅ 2. **Welcome Onboarding Carousel (3–4 quick slides)**
+
+| Slide | Visual / Text | Animation |
+| --- | --- | --- |
+| 🧠 1 | "Train your brain in 60 seconds a day" | Bounce-in timer icon |
+| 🔠 2 | "Form words. Solve math. Beat the clock!" | Tile grid morphs into numbers |
+| 🔥 3 | "Earn streaks, top leaderboards, unlock challenges!" | Fire, trophies, stars |
+| 👤 4 | "Sign in to save progress — or continue as guest" | Avatar + toggle |
+- Tap “Continue” or “Sign In with Google”
+- If skipped, use `SharedPreferences` to log locally
+
+---
+
+### ✅ 3. **Quick Tutorial for First Game (Word Dash)**
+
+> Instead of explaining, let them play.
+> 
+- Show hint bubbles:
+    - “Tap tiles to form a word”
+    - “Submit to score. The faster, the better!”
+    - “Try this: CAT”
+- Animate score popping up (like a coin or +10 stars)
+- Finish tutorial with: “You’re ready! Try today’s challenge!”
+
+✅ Tutorial is one-time, can be replayed from Settings
+
+---
+
+## 🧠 DAILY USER FLOW (Returning User)
+
+### 🔔 Home / Main Screen (with Bottom Navigation)
+
+- 🔥 **Streak display**: “Day 4 🔥” (animated fire, sparkle)
+- 🏆 **Today’s Challenge** card: “Word Dash – 60s”
+- 🎯 **Progress**: “High score: 320 | Words found: 6/10”
+- ⏰ Timer until next daily challenge unlock
+- 🎁 Popups: “Bonus round unlocked!” (optional)
+
+---
+
+## 🧭 Bottom Navigation
+
+| Icon | Page |
+| --- | --- |
+| 🧠 Home | Main dashboard & daily challenge |
+| 📊 Leaderboard | Global & friends leaderboard |
+| 🎒 Profile | Streak, progress, login status |
+| ⚙️ Settings | Sounds, animations, difficulty, tutorial |
+
+---
+
+## 👤 ACCOUNT & SCORE MANAGEMENT
+
+### ✅ Score
+
+- Saved locally in `SharedPreferences`
+- Synced to Firebase **after login**
+- Optional high score popup: “🎉 New Best Score!”
+
+### ✅ Streak
+
+- Incremented daily via `SharedPreferences`
+- Reset if no game played within 24h
+- Synced to Firebase post-login (to prevent loss)
+
+### ✅ Leaderboard
+
+- Disabled for guests
+- When user logs in:
+    - Uploads score + UID + name to Firebase
+    - Sorted via Realtime DB or Firestore (top 100 shown)
+- Optionally show ghost player: “You’re #87 globally”
+
+---
+
+## ⚙️ SETTINGS PAGE
+
+| Setting | Action |
+| --- | --- |
+| 🔊 Sound Effects | On/Off |
+| 📱 Haptics | On/Off |
+| ✨ Animations | On/Off (reduce motion for accessibility) |
+| 🔐 Sign In / Sign Out | Link to Firebase login |
+| 📘 Replay Tutorial | Restart the tutorial |
+| 📈 Reset Progress | Confirm dialog |
+
+---
+
+## ✅ Nice-to-Have Dopamine Triggers
+
+| Trigger | Reward |
+| --- | --- |
+| First game completed | Confetti burst + 🎉 sound |
+| Daily streak milestone | “🔥 5-Day Streak! Bonus unlocked” popup |
+| New high score | “🏅 You just beat your best!” |
+| Unlocked something | Treasure chest animation opening |
+
+---
+
+## 🤖 Future Ideas
+
+- 🧩 Mini-games after challenges (“Find 3 verbs”)
+- 💬 AI-generated brain tips after games
+- 🧠 Mood-based game suggestions
+
+---
+
+### 🧠 Summary Flow
+
+```
+csharp
+CopyEdit
+[Launch App]
+   ↓
+[Splash (Animated)]
+   ↓
+[Onboarding carousel + login option]
+   ↓
+[Tutorial Game]
+   ↓
+[Daily Challenge Home Screen]
+   ↓
+[Game Session → Result (Confetti, Haptics)]
+   ↓
+[Streak Updated → Leaderboard (if signed in)]
+   ↓
+[Daily Reminder Push Notification]
+
+```

@@ -1,4 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cognify</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="continue_as_guest">Continue as Guest</string>
+    <string name="welcome_title">Welcome to Cognify</string>
+    <string name="welcome_description">Train your brain with fun daily challenges</string>
+    <string name="daily_challenge">Daily Challenge</string>
+    <string name="high_score">High Score: %1$d</string>
+    <string name="streak_count">%1$d Day Streak</string>
+    <string name="next_challenge">Next Challenge in %1$s</string>
+    <string name="profile">Profile</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="settings">Settings</string>
+    <string name="home">Home</string>
+    <string name="your_stats">Your Stats</string>
+    <string name="games_played">Games Played</string>
+    <string name="global_rank">Global Rank</string>
+    <string name="high_score_label">High Score</string>
+    <string name="global_leaderboard">Global Leaderboard</string>
+    <string name="sign_in_to_view_leaderboard">Sign in to view the leaderboard</string>
+    <string name="preferences">Preferences</string>
+    <string name="sound_effects">Sound Effects</string>
+    <string name="haptics">Haptics</string>
+    <string name="animations">Animations</string>
+    <string name="account">Account</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="replay_tutorial">Replay Tutorial</string>
+    <string name="reset_progress">Reset Progress</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="replay_tutorial_confirm">Do you want to replay the tutorial? This will restart the app.</string>
+    <string name="reset_progress_confirm">Are you sure you want to reset your progress? This cannot be undone.</string>
+    
+    <!-- Leaderboard strings -->
+    <string name="no_scores_yet">No scores yet.\nBe the first to play!</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="error_loading_leaderboard">Error loading leaderboard: %1$s</string>
 </resources>

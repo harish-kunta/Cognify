@@ -1,4 +1,4 @@
-package com.dailybraingame.ui;
+package com.gigamind.cognify.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dailybraingame.cognify.R;
+import com.gigamind.cognify.R;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -127,7 +127,7 @@ public class LeaderboardActivity extends AppCompatActivity {
             ViewHolder(View itemView) {
                 super(itemView);
                 rankText = itemView.findViewById(R.id.rankText);
-                playerName = itemView.findViewById(R.id.playerName);
+                playerName = itemView.findViewById(R.id.nameText);
                 scoreText = itemView.findViewById(R.id.scoreText);
                 streakText = itemView.findViewById(R.id.streakText);
             }

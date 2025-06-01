@@ -13,9 +13,9 @@
         android:theme="@style/Theme.Cognify"
         tools:targetApi="31">
         <activity
-            android:name="com.dailybraingame.ui.MainActivity"
+            android:name="com.gigamind.cognify.ui.SplashActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:theme="@style/Theme.Cognify.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,22 +23,31 @@
         </activity>
 
         <activity
-            android:name="com.dailybraingame.ui.WordDashActivity"
+            android:name="com.gigamind.cognify.ui.OnboardingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Cognify.NoActionBar" />
+
+        <activity
+            android:name="com.gigamind.cognify.ui.MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.gigamind.cognify.ui.WordDashActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.dailybraingame.ui.QuickMathActivity"
+            android:name="com.gigamind.cognify.ui.QuickMathActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.dailybraingame.ui.ResultActivity"
+            android:name="com.gigamind.cognify.ui.ResultActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.dailybraingame.ui.LeaderboardActivity"
+            android:name="com.gigamind.cognify.ui.LeaderboardActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

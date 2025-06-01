@@ -1,4 +1,4 @@
-package com.dailybraingame.engine;
+package com.gigamind.cognify.engine;
 
 import java.util.ArrayList;
 import java.util.Collections;

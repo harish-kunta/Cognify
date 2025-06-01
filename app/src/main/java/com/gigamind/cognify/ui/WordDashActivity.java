@@ -1,4 +1,4 @@
-package com.dailybraingame.ui;
+package com.gigamind.cognify.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dailybraingame.cognify.R;
-import com.dailybraingame.engine.WordGameEngine;
-import com.dailybraingame.util.Constants;
+import com.gigamind.cognify.R;
+import com.gigamind.cognify.engine.WordGameEngine;
+import com.gigamind.cognify.util.Constants;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.HashSet;

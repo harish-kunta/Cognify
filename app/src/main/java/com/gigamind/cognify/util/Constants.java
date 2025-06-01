@@ -1,4 +1,4 @@
-package com.dailybraingame.util;
+package com.gigamind.cognify.util;
 
 public class Constants {
     public static final int TOTAL_QUESTIONS = 10;

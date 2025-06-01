@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "157986049607",
+    "project_id": "cognify-1c07f",
+    "storage_bucket": "cognify-1c07f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157986049607:android:17f33ce4bda41cec2e6b62",
+        "android_client_info": {
+          "package_name": "com.gigamind.cognify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157986049607-9o2khfksl1okd0ahhest9g7po7h4qnr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJxSShzu5er-AvYdK0rywNRzsLB1zQmvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157986049607-9o2khfksl1okd0ahhest9g7po7h4qnr2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
