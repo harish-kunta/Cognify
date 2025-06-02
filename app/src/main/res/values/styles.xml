@@ -51,10 +51,12 @@
         <!-- Make sure there is no stroke -->
         <item name="strokeWidth">0dp</item>
         <item name="android:strokeColor">@android:color/transparent</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
 
         <!-- Ripple and background color (also use `app:`) -->
         <item name="rippleColor">@color/button_pressed</item>
-        <item name="android:backgroundTint">#36000000</item>
+        <item name="android:backgroundTint">#360000</item>
     </style>
 
     <!-- Disabled Button style -->
