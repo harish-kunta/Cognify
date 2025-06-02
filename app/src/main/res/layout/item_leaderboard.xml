@@ -1,58 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginVertical="4dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_marginHorizontal="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    android:backgroundTint="@color/primary_dark">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="60dp"
+        android:padding="12dp">
 
+        <!-- 1) Circular Rank badge (No) -->
         <TextView
             android:id="@+id/rankText"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@drawable/circle_background"
             android:gravity="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="1" />
 
+        <!-- 2) User Avatar or Country Flag -->
+        <ImageView
+            android:id="@+id/flagImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/rankText"
+            app:layout_constraintTop_toTopOf="@id/rankText"
+            app:layout_constraintBottom_toBottomOf="@id/rankText"
+            tools:srcCompat="@drawable/circle_background" />
+
+        <!-- 3) Display Name (max 1 line, ellipsized) -->
         <TextView
             android:id="@+id/nameText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/scoreText"
-            app:layout_constraintStart_toEndOf="@id/rankText"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="John Doe" />
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/flagImage"
+            app:layout_constraintEnd_toStartOf="@id/badgeImage"
+            app:layout_constraintTop_toTopOf="@id/rankText"
+            app:layout_constraintBottom_toBottomOf="@id/rankText"
+            tools:text="Erlangga" />
 
+        <!-- 4) Badge Icon (bronze/silver/gold) -->
+        <ImageView
+            android:id="@+id/badgeImage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toTopOf="@id/nameText"
+            app:layout_constraintBottom_toBottomOf="@id/nameText"
+            app:layout_constraintEnd_toStartOf="@id/pointsText"
+            tools:srcCompat="@drawable/ic_badge" />
+
+        <!-- 5) Points (Total XP) -->
         <TextView
-            android:id="@+id/scoreText"
+            android:id="@+id/pointsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="1234" />
+            app:layout_constraintTop_toTopOf="@id/nameText"
+            app:layout_constraintBottom_toBottomOf="@id/nameText"
+            tools:text="3340" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</com.google.android.material.card.MaterialCardView> 
+</com.google.android.material.card.MaterialCardView>

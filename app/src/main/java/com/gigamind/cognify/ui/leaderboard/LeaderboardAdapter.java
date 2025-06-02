@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.gigamind.cognify.R;
 import com.gigamind.cognify.databinding.ItemLeaderboardBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -17,16 +18,16 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
         super(new DiffUtil.ItemCallback<LeaderboardItem>() {
             @Override
             public boolean areItemsTheSame(@NonNull LeaderboardItem oldItem,
-                                         @NonNull LeaderboardItem newItem) {
+                                           @NonNull LeaderboardItem newItem) {
                 return oldItem.getUserId().equals(newItem.getUserId());
             }
 
             @Override
             public boolean areContentsTheSame(@NonNull LeaderboardItem oldItem,
-                                            @NonNull LeaderboardItem newItem) {
-                return oldItem.getScore() == newItem.getScore() && 
-                       oldItem.getRank() == newItem.getRank() &&
-                       oldItem.getName().equals(newItem.getName());
+                                              @NonNull LeaderboardItem newItem) {
+                return oldItem.getTotalXP() == newItem.getTotalXP()
+                        && oldItem.getRank() == newItem.getRank()
+                        && oldItem.getDisplayName().equals(newItem.getDisplayName());
             }
         });
     }
@@ -55,13 +56,56 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
 
         void bind(LeaderboardItem item) {
             binding.rankText.setText(String.valueOf(item.getRank()));
-            binding.nameText.setText(item.getName());
-            binding.scoreText.setText(String.valueOf(item.getScore()));
 
-            // Highlight current user's score
-            String currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null ? 
-                FirebaseAuth.getInstance().getCurrentUser().getUid() : "";
-            binding.getRoot().setSelected(currentUserId.equals(item.getUserId()));
+            // 2) Country Flag / Avatar
+            String country = item.getCountryCode();
+            if (country != null && !country.isEmpty()) {
+                // e.g. if countryCode = "ID", we expect a drawable named "flag_id"
+                // or fallback to a default avatar if that resource does not exist.
+                int drawableId = getFlagDrawableId(country);
+                if (drawableId != 0) {
+                    binding.flagImage.setImageResource(drawableId);
+                } else {
+                    binding.flagImage.setImageResource(R.drawable.circle_background);
+                }
+            } else {
+                binding.flagImage.setImageResource(R.drawable.circle_background);
+            }
+
+            // 3) Display Name
+            binding.nameText.setText(item.getDisplayName());
+
+            // 4) Badge Icon (bronze / silver / gold) based on totalXP
+            String badgeType = item.getBadgeType(); // returns "bronze" / "silver" / "gold"
+            int badgeRes = getBadgeDrawableId(badgeType);
+            binding.badgeImage.setImageResource(badgeRes);
+
+            // 5) Points (Total XP)
+            binding.pointsText.setText(String.valueOf(item.getTotalXP()));
+
+            // 6) Highlight current user row
+            String currentUid = FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                    : "";
+            boolean isCurrent = currentUid.equals(item.getUserId());
+            binding.getRoot().setSelected(isCurrent);
+        }
+
+        private int getFlagDrawableId(@NonNull String code) {
+            String lower = code.toLowerCase();
+            // Example: code = "ID" → resource name "flag_id"
+            int resId = binding.getRoot().getContext()
+                    .getResources()
+                    .getIdentifier("flag_" + lower, "drawable",
+                            binding.getRoot().getContext().getPackageName());
+            return resId;
+        }
+
+        /**
+         * Return the badge drawable resource ID for a given badgeType ("bronze", "silver", "gold").
+         */
+        private int getBadgeDrawableId(@NonNull String badgeType) {
+            return R.drawable.ic_badge;
         }
     }
 } 

@@ -1,5 +1,6 @@
 package com.gigamind.cognify.ui.leaderboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.databinding.FragmentLeaderboardBinding;
+import com.gigamind.cognify.ui.OnboardingActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,7 +44,7 @@ public class LeaderboardFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         setupRecyclerView();
-        setupViews();
+        setupSwipeAndButtons();
         loadLeaderboard();
     }
 
@@ -64,46 +67,78 @@ public class LeaderboardFragment extends Fragment {
         binding.recyclerView.setAdapter(adapter);
     }
 
+    private void setupSwipeAndButtons() {
+        binding.swipeRefresh.setOnRefreshListener(this::loadLeaderboard);
+
+        // If “Retry” is pressed in error state:
+        binding.retryButton.setOnClickListener(v -> loadLeaderboard());
+
+        // If “Sign In” pressed in signInPrompt:
+        binding.signInButton.setOnClickListener(v -> {
+            // Launch your existing Google‐SignIn flow or OnboardingActivity
+            // so that user can log in. Adjust to your code.
+            startActivity(new Intent(requireContext(), OnboardingActivity.class));
+        });
+    }
+
     private void loadLeaderboard() {
         if (isLoading) return;
         isLoading = true;
+
+        // Show SwipeLoading
         binding.swipeRefresh.setRefreshing(true);
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.emptyView.setVisibility(View.GONE);
         binding.errorView.setVisibility(View.GONE);
+        binding.signInPrompt.setVisibility(View.GONE);
 
         // Check if user is signed in
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            showSignInPrompt();
-            isLoading = false;
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // Not signed in
+            binding.signInPrompt.setVisibility(View.VISIBLE);
             binding.swipeRefresh.setRefreshing(false);
+            isLoading = false;
             return;
         }
 
-        db.collection("scores")
-                .orderBy("score", Query.Direction.DESCENDING)
+        // Query the top 100 by totalXP descending
+        db.collection("users")
+                .orderBy("totalXP", Query.Direction.DESCENDING)
                 .limit(100)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<LeaderboardItem> items = new ArrayList<>();
                     int rank = 1;
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        LeaderboardItem item = document.toObject(LeaderboardItem.class);
-                        item.setRank(rank++);
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        LeaderboardItem item = doc.toObject(LeaderboardItem.class);
+                        item.setUserId(doc.getId());                         // store UID
+                        item.setRank(rank++);                                // assign rank
+                        // If the Firestore doc didn’t include “countryCode,” default to empty:
+                        if (item.getCountryCode() == null) {
+                            item.setCountryCode("");
+                        }
                         items.add(item);
                     }
-                    
+
                     if (items.isEmpty()) {
-                        showEmptyState();
+                        binding.emptyView.setVisibility(View.VISIBLE);
                     } else {
-                        showLeaderboard(items);
+                        binding.recyclerView.setVisibility(View.VISIBLE);
+                        adapter.submitList(items);
                     }
-                    
-                    isLoading = false;
+
                     binding.swipeRefresh.setRefreshing(false);
+                    isLoading = false;
                 })
                 .addOnFailureListener(e -> {
-                    showError(e.getMessage());
-                    isLoading = false;
+                    // Show error message
+                    binding.errorView.setVisibility(View.VISIBLE);
+                    binding.errorText.setText(
+                            getString(R.string.error_loading_leaderboard, e.getMessage())
+                    );
                     binding.swipeRefresh.setRefreshing(false);
+                    isLoading = false;
                 });
     }
 

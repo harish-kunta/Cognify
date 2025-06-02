@@ -2,143 +2,201 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/leaderboardRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@drawable/bg_elliptical_layer"
+    tools:context=".ui.leaderboard.LeaderboardFragment">
 
+    <!-- Top Header Bar -->
+    <View
+        android:id="@+id/topBarBackground"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Left: coin icon + total coins text (just for show; can be wired later) -->
+    <LinearLayout
+        android:id="@+id/coinContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/coinIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/circle_background" />
+
+        <TextView
+            android:id="@+id/coinCountText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="10"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Center: Title “Leaderboards” -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/global_leaderboard"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+        android:text="Leaderboards"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/topBarBackground" />
 
+    <!-- Right: current user’s avatar (if signed in) -->
+    <ImageView
+        android:id="@+id/currentUserAvatar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/circle_background"
+        android:scaleType="centerCrop"
+        android:src="@drawable/circle_background"
+        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/topBarBackground" />
+
+    <!-- SwipeRefreshLayout + RecyclerView for the actual list -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleText">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topBarBackground">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             android:visibility="gone"
-            tools:listitem="@layout/item_leaderboard"
-            tools:visibility="visible" />
-
+            tools:listitem="@layout/item_leaderboard" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Sign In Prompt -->
+    <!-- Sign-In Prompt (centered) -->
     <LinearLayout
         android:id="@+id/signInPrompt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toBottomOf="@id/topBarBackground">
 
         <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginBottom="16dp"
             android:contentDescription="@string/leaderboard"
-            app:srcCompat="@drawable/ic_leaderboard"
-            app:tint="?attr/colorPrimary" />
+            android:src="@drawable/ic_leaderboard"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
             android:text="@string/sign_in_to_view_leaderboard"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/signInButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sign_in" />
-
+            android:layout_marginTop="16dp"
+            android:text="@string/sign_in"
+            app:cornerRadius="24dp" />
     </LinearLayout>
 
     <!-- Empty State -->
     <LinearLayout
         android:id="@+id/emptyView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/topBarBackground">
 
         <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginBottom="16dp"
             android:contentDescription="@string/no_scores_yet"
-            app:srcCompat="@drawable/ic_leaderboard"
-            app:tint="?attr/colorPrimary" />
+            android:src="@drawable/ic_leaderboard"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:gravity="center"
             android:text="@string/no_scores_yet"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
-
+            android:textColor="@color/white"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <!-- Error State -->
     <LinearLayout
         android:id="@+id/errorView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/topBarBackground">
 
         <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginBottom="16dp"
             android:contentDescription="@string/error"
-            app:srcCompat="@drawable/ic_error"
-            app:tint="?attr/colorError" />
+            android:src="@drawable/ic_error"
+            app:tint="@color/error" />
 
         <TextView
             android:id="@+id/errorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             tools:text="Error loading leaderboard" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/retryButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/retry" />
-
+            android:layout_marginTop="16dp"
+            android:text="@string/retry"
+            app:cornerRadius="24dp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout> 
+</androidx.constraintlayout.widget.ConstraintLayout>
