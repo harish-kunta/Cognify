@@ -116,7 +116,7 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
                         android:text="Sound Effects"
-                        android:textColor="@color/accent" />
+                        android:textColor="@color/settings_text" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:layout_weight="1"
@@ -148,7 +148,7 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
                         android:text="Haptics"
-                        android:textColor="@color/accent" />
+                        android:textColor="@color/settings_text" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:layout_weight="1"
@@ -180,7 +180,7 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
                         android:text="Animations"
-                        android:textColor="@color/accent"
+                        android:textColor="@color/settings_text"
                         />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -212,7 +212,7 @@
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
                         android:text="Dark Mode"
-                        android:textColor="@color/accent"
+                        android:textColor="@color/settings_text"
                         />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,16 +24,24 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ActivityOnboardingBinding binding;
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firestore;
     private static final int RC_SIGN_IN = 9001;
+
+    private static final String COLLECTION_USERS = "users";
 
     private static class OnboardingItem {
         int imageResId;
@@ -54,6 +63,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -115,27 +125,78 @@ public class OnboardingActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            Task<GoogleSignInAccount> task =
+                    GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken());
+                if (account != null) {
+                    // Exchange ID token for Firebase credential
+                    firebaseAuthWithGoogle(account.getIdToken(), account);
+                }
             } catch (ApiException e) {
-                // Handle sign in failure
+                Toast.makeText(this,
+                        "Google sign-in failed: " + e.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private void firebaseAuthWithGoogle(String idToken) {
+    private void firebaseAuthWithGoogle(String idToken, GoogleSignInAccount gAccount) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, go to main activity
-                        startActivity(new Intent(this, MainActivity.class));
-                        finish();
+                .addOnSuccessListener(authResult -> {
+                    // User is now signed in to Firebase
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        // Write or merge their details into Firestore
+                        createOrUpdateUserInFirestore(user, gAccount);
+                    } else {
+                        // Unlikely, but if user is null:
+                        Toast.makeText(this, "Authentication succeeded but no user found.", Toast.LENGTH_LONG).show();
                     }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this,
+                            "Firebase authentication failed: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private void createOrUpdateUserInFirestore(FirebaseUser user, GoogleSignInAccount gAccount) {
+        String uid   = user.getUid();
+        String name  = gAccount.getDisplayName();
+        String email = gAccount.getEmail();
+
+        // Build the map of initial (or existing) fields
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("uid", uid);
+        userData.put("name", name != null ? name : "");
+        userData.put("email", email != null ? email : "");
+        // If you want to preserve existing scores/streaks if user returns:
+        // you could call get() first, but for simplicity we set defaults on first sign-in:
+        userData.put("score", 0);
+        userData.put("streak", 0);
+        userData.put("leaderboardRank", 0);
+        userData.put("trophies", new ArrayList<>()); // empty list
+
+        DocumentReference userRef = firestore
+                .collection(COLLECTION_USERS)
+                .document(uid);
+
+        // Use set(..., SetOptions.merge()) so we don't overwrite existing fields if they already exist
+        userRef.set(userData, com.google.firebase.firestore.SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    // Firestore write succeeded → go to MainActivity
+                    Intent intent = new Intent(OnboardingActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(OnboardingActivity.this,
+                            "Failed to save user data: " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
                 });
     }
 

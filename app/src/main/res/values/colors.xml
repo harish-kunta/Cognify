@@ -49,5 +49,6 @@
     <color name="nav_icon_unselected">@color/white</color>
     <color name="blue">#2B6EFF</color>
 
+    <color name="settings_text">#8BF9A2</color>
     <color name="settings_background">#060D25</color>
 </resources>
