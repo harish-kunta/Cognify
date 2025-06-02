@@ -77,7 +77,7 @@ public class QuickMathActivity extends AppCompatActivity {
         
         int points = gameEngine.getScore(isCorrect);
         currentScore += points;
-        scoreText.setText("Score: " + currentScore);
+        scoreText.setText(currentScore);
 
         // Visual feedback (could be enhanced with animations)
         answerButtons[buttonIndex].setBackgroundTintList(

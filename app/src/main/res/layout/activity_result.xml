@@ -4,66 +4,219 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp"
+    android:padding="16dp"
     android:gravity="center_horizontal"
-    android:background="@color/background">
+    android:background="@drawable/bg_elliptical_layer">
 
-    <!-- Game Over Text -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Game Over!"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="24dp"
+        android:text="Game over!"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:layout_gravity="center"
+        android:textStyle="bold" />
 
-    <!-- Results Card -->
-    <androidx.cardview.widget.CardView
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
         android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/card_background"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp">
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp"
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/settings_background"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center">
+            android:padding="16dp">
 
-            <!-- Score -->
-            <TextView
-                android:id="@+id/scoreText"
-                android:layout_width="wrap_content"
+            <!-- Sound Effects Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Score: 0"
-                android:textSize="48sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:weightSum="10"
+                android:orientation="horizontal">
 
-            <!-- High Score -->
-            <TextView
-                android:id="@+id/highScoreText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="High Score: 0"
-                android:textSize="24sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="8dp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_volume" />
 
-            <!-- New High Score Badge -->
-            <TextView
-                android:id="@+id/newHighScoreText"
-                android:layout_width="wrap_content"
+                <TextView
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="5"
+                    android:text="Score"
+                    />
+
+                <TextView
+                    android:id="@+id/scoreValue"
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="0" />
+
+            </LinearLayout>
+
+            <!-- Sound Effects Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="🏆 New High Score!"
-                android:textSize="20sp"
-                android:textColor="@color/success"
-                android:visibility="gone"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:weightSum="10"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_volume" />
+
+                <TextView
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="5"
+                    android:text="Total XP"
+                    />
+
+                <TextView
+                    android:id="@+id/totalXPValue"
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="0" />
+
+            </LinearLayout>
+
+            <!-- Sound Effects Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:weightSum="10"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_volume" />
+
+                <TextView
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="5"
+                    android:text="Word Count"
+                    />
+
+                <TextView
+                    android:id="@+id/totalWordText"
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="0" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:weightSum="10"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_volume" />
+
+                <TextView
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="5"
+                    android:text="High Score" />
+
+                <TextView
+                    android:id="@+id/highScoreText"
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="0" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:weightSum="10"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_volume" />
+
+                <TextView
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="5"
+                    android:text="XP gained" />
+
+                <TextView
+                    android:id="@+id/xpGainedText"
+                    style="@style/TextAppearance.Settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="4"
+                    android:gravity="center"
+                    android:text="0" />
+
+            </LinearLayout>
 
             <!-- Streak (for daily challenges) -->
             <TextView
@@ -75,47 +228,37 @@
                 android:textColor="@color/accent"
                 android:layout_marginBottom="16dp" />
 
+
+            <TextView
+                android:id="@+id/newHighScoreText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🏆 New High Score!"
+                android:textSize="20sp"
+                android:textColor="@color/success"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp" />
+
         </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-    </androidx.cardview.widget.CardView>
 
-    <!-- Action Buttons -->
+    <!-- Sign In Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/playAgainButton"
+        style="@style/Button.Enabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Play Again"
-        android:textSize="18sp"
-        android:padding="16dp"
-        app:cornerRadius="8dp"
-        android:layout_marginBottom="16dp" />
+        app:icon="@drawable/ic_replay" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/homeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back to Home"
-        android:textSize="18sp"
-        android:padding="16dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:cornerRadius="8dp" />
-
-    <!-- Leaderboard Section -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Leaderboard"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/leaderboardList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false" />
+        style="@style/Button.Disabled"
+        />
 
 </LinearLayout>
