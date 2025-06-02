@@ -223,58 +223,50 @@
                         app:trackTint="@color/switch_track_tint" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Sign In Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSignIn"
+                        style="@style/Button.Enabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/sign_in_with_google"
+                        app:icon="@drawable/ic_google" />
+
+                    <!-- Replay Tutorial Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/replayTutorialButton"
+                        style="@style/Button.Disabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="Replay Tutorial"
+                        />
+
+                    <!-- Reset Progress Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/resetProgressButton"
+                        style="@style/Button.Disabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Reset Progress"
+                        android:layout_margin="8dp"
+                        android:textColor="@color/error"
+                        app:strokeColor="@color/error"
+                        app:strokeWidth="2dp" />
+
+                </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Account & Actions -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- Sign In Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSignIn"
-                    style="@style/Button.Enabled"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/sign_in_with_google"
-                    app:icon="@drawable/ic_google" />
-
-                <!-- Replay Tutorial Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/replayTutorialButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:text="Replay Tutorial"
-                    android:textColor="@color/colorPrimary"
-                    app:strokeWidth="2dp" />
-
-                <!-- Reset Progress Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/resetProgressButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Reset Progress"
-                    android:textColor="@color/error"
-                    app:strokeColor="@color/error"
-                    app:strokeWidth="2dp" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>
