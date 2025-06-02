@@ -11,7 +11,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.gigamind.cognify.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResultActivity extends AppCompatActivity {
     
@@ -22,6 +30,11 @@ public class ResultActivity extends AppCompatActivity {
     private MaterialButton playAgainButton;
     private MaterialButton homeButton;
     private SharedPreferences prefs;
+
+    // Firestore instance
+    private FirebaseFirestore firestore;
+    // Current Firebase user
+    private FirebaseUser firebaseUser;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,25 +44,30 @@ public class ResultActivity extends AppCompatActivity {
         // Initialize views
         initializeViews();
         
+        // Initialize SharedPreferences
+        prefs = getSharedPreferences("GamePrefs", MODE_PRIVATE);
+
+        // Initialize Firestore & Auth
+        firestore = FirebaseFirestore.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         // Get game data from intent
         int score = getIntent().getIntExtra(INTENT_SCORE, 0);
         String gameType = getIntent().getStringExtra(INTENT_TYPE);
         boolean isDailyChallenge = getIntent().getBooleanExtra("IS_DAILY_CHALLENGE", false);
-        
-        // Initialize SharedPreferences
-        prefs = getSharedPreferences("GamePrefs", MODE_PRIVATE);
-        
-        // Update high score if necessary
-        updateHighScore(score, gameType);
-        
-        // Update streak if it's a daily challenge
-        if (isDailyChallenge) {
-            updateStreak();
-        }
+
+        // 1) Update local high‐score and streak
+        boolean isNewHigh = updateHighScore(score, gameType);
+        updateStreakIfDaily(gameType);
         
         // Display results
-        displayResults(score, gameType, isDailyChallenge);
-        
+        displayResults(score, gameType, isNewHigh);
+
+        // 3) Write to Firestore
+        if (firebaseUser != null) {
+            writeScoreToFirestore(firebaseUser.getUid(), score, gameType);
+        }
+
         // Setup button listeners
         setupButtons(gameType, isDailyChallenge);
     }
@@ -63,82 +81,117 @@ public class ResultActivity extends AppCompatActivity {
         homeButton = findViewById(R.id.homeButton);
     }
     
-    private void updateHighScore(int score, String gameType) {
+    private boolean updateHighScore(int score, String gameType) {
         String highScoreKey = "high_score_" + gameType.toLowerCase();
         int currentHighScore = prefs.getInt(highScoreKey, 0);
         
         if (score > currentHighScore) {
             prefs.edit().putInt(highScoreKey, score).apply();
             newHighScoreText.setVisibility(View.VISIBLE);
+            highScoreText.setText(String.format("High Score: %d", score));
+            return true;
         } else {
             newHighScoreText.setVisibility(View.GONE);
+            highScoreText.setText(String.format("High Score: %d", currentHighScore));
+            return false;
         }
         
-        highScoreText.setText(String.format("High Score: %d", Math.max(score, currentHighScore)));
     }
-    
-    private void updateStreak() {
+
+    private void updateStreakIfDaily(String gameType) {
+        // Suppose your daily challenge is identified by “daily_word_dash”
+        if (!"daily_word_dash".equalsIgnoreCase(gameType)) {
+            streakText.setVisibility(View.GONE);
+            return;
+        }
+
         Calendar calendar = Calendar.getInstance();
         String today = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.DAY_OF_YEAR);
         String lastPlayedDate = prefs.getString("last_played_date", "");
         int currentStreak = prefs.getInt("current_streak", 0);
-        
+
         calendar.add(Calendar.DAY_OF_YEAR, -1);
         String yesterday = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.DAY_OF_YEAR);
-        
-        if (lastPlayedDate.equals(yesterday)) {
-            // Consecutive day, increment streak
+
+        if (yesterday.equals(lastPlayedDate)) {
+            // Consecutive day → increment
             currentStreak++;
-        } else if (!lastPlayedDate.equals(today)) {
-            // Streak broken
+        } else if (!today.equals(lastPlayedDate)) {
+            // Not consecutive (or first time) → reset to 1
             currentStreak = 1;
         }
-        
+
         prefs.edit()
-            .putInt("current_streak", currentStreak)
-            .putString("last_played_date", today)
-            .apply();
-        
+                .putInt("current_streak", currentStreak)
+                .putString("last_played_date", today)
+                .apply();
+
         streakText.setText(String.format("🔥 %d Day Streak", currentStreak));
+        streakText.setVisibility(View.VISIBLE);
     }
-    
-    private void displayResults(int score, String gameType, boolean isDailyChallenge) {
+
+    private void displayResults(int score, String gameType, boolean isNewHigh) {
         scoreText.setText(String.format("Score: %d", score));
-        
-        if (!isDailyChallenge) {
-            streakText.setVisibility(View.GONE);
-        }
-        
-        // Update leaderboard
-        updateLeaderboard(score, gameType);
     }
-    
-    private void updateLeaderboard(int score, String gameType) {
-        String leaderboardKey = "leaderboard_" + gameType.toLowerCase();
-        String scoresStr = prefs.getString(leaderboardKey, "");
-        
-        // Format: "score1,score2,score3,..."
-        String[] scores = scoresStr.isEmpty() ? new String[0] : scoresStr.split(",");
-        StringBuilder newScores = new StringBuilder();
-        boolean scoreAdded = false;
-        
-        // Keep top 10 scores
-        for (int i = 0; i < Math.min(9, scores.length); i++) {
-            int currentScore = Integer.parseInt(scores[i]);
-            if (!scoreAdded && score > currentScore) {
-                newScores.append(score).append(",");
-                scoreAdded = true;
+
+    private void writeScoreToFirestore(String uid, int score, String gameType) {
+        // 1) Reference to the user document
+        DocumentReference userRef = firestore
+                .collection("users")
+                .document(uid);
+
+        // 2) Build the map of fields to merge into user document
+        Map<String, Object> updates = new HashMap<>();
+        if ("word_dash".equalsIgnoreCase(gameType) || "daily_word_dash".equalsIgnoreCase(gameType)) {
+            updates.put("lastWordDashScore", score);
+        }
+        // You can similarly handle other game types (e.g., quick_math) by checking gameType
+
+        // 3) Also update bestWordDashScore if needed
+        userRef.get().addOnSuccessListener(snapshot -> {
+            int existingBest = 0;
+            if (snapshot.exists() && snapshot.contains("bestWordDashScore")) {
+                existingBest = snapshot.getLong("bestWordDashScore").intValue();
             }
-            newScores.append(currentScore).append(",");
-        }
-        
-        if (!scoreAdded && (scores.length < 10)) {
-            newScores.append(score);
-        } else if (newScores.length() > 0) {
-            newScores.setLength(newScores.length() - 1); // Remove trailing comma
-        }
-        
-        prefs.edit().putString(leaderboardKey, newScores.toString()).apply();
+            if (score > existingBest) {
+                updates.put("bestWordDashScore", score);
+            }
+            // 4) Merge into users/{uid}
+            userRef.set(updates, com.google.firebase.firestore.SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        // 5) Now push a leader‐board entry
+                        pushToLeaderboard(uid, score, gameType);
+                    })
+                    .addOnFailureListener(e -> {
+                        // Log or Toast a failure, but we still attempt to push to leaderboard:
+                        pushToLeaderboard(uid, score, gameType);
+                    });
+        }).addOnFailureListener(e -> {
+            // In case get() fails, we still attempt to write whatever we know:
+            userRef.set(updates, com.google.firebase.firestore.SetOptions.merge());
+            pushToLeaderboard(uid, score, gameType);
+        });
+    }
+
+    private void pushToLeaderboard(String uid, int score, String gameType) {
+        CollectionReference lbRef = firestore
+                .collection("users")
+                .document(uid)
+                .collection("leaderboard")
+                .document(gameType.toLowerCase())
+                .collection("entries");
+
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("score", score);
+        entry.put("timestamp", com.google.firebase.Timestamp.now());
+
+        lbRef.add(entry)
+                .addOnSuccessListener(docRef -> {
+                    // Successfully added to leaderboard. No need to do anything else here.
+                })
+                .addOnFailureListener(e -> {
+                    // Log or swallow—leaderboard push failure shouldn’t block the user
+                });
     }
     
     private void setupButtons(String gameType, boolean isDailyChallenge) {
