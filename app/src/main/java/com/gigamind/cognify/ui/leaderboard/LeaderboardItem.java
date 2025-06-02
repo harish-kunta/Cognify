@@ -7,7 +7,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class LeaderboardItem {
     private String userId;
-    private String displayName;
+    private String name;
     private int totalXP;
     private String countryCode;
 
@@ -20,12 +20,12 @@ public class LeaderboardItem {
 
     public LeaderboardItem(
             String userId,
-            String displayName,
+            String name,
             int totalXP,
             String countryCode
     ) {
         this.userId = userId;
-        this.displayName = displayName;
+        this.name = name;
         this.totalXP = totalXP;
         this.countryCode = countryCode;
     }
@@ -37,11 +37,11 @@ public class LeaderboardItem {
         this.userId = userId;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getName() {
+        return name;
     }
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setDisplayName(String name) {
+        this.name = name;
     }
 
     public int getTotalXP() {

@@ -27,7 +27,7 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
                                               @NonNull LeaderboardItem newItem) {
                 return oldItem.getTotalXP() == newItem.getTotalXP()
                         && oldItem.getRank() == newItem.getRank()
-                        && oldItem.getDisplayName().equals(newItem.getDisplayName());
+                        && oldItem.getName().equals(newItem.getName());
             }
         });
     }
@@ -73,7 +73,7 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
             }
 
             // 3) Display Name
-            binding.nameText.setText(item.getDisplayName());
+            binding.nameText.setText(item.getName());
 
             // 4) Badge Icon (bronze / silver / gold) based on totalXP
             String badgeType = item.getBadgeType(); // returns "bronze" / "silver" / "gold"
