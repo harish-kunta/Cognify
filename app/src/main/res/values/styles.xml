@@ -71,7 +71,7 @@
         <item name="elevation">2dp</item>
     </style>
 
-    <!-- Disabled Button style -->
+    <!-- Letter Button style -->
     <style name="Button.Letter" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/text_white</item>
         <item name="android:textSize">20sp</item>
@@ -79,8 +79,12 @@
         <item name="android:letterSpacing">0.025</item>
         <item name="cornerRadius">12dp</item>
         <item name="strokeColor">@color/white</item>
+        <item name="minHeight">48dp</item>
+        <item name="minWidth">48dp</item>
+        <item name="strokeWidth">2dp</item>
         <item name="elevation">2dp</item>
         <item name="iconTint">@color/white</item>
+        <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
     <style name="TextAppearance.Settings" parent="TextAppearance.MaterialComponents.Subtitle1">

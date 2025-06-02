@@ -9,6 +9,8 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.view.ContextThemeWrapper;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.R;
@@ -74,7 +76,11 @@ public class WordDashActivity extends AppCompatActivity {
         letterGrid.removeAllViews();
 
         for (int i = 0; i < 16; i++) {
-            MaterialButton button = new MaterialButton(this);
+            ContextThemeWrapper themedContext =
+                    new ContextThemeWrapper(this, R.style.Button_Letter);
+
+            MaterialButton button = new MaterialButton(themedContext, null, 0);
+
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
             params.height = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -84,10 +90,9 @@ public class WordDashActivity extends AppCompatActivity {
             button.setLayoutParams(params);
 
             button.setText(String.valueOf(letters[i]));
-            button.setTextSize(20);
+            button.setMinHeight(48);
+            button.setMinWidth(48);
             button.setGravity(Gravity.CENTER);
-            button.setBackgroundTintList(getColorStateList(R.color.bg_color));
-            button.setTextColor(getColor(R.color.white));
 
             final int index = i;
             button.setOnClickListener(v -> {
