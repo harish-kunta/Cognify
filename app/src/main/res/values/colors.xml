@@ -3,7 +3,7 @@
     <!-- Primary Theme Colors -->
     <color name="primary">#0649A2</color>
     <color name="primary_dark">#0C126B</color>
-    <color name="accent">#F59E0B</color>
+    <color name="accent">#95FF00</color>
     <color name="background">#F8FAFC</color>
 
 
@@ -47,4 +47,5 @@
     <color name="bg_color">#0C126B</color>
     <color name="nav_icon_selected">#95FF00</color>
     <color name="nav_icon_unselected">@color/white</color>
+    <color name="blue">#2B6EFF</color>
 </resources>

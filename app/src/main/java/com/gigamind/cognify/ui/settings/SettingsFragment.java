@@ -39,12 +39,12 @@ public class SettingsFragment extends Fragment {
 
     private void setupPreferences() {
         // Load saved preferences
-        binding.soundSwitch.setChecked(prefs.getBoolean("sound_enabled", true));
+        binding.soundEffectsSwitch.setChecked(prefs.getBoolean("sound_enabled", true));
         binding.hapticsSwitch.setChecked(prefs.getBoolean("haptics_enabled", true));
         binding.animationsSwitch.setChecked(prefs.getBoolean("animations_enabled", true));
 
         // Set up listeners
-        binding.soundSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+        binding.soundEffectsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 prefs.edit().putBoolean("sound_enabled", isChecked).apply());
 
         binding.hapticsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
@@ -86,14 +86,14 @@ public class SettingsFragment extends Fragment {
         // Show sign in or sign out button based on auth state
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            binding.signInButton.setText(R.string.sign_out);
-            binding.signInButton.setOnClickListener(v -> {
+            binding.btnSignIn.setText(R.string.sign_out);
+            binding.btnSignIn.setOnClickListener(v -> {
                 auth.signOut();
                 requireActivity().recreate();
             });
         } else {
-            binding.signInButton.setText(R.string.sign_in);
-            binding.signInButton.setOnClickListener(v -> {
+            binding.btnSignIn.setText(R.string.sign_in);
+            binding.btnSignIn.setOnClickListener(v -> {
                 // Start sign in flow
                 startActivity(new Intent(requireContext(), OnboardingActivity.class));
             });

@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_elliptical_layer">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,69 +11,73 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Settings Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/settings"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_marginBottom="24dp"
+            android:text="Settings"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
+        <!-- Top Card with Carousel Arrows -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
+            android:layout_height="220dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/card_background"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/preferences"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/soundSwitch"
+                <!-- Background Image (Carousel) -->
+                <ImageView
+                    android:id="@+id/cardBackgroundImage"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/sound_effects" />
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_elliptical_layer" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/hapticsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/haptics" />
+                <!-- Left Arrow -->
+                <ImageButton
+                    android:id="@+id/arrowLeft"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_arrow_left" />
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/animationsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/animations" />
+                <!-- Right Arrow -->
+                <ImageButton
+                    android:id="@+id/arrowRight"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_arrow_right" />
 
-            </LinearLayout>
-
+            </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Sound & Haptics & Animations Preferences -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/card_background"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -80,37 +85,192 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="@string/account"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:text="Preferences"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
+                <!-- Sound Effects Toggle -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center_vertical"
+                    android:weightSum="10"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_volume" />
+
+                    <TextView
+                        style="@style/TextAppearance.Settings"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="8"
+                        android:text="Sound Effects"
+                        android:textColor="@color/accent" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_weight="1"
+                        android:id="@+id/soundEffectsSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:trackTint="@color/switch_track_tint" />
+                </LinearLayout>
+
+                <!-- Haptics Toggle -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center_vertical"
+                    android:weightSum="10"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_volume" />
+
+                    <TextView
+                        style="@style/TextAppearance.Settings"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="8"
+                        android:text="Haptics"
+                        android:textColor="@color/accent" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:layout_weight="1"
+                        android:id="@+id/hapticsSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:trackTint="@color/switch_track_tint" />
+                </LinearLayout>
+
+                <!-- Animations Toggle -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center_vertical"
+                    android:weightSum="10"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_volume" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        style="@style/TextAppearance.Settings"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="8"
+                        android:text="Animations"
+                        android:textColor="@color/accent"
+                        />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/animationsSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:trackTint="@color/switch_track_tint" />
+                </LinearLayout>
+
+                <!-- Dark Mode Toggle -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:weightSum="10"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_dark_mode" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        style="@style/TextAppearance.Settings"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="8"
+                        android:text="Dark Mode"
+                        android:textColor="@color/accent"
+                        />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/darkModeSwitch"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:trackTint="@color/switch_track_tint" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Account & Actions -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/card_background"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Sign In Button -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/signInButton"
+                    android:id="@+id/btnSignIn"
+                    style="@style/Button.Enabled"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/sign_in" />
+                    android:text="@string/sign_in_with_google"
+                    app:icon="@drawable/ic_google" />
 
+                <!-- Replay Tutorial Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/replayTutorialButton"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/replay_tutorial" />
+                    android:layout_marginBottom="12dp"
+                    android:text="Replay Tutorial"
+                    android:textColor="@color/colorPrimary"
+                    app:strokeWidth="2dp" />
 
+                <!-- Reset Progress Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/resetProgressButton"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/reset_progress"
-                    android:textColor="@color/design_default_color_error" />
+                    android:text="Reset Progress"
+                    android:textColor="@color/error"
+                    app:strokeColor="@color/error"
+                    app:strokeWidth="2dp" />
 
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
-</ScrollView> 
+</ScrollView>

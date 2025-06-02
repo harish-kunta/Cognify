@@ -53,6 +53,12 @@
         <item name="elevation">2dp</item>
     </style>
 
+    <style name="TextAppearance.Settings" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- Text Styles -->
     <style name="TextAppearance.Title" parent="TextAppearance.MaterialComponents.Headline5">
         <item name="android:textColor">@color/text_primary</item>
