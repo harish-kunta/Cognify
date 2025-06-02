@@ -83,15 +83,6 @@ public class HomeFragment extends Fragment {
             dailyChallengeTitle.setText("Completed Today");
             dailyChallengeTitle.setEnabled(false);
         }
-
-        // Disable the corresponding game in More Games section if it's the daily challenge
-        if (isWordDay) {
-            playWordDashButton.setEnabled(!isDailyCompleted);
-            //playWordDashButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
-        } else {
-            playQuickMathButton.setEnabled(!isDailyCompleted);
-            //playQuickMathButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
-        }
     }
 
     private void setupClickListeners() {
