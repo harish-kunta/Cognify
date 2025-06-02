@@ -12,25 +12,34 @@ import android.widget.Toast;
 import android.view.ContextThemeWrapper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.gigamind.cognify.R;
+import com.gigamind.cognify.adapter.FoundWordsAdapter;
 import com.gigamind.cognify.engine.WordGameEngine;
 import com.gigamind.cognify.util.Constants;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class WordDashActivity extends AppCompatActivity {
     private WordGameEngine gameEngine;
-    private TextView scoreText;
-    private TextView timerText;
-    private TextView currentWordText;
+    private TextView scoreText, timerText, currentWordText;
     private GridLayout letterGrid;
+    private RecyclerView foundWordsRecycler;
+    private FoundWordsAdapter foundWordsAdapter;
+
     private StringBuilder currentWord;
     private int currentScore;
     private CountDownTimer countDownTimer;
     private Set<String> usedWords;
+    private List<String> foundWordsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ public class WordDashActivity extends AppCompatActivity {
         timerText = findViewById(R.id.timerText);
         currentWordText = findViewById(R.id.currentWordText);
         letterGrid = findViewById(R.id.letterGrid);
+        foundWordsRecycler = findViewById(R.id.foundWordsRecycler);
 
         MaterialButton submitButton = findViewById(R.id.submitButton);
         MaterialButton clearButton = findViewById(R.id.clearButton);
@@ -52,8 +62,9 @@ public class WordDashActivity extends AppCompatActivity {
         currentWord = new StringBuilder();
         currentScore = 0;
         usedWords = new HashSet<>();
+        foundWordsList = new ArrayList<>();
 
-        // Set up grid
+        setupFoundWordsRecycler();
         setupLetterGrid();
 
         // Set up buttons
@@ -69,6 +80,22 @@ public class WordDashActivity extends AppCompatActivity {
 
         // Start timer
         startGameTimer();
+    }
+
+    private void setupFoundWordsRecycler() {
+        foundWordsAdapter = new FoundWordsAdapter();
+        foundWordsRecycler.setAdapter(foundWordsAdapter);
+
+        // FlexboxLayoutManager: items will flow left→right, then wrap onto next line
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        layoutManager.setFlexWrap(FlexWrap.WRAP);
+        layoutManager.setAlignItems(com.google.android.flexbox.AlignItems.STRETCH);
+
+        foundWordsRecycler.setLayoutManager(layoutManager);
+
+        // Initialize with an empty list
+        foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
     }
 
     private void setupLetterGrid() {
@@ -127,6 +154,9 @@ public class WordDashActivity extends AppCompatActivity {
             scoreText.animate().scaleX(1.3f).scaleY(1.3f).setDuration(100).withEndAction(() ->
                     scoreText.animate().scaleX(1f).scaleY(1f).setDuration(100)
             ).start();
+
+            foundWordsList.add(word);
+            foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
         } else {
             scoreText.performHapticFeedback(HapticFeedbackConstants.REJECT);
             letterGrid.animate().translationX(10).setDuration(50).withEndAction(() ->
@@ -147,7 +177,7 @@ public class WordDashActivity extends AppCompatActivity {
         countDownTimer = new CountDownTimer(Constants.WORD_DASH_DURATION_MS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                timerText.setText("Time: " + (millisUntilFinished / 1000) + "s");
+                timerText.setText((millisUntilFinished / 1000) + "s");
             }
 
             @Override
