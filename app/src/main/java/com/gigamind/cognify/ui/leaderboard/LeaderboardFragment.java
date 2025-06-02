@@ -87,7 +87,7 @@ public class LeaderboardFragment extends Fragment {
 
         // Show SwipeLoading
         binding.swipeRefresh.setRefreshing(true);
-        binding.recyclerView.setVisibility(View.GONE);
+        binding.leaderboard.setVisibility(View.GONE);
         binding.emptyView.setVisibility(View.GONE);
         binding.errorView.setVisibility(View.GONE);
         binding.signInPrompt.setVisibility(View.GONE);
@@ -124,7 +124,7 @@ public class LeaderboardFragment extends Fragment {
                     if (items.isEmpty()) {
                         binding.emptyView.setVisibility(View.VISIBLE);
                     } else {
-                        binding.recyclerView.setVisibility(View.VISIBLE);
+                        binding.leaderboard.setVisibility(View.VISIBLE);
                         adapter.submitList(items);
                     }
 
@@ -140,36 +140,6 @@ public class LeaderboardFragment extends Fragment {
                     binding.swipeRefresh.setRefreshing(false);
                     isLoading = false;
                 });
-    }
-
-    private void showSignInPrompt() {
-        binding.signInPrompt.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.errorView.setVisibility(View.GONE);
-        binding.emptyView.setVisibility(View.GONE);
-    }
-
-    private void showLeaderboard(List<LeaderboardItem> items) {
-        binding.recyclerView.setVisibility(View.VISIBLE);
-        binding.signInPrompt.setVisibility(View.GONE);
-        binding.errorView.setVisibility(View.GONE);
-        binding.emptyView.setVisibility(View.GONE);
-        adapter.submitList(items);
-    }
-
-    private void showEmptyState() {
-        binding.emptyView.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.signInPrompt.setVisibility(View.GONE);
-        binding.errorView.setVisibility(View.GONE);
-    }
-
-    private void showError(String message) {
-        binding.errorView.setVisibility(View.VISIBLE);
-        binding.errorText.setText(getString(R.string.error_loading_leaderboard, message));
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.signInPrompt.setVisibility(View.GONE);
-        binding.emptyView.setVisibility(View.GONE);
     }
 
     @Override

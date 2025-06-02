@@ -8,75 +8,33 @@
     android:background="@drawable/bg_elliptical_layer"
     tools:context=".ui.leaderboard.LeaderboardFragment">
 
-    <!-- Top Header Bar -->
-    <View
-        android:id="@+id/topBarBackground"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:background="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Left: coin icon + total coins text (just for show; can be wired later) -->
     <LinearLayout
-        android:id="@+id/coinContainer"
-        android:layout_width="wrap_content"
+        android:id="@+id/topBarBackground"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:padding="16dp"
         android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/coinIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/circle_background" />
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <TextView
-            android:id="@+id/coinCountText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="10"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Leaderboards"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
-
-    <!-- Center: Title “Leaderboards” -->
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Leaderboards"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topBarBackground" />
-
-    <!-- Right: current user’s avatar (if signed in) -->
-    <ImageView
-        android:id="@+id/currentUserAvatar"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/circle_background"
-        android:scaleType="centerCrop"
-        android:src="@drawable/circle_background"
-        app:layout_constraintBottom_toBottomOf="@id/topBarBackground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topBarBackground" />
 
     <!-- SwipeRefreshLayout + RecyclerView for the actual list -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
+        android:layout_margin="16dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,12 +42,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topBarBackground">
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/leaderboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/settings_background"
+            app:cardCornerRadius="16dp"
+            android:visibility="gone"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp"
+            app:cardElevation="4dp">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
             tools:listitem="@layout/item_leaderboard" />
+        </com.google.android.material.card.MaterialCardView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Sign-In Prompt (centered) -->
