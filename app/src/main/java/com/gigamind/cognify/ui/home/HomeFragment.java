@@ -21,6 +21,8 @@ import androidx.fragment.app.Fragment;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.databinding.FragmentHomeBinding;
+import com.gigamind.cognify.databinding.MathGameCardBinding;
+import com.gigamind.cognify.databinding.WordGameCardBinding;
 import com.gigamind.cognify.ui.WordDashActivity;
 import com.google.android.material.button.MaterialButton;
 
@@ -28,16 +30,11 @@ import java.util.Calendar;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
-    private Handler timerHandler;
-    private Runnable timerRunnable;
 
-    private CardView dailyChallengeCard;
     private TextView dailyChallengeTitle;
-    private MaterialButton playDailyChallengeButton;
-    private MaterialButton playWordDashButton;
-    private MaterialButton playQuickMathButton;
+    private CardView playWordDashButton;
+    private CardView playQuickMathButton;
     private RelativeLayout cardView;
-    private MediaPlayer buttonSound;
     private SharedPreferences prefs;
 
     @Nullable
@@ -64,11 +61,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeViews() {
-        dailyChallengeCard = binding.dailyChallengeCard;
         dailyChallengeTitle = binding.dailyChallengeTitle;
-        playDailyChallengeButton = binding.playDailyChallengeButton;
-        playWordDashButton = binding.playWordDashButton;
-        playQuickMathButton = binding.playQuickMathButton;
+        playWordDashButton = binding.wordGameCard.getRoot();
+        playQuickMathButton = binding.mathGameCard.getRoot();
         cardView = binding.cardView;
     }
 
@@ -85,17 +80,17 @@ public class HomeFragment extends Fragment {
         boolean isDailyCompleted = prefs.getBoolean("daily_completed_" + today, false);
 
         if (isDailyCompleted) {
-            playDailyChallengeButton.setText("Completed Today");
-            playDailyChallengeButton.setEnabled(false);
+            dailyChallengeTitle.setText("Completed Today");
+            dailyChallengeTitle.setEnabled(false);
         }
 
         // Disable the corresponding game in More Games section if it's the daily challenge
         if (isWordDay) {
             playWordDashButton.setEnabled(!isDailyCompleted);
-            playWordDashButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
+            //playWordDashButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
         } else {
             playQuickMathButton.setEnabled(!isDailyCompleted);
-            playQuickMathButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
+            //playQuickMathButton.setText(isDailyCompleted ? "Already Played Today" : "Play");
         }
     }
 
@@ -109,7 +104,7 @@ public class HomeFragment extends Fragment {
             v.postDelayed(() -> handleGameLaunch(v), 200);
         };
 
-        playDailyChallengeButton.setOnClickListener(animatedClickListener);
+        dailyChallengeTitle.setOnClickListener(animatedClickListener);
         playWordDashButton.setOnClickListener(animatedClickListener);
         playQuickMathButton.setOnClickListener(animatedClickListener);
         cardView.setOnClickListener(animatedClickListener);
@@ -117,9 +112,9 @@ public class HomeFragment extends Fragment {
 
     private void handleGameLaunch(View v) {
         Intent intent = new Intent(getContext(), WordDashActivity.class);
-        boolean isDaily = v.getId() == R.id.playDailyChallengeButton;
+        boolean isDaily = v.getId() == R.id.cardView;
 
-        if (v.getId() == R.id.playWordDashButton ||
+        if (v.getId() == R.id.wordGameCard ||
                 (isDaily && dailyChallengeTitle.getText().toString().equals("Word Dash"))) {
             intent.putExtra("GAME_TYPE", "WORD");
         } else {
@@ -140,9 +135,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (timerHandler != null && timerRunnable != null) {
-            timerHandler.removeCallbacks(timerRunnable);
-        }
         binding = null;
     }
 } 
