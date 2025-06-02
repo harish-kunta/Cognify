@@ -5,6 +5,20 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_elliptical_layer">
 
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="24dp"
+        android:text="Cognify"
+        android:textColor="#DDFF00"
+        android:textSize="64sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/splashAnimation"
         android:layout_width="200dp"
@@ -26,25 +40,11 @@
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
-        app:layout_constraintBottom_toTopOf="@id/appNameText"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
-
-
-    <TextView
-        android:id="@+id/appNameText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/app_name"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/splashAnimation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout> 

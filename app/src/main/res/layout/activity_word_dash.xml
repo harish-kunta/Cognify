@@ -58,14 +58,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backspaceButton"
-            style="@style/Button.Disabled"
+            style="@style/Button.Letter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:elevation="2dp"
+            app:icon="@drawable/arrow_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/currentWordText"
             app:layout_constraintBottom_toBottomOf="@id/currentWordText" />
