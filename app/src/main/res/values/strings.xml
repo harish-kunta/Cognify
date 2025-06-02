@@ -38,4 +38,13 @@
     <string name="error">Error</string>
     <string name="retry">Retry</string>
     <string name="error_loading_leaderboard">Error loading leaderboard: %1$s</string>
+    <string name="score_format">Score : %d</string>
+    <string name="time_format">%d</string>
+    <string name="game_over">Time is up!</string>
+    <string name="final_score">Your score : %d</string>
+    <string name="view_results">View results</string>
+    <string name="word_too_short">Word must be at least 3 letters</string>
+    <string name="invalid_word_formation">Invalid word</string>
+    <string name="word_already_used">Word already used</string>
+    <string name="invalid_word">Invalid word</string>
 </resources>

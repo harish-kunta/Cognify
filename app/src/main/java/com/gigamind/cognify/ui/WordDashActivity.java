@@ -3,42 +3,42 @@ package com.gigamind.cognify.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
+import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import android.view.ContextThemeWrapper;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.FoundWordsAdapter;
+import com.gigamind.cognify.engine.GameStateManager;
 import com.gigamind.cognify.engine.WordGameEngine;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.GameConfig;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class WordDashActivity extends AppCompatActivity {
     private WordGameEngine gameEngine;
+    private GameStateManager gameStateManager;
     private TextView scoreText, timerText, currentWordText;
     private GridLayout letterGrid;
     private RecyclerView foundWordsRecycler;
     private FoundWordsAdapter foundWordsAdapter;
 
     private StringBuilder currentWord;
-    private int currentScore;
     private CountDownTimer countDownTimer;
-    private Set<String> usedWords;
     private List<String> foundWordsList;
 
     @Override
@@ -46,45 +46,77 @@ public class WordDashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_dash);
 
-        // Initialize views
-        scoreText = findViewById(R.id.scoreText);
-        timerText = findViewById(R.id.timerText);
-        currentWordText = findViewById(R.id.currentWordText);
-        letterGrid = findViewById(R.id.letterGrid);
-        foundWordsRecycler = findViewById(R.id.foundWordsRecycler);
+        initializeViews();
 
-        MaterialButton submitButton = findViewById(R.id.submitButton);
-        MaterialButton clearButton = findViewById(R.id.clearButton);
-        MaterialButton backspaceButton = findViewById(R.id.backspaceButton);
+        initializeGame();
+
+        setupUI();
 
         // Initialize game
         gameEngine = new WordGameEngine(getApplicationContext());
         currentWord = new StringBuilder();
-        currentScore = 0;
-        usedWords = new HashSet<>();
         foundWordsList = new ArrayList<>();
 
         setupFoundWordsRecycler();
         setupLetterGrid();
 
-        // Set up buttons
+        startGame();
+    }
+
+    private void startGame() {
+        gameStateManager.startGame(GameConfig.WORD_DASH_DURATION_MS);
+        startGameTimer();
+    }
+
+    private void handleBackspace(View v) {
+        if (currentWord.length() > 0) {
+            currentWord.deleteCharAt(currentWord.length() - 1);
+            currentWordText.setText(currentWord.toString());
+            v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+        }
+    }
+
+    private void initializeViews() {
+        scoreText = findViewById(R.id.scoreText);
+        timerText = findViewById(R.id.timerText);
+        currentWordText = findViewById(R.id.currentWordText);
+        letterGrid = findViewById(R.id.letterGrid);
+        foundWordsRecycler = findViewById(R.id.foundWordsRecycler);
+    }
+
+    private void initializeGame() {
+        gameEngine = new WordGameEngine(this);
+        gameStateManager = GameStateManager.getInstance();
+        currentWord = new StringBuilder();
+        setupFoundWordsRecycler();
+    }
+
+    private void setupUI() {
+        setupLetterGrid();
+        setupButtons();
+        observeGameState();
+    }
+
+    private void observeGameState() {
+        gameStateManager.getScore().observe(this, score ->
+                scoreText.setText(getString(R.string.score_format, score)));
+
+        gameStateManager.getTimeRemaining().observe(this, timeRemaining ->
+                timerText.setText(getString(R.string.time_format, timeRemaining / 1000)));
+    }
+
+    private void setupButtons() {
+        MaterialButton submitButton = findViewById(R.id.submitButton);
+        MaterialButton clearButton = findViewById(R.id.clearButton);
+        MaterialButton backspaceButton = findViewById(R.id.backspaceButton);
+
         submitButton.setOnClickListener(v -> submitWord());
         clearButton.setOnClickListener(v -> clearWord());
-        backspaceButton.setOnClickListener(v -> {
-            if (currentWord.length() > 0) {
-                currentWord.deleteCharAt(currentWord.length() - 1);
-                currentWordText.setText(currentWord.toString());
-                v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-            }
-        });
-
-        // Start timer
-        startGameTimer();
+        backspaceButton.setOnClickListener(this::handleBackspace);
     }
 
     private void setupFoundWordsRecycler() {
         foundWordsAdapter = new FoundWordsAdapter();
-        foundWordsRecycler.setAdapter(foundWordsAdapter);
 
         // FlexboxLayoutManager: items will flow left→right, then wrap onto next line
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
@@ -93,9 +125,7 @@ public class WordDashActivity extends AppCompatActivity {
         layoutManager.setAlignItems(com.google.android.flexbox.AlignItems.STRETCH);
 
         foundWordsRecycler.setLayoutManager(layoutManager);
-
-        // Initialize with an empty list
-        foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
+        foundWordsRecycler.setAdapter(foundWordsAdapter);
     }
 
     private void setupLetterGrid() {
@@ -124,13 +154,25 @@ public class WordDashActivity extends AppCompatActivity {
             final int index = i;
             button.setOnClickListener(v -> {
                 v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-                v.animate().scaleX(1.2f).scaleY(1.2f).setDuration(80).withEndAction(() ->
-                        v.animate().scaleX(1f).scaleY(1f).setDuration(80)
-                ).start();
+                animateButtonPress(button);
                 onLetterClick(letters[index]);
             });
             letterGrid.addView(button);
         }
+    }
+
+    private void animateButtonPress(MaterialButton button) {
+        button.animate()
+                .scaleX(1.2f)
+                .scaleY(1.2f)
+                .setDuration(GameConfig.BUTTON_SCALE_DURATION_MS)
+                .withEndAction(() ->
+                        button.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(GameConfig.BUTTON_SCALE_DURATION_MS)
+                                .start()
+                ).start();
     }
 
     private void onLetterClick(char letter) {
@@ -140,24 +182,33 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void submitWord() {
         String word = currentWord.toString();
-        if (word.length() < 3) {
-            Toast.makeText(this, "Word must be at least 3 letters", Toast.LENGTH_SHORT).show();
+
+        if (word.length() < GameConfig.MIN_WORD_LENGTH) {
+            showError(getString(R.string.word_too_short));
+            return;
+        }
+
+        if (!gameEngine.isValidWord(word)) {
+            showError(getString(R.string.invalid_word_formation));
+            return;
+        }
+
+        if (gameStateManager.isWordUsed(word)) {
+            showError(getString(R.string.word_already_used));
             return;
         }
 
         int points = gameEngine.calculateScore(word);
-        if (points > 0 && !usedWords.contains(word)) {
-            usedWords.add(word);
-            currentScore += points;
-            scoreText.setText("Score: " + currentScore);
-            scoreText.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-            scoreText.animate().scaleX(1.3f).scaleY(1.3f).setDuration(100).withEndAction(() ->
-                    scoreText.animate().scaleX(1f).scaleY(1f).setDuration(100)
-            ).start();
+        if (points > 0) {
+            gameStateManager.addScore(points);
+            gameStateManager.addUsedWord(word);
+
+            animateScoreIncrease();
 
             foundWordsList.add(word);
             foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
         } else {
+            showError(getString(R.string.invalid_word));
             scoreText.performHapticFeedback(HapticFeedbackConstants.REJECT);
             letterGrid.animate().translationX(10).setDuration(50).withEndAction(() ->
                     letterGrid.animate().translationX(-10).setDuration(50).withEndAction(() ->
@@ -168,16 +219,39 @@ public class WordDashActivity extends AppCompatActivity {
         clearWord();
     }
 
+    private void animateScoreIncrease() {
+        scoreText.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        scoreText.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(GameConfig.SCORE_ANIMATION_DURATION_MS)
+                .withEndAction(() ->
+                        scoreText.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(GameConfig.SCORE_ANIMATION_DURATION_MS)
+                                .start()
+                ).start();
+    }
+
+    private void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        letterGrid.performHapticFeedback(HapticFeedbackConstants.REJECT);
+    }
+
     private void clearWord() {
         currentWord.setLength(0);
         currentWordText.setText("");
     }
 
     private void startGameTimer() {
-        countDownTimer = new CountDownTimer(Constants.WORD_DASH_DURATION_MS, 1000) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        countDownTimer = new CountDownTimer(GameConfig.WORD_DASH_DURATION_MS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                timerText.setText((millisUntilFinished / 1000) + "s");
+                gameStateManager.updateTimeRemaining(millisUntilFinished);
             }
 
             @Override
@@ -188,9 +262,20 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void endGame() {
+        gameStateManager.endGame();
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.game_over)
+                .setMessage(getString(R.string.final_score, gameStateManager.getScore().getValue()))
+                .setCancelable(false)
+                .setPositiveButton(R.string.view_results, (dialog, which) -> showResults())
+                .show();
+    }
+
+    private void showResults() {
         Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra(Constants.INTENT_SCORE, currentScore);
-        intent.putExtra(Constants.INTENT_TIME, Constants.WORD_DASH_DURATION_MS / 1000);
+        intent.putExtra(Constants.INTENT_SCORE, gameStateManager.getScore().getValue());
+        intent.putExtra(Constants.INTENT_TIME, GameConfig.WORD_DASH_DURATION_MS / 1000);
         intent.putExtra(Constants.INTENT_TYPE, Constants.GAME_TYPE_WORD_DASH);
         startActivity(intent);
         finish();
