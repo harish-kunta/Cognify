@@ -22,8 +22,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class ResultActivity extends AppCompatActivity {
@@ -57,21 +59,194 @@ public class ResultActivity extends AppCompatActivity {
         // Get game data from intent
         int score = getIntent().getIntExtra(INTENT_SCORE, 0);
         String gameType = getIntent().getStringExtra(INTENT_TYPE);
-        boolean isDailyChallenge = getIntent().getBooleanExtra("IS_DAILY_CHALLENGE", false);
 
-        int xpEarned = calculateXpEarned(score, gameType, isDailyChallenge);
+        int xpEarned = calculateXpEarned(score, gameType);
 
         boolean isNewPb = updateHighScoreLocal(score, gameType);
-        int currentStreak = updateStreakLocal(isDailyChallenge);
-
-        displayResults(score, isNewPb, xpEarned, currentStreak);
-
         if (firebaseUser != null) {
-            writeToFirestore(firebaseUser.getUid(), score, xpEarned, gameType, isNewPb, currentStreak);
+            syncStreakWithFirestore(
+                    firebaseUser.getUid(),
+                    score,
+                    xpEarned,
+                    gameType,
+                    isNewPb
+            );
+        } else {
+            // Not signed in: fallback to strictly SharedPref update
+            int newStreak = updateStreakLocallyOnly();
+            displayResults(score, isNewPb, xpEarned, newStreak);
         }
 
         // Setup button listeners
-        setupButtons(gameType, isDailyChallenge);
+        setupButtons(gameType);
+    }
+
+    private int calculateXpEarned(int score, String gameType) {
+        int xp = score;
+
+        // PB check
+        String pbKey = "pb_" + gameType.toLowerCase();
+        int existingPb = prefs.getInt(pbKey, 0);
+        if (score > existingPb) {
+            xp += BONUS_NEW_PB;
+        }
+
+        // Optional: if they played yesterday (according to SharedPrefs), grant streak XP bonus
+        String lastDate = prefs.getString("last_played_date", "");
+        if (!lastDate.isEmpty()) {
+            Calendar cal = Calendar.getInstance();
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    .format(cal.getTime());
+
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+            String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    .format(cal.getTime());
+
+            if (yesterday.equals(lastDate)) {
+                xp += BONUS_STREAK_PER_DAY;
+            }
+        }
+
+        return xp;
+    }
+
+
+    private void updateStreakCloud(
+            int score,
+            int xpEarned,
+            String gameType,
+            boolean isNewPb
+    ) {
+        if (firebaseUser == null) {
+            // Not signed in: just do a local SharedPrefs update for streak & lastDailyDate:
+            int newStreak = updateStreakLocallyOnly();
+            // Now update the UI (with newStreak). We still display XP, high score, etc.
+            displayResults(score, isNewPb, xpEarned, newStreak);
+            return;
+        }
+
+        String uid = firebaseUser.getUid();
+        DocumentReference userRef = firestore.collection("users").document(uid);
+
+        // 1) Read remote values
+        userRef.get()
+                .addOnSuccessListener(snapshot -> {
+                    // 2) Extract remote streak fields (if exist)
+                    int remoteStreak = 0;
+                    String remoteDate = "";
+
+                    if (snapshot.exists()) {
+                        if (snapshot.contains("currentStreak")) {
+                            remoteStreak = snapshot.getLong("currentStreak").intValue();
+                        }
+                        if (snapshot.contains("lastDailyDate")) {
+                            remoteDate = snapshot.getString("lastDailyDate");
+                        }
+                    }
+
+                    // 3) Compute new streak based on remoteDate vs. today
+                    Calendar cal = Calendar.getInstance();
+                    String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                            .format(cal.getTime());
+
+                    cal.add(Calendar.DAY_OF_YEAR, -1);
+                    String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                            .format(cal.getTime());
+
+                    int updatedStreak;
+                    if (yesterday.equals(remoteDate)) {
+                        // Continuing streak
+                        updatedStreak = remoteStreak + 1;
+                    } else if (!today.equals(remoteDate)) {
+                        // They skipped or first time
+                        updatedStreak = 1;
+                    } else {
+                        // remoteDate == today → they somehow replayed same day (should not happen)
+                        // Just leave updatedStreak = remoteStreak
+                        updatedStreak = remoteStreak;
+                    }
+
+                    // 4) Build update map
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("lastDailyDate", today);
+                    updates.put("currentStreak", updatedStreak);
+                    updates.put("lastWordDashScore", score);
+
+                    // Only change bestWordDashScore if isNewPb
+                    if (isNewPb) {
+                        updates.put("bestWordDashScore", score);
+                    }
+                    // always increment totalXP
+                    updates.put("totalXP", FieldValue.increment(xpEarned));
+
+                    // If they just hit a 7-day streak, award a trophy
+                    if (updatedStreak == 7) {
+                        updates.put("trophies", FieldValue.arrayUnion("7DayStreak"));
+                    }
+
+                    // 5) Merge into Firestore
+                    userRef.set(updates, com.google.firebase.firestore.SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> {
+                                // 6) Mirror those two streak fields locally now that remote succeeded:
+                                prefs.edit()
+                                        .putString("last_played_date", today)
+                                        .putInt("current_streak", updatedStreak)
+                                        .apply();
+
+                                // 7) Finally add a session entry to /sessions/...
+                                writeSessionEntry(uid, score, xpEarned, gameType);
+
+                                // 8) Now update UI with the newly computed streak
+                                displayResults(score, isNewPb, xpEarned, updatedStreak);
+                            })
+                            .addOnFailureListener(e -> {
+                                // If Firestore merge fails for some reason, still mirror locally:
+                                prefs.edit()
+                                        .putString("last_played_date", today)
+                                        .putInt("current_streak", updatedStreak)
+                                        .apply();
+
+                                // Still write a local session entry if you want (or skip)
+                                writeSessionEntry(uid, score, xpEarned, gameType);
+
+                                // Update UI anyway
+                                displayResults(score, isNewPb, xpEarned, updatedStreak);
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    // If we cannot read remote at all, fallback to local-only
+                    int fallbackStreak = updateStreakLocallyOnly();
+                    displayResults(score, isNewPb, xpEarned, fallbackStreak);
+                });
+    }
+
+    private int updateStreakLocallyOnly() {
+        Calendar cal = Calendar.getInstance();
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(cal.getTime());
+
+        cal.add(Calendar.DAY_OF_YEAR, -1);
+        String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(cal.getTime());
+
+        String lastDate = prefs.getString("last_played_date", "");
+        int localStreak = prefs.getInt("current_streak", 0);
+
+        int updatedStreak;
+        if (yesterday.equals(lastDate)) {
+            updatedStreak = localStreak + 1;
+        } else if (!today.equals(lastDate)) {
+            updatedStreak = 1;
+        } else {
+            updatedStreak = localStreak; // Already played today
+        }
+
+        prefs.edit()
+                .putString("last_played_date", today)
+                .putInt("current_streak", updatedStreak)
+                .apply();
+
+        return updatedStreak;
     }
     
     private void initializeViews() {
@@ -83,35 +258,6 @@ public class ResultActivity extends AppCompatActivity {
         totalXPText     = findViewById(R.id.totalXPValue);
         playAgainButton = findViewById(R.id.playAgainButton);
         homeButton = findViewById(R.id.homeButton);
-    }
-
-    private int calculateXpEarned(int score, String gameType, boolean isDaily) {
-        int xp = score;
-
-        // Check if new PB
-        String pbKey = "pb_" + gameType.toLowerCase();
-        int existingPb = prefs.getInt(pbKey, 0);
-        if (score > existingPb) {
-            xp += BONUS_NEW_PB;
-        }
-
-        // If daily mode and streak bonus
-        if (isDaily) {
-            // We’ll check last play date:
-            String lastDate = prefs.getString("last_played_date", "");
-            Calendar cal = Calendar.getInstance();
-            String today = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.DAY_OF_YEAR);
-
-            cal.add(Calendar.DAY_OF_YEAR, -1);
-            String yesterday = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.DAY_OF_YEAR);
-
-            if (yesterday.equals(lastDate)) {
-                // Streak continues → bonus
-                xp += BONUS_STREAK_PER_DAY;
-            }
-        }
-
-        return xp;
     }
 
     private boolean updateHighScoreLocal(int score, String gameType) {
@@ -130,34 +276,102 @@ public class ResultActivity extends AppCompatActivity {
         }
     }
 
-    private int updateStreakLocal(boolean isDaily) {
-        if (!isDaily) {
-            streakText.setVisibility(View.GONE);
-            return 0;
-        }
+    private void syncStreakWithFirestore(
+            String uid,
+            int score,
+            int xpEarned,
+            String gameType,
+            boolean isNewPb
+    ) {
+        DocumentReference userRef = firestore.collection("users").document(uid);
 
-        SharedPreferences.Editor editor = prefs.edit();
-        Calendar cal = Calendar.getInstance();
-        String today = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.DAY_OF_YEAR);
-        String lastDate = prefs.getString("last_played_date", "");
-        int currentStreak = prefs.getInt("current_streak", 0);
+        userRef.get().addOnSuccessListener(snapshot -> {
+            int remoteStreak = 0;
+            String remoteDate = "";
 
-        cal.add(Calendar.DAY_OF_YEAR, -1);
-        String yesterday = cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.DAY_OF_YEAR);
+            if (snapshot.exists()) {
+                if (snapshot.contains("currentStreak")) {
+                    remoteStreak = snapshot.getLong("currentStreak").intValue();
+                }
+                if (snapshot.contains("lastPlayedDate")) {
+                    remoteDate = snapshot.getString("lastPlayedDate");
+                }
+            }
 
-        if (yesterday.equals(lastDate)) {
-            currentStreak++;
-        } else if (!today.equals(lastDate)) {
-            currentStreak = 1;
-        }
+            // Compute “today” and “yesterday”
+            Calendar cal = Calendar.getInstance();
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    .format(cal.getTime());
 
-        editor.putInt("current_streak", currentStreak);
-        editor.putString("last_played_date", today);
-        editor.apply();
+            cal.add(Calendar.DAY_OF_YEAR, -1);
+            String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    .format(cal.getTime());
 
-        streakText.setText("🔥 " + currentStreak + " Day Streak");
-        streakText.setVisibility(View.VISIBLE);
-        return currentStreak;
+            int updatedStreak;
+            if (yesterday.equals(remoteDate)) {
+                // They played on “yesterday” (remote), so continue streak
+                updatedStreak = remoteStreak + 1;
+            } else if (!today.equals(remoteDate)) {
+                // If remoteDate is anything else (blank or older), reset to 1
+                updatedStreak = 1;
+            } else {
+                // remoteDate == today → they already played earlier today (rare),
+                // so do not increment again in the same day
+                updatedStreak = remoteStreak;
+            }
+
+            // Prepare the Firestore update map
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("lastPlayedDate", today);
+            updates.put("currentStreak", updatedStreak);
+            updates.put("lastGameScore", score);
+
+            if (isNewPb) {
+                updates.put("bestGameScore", score);
+            }
+
+            updates.put("totalXP", FieldValue.increment(xpEarned));
+
+            // If they just hit exactly 7‐day streak, award the “7DayStreak” trophy
+            if (updatedStreak == 7) {
+                updates.put("trophies", FieldValue.arrayUnion("7DayStreak"));
+            }
+
+            // Merge into Firestore
+            userRef.set(updates, com.google.firebase.firestore.SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        // Mirror those two streak fields locally
+                        prefs.edit()
+                                .putString("last_played_date", today)
+                                .putInt("current_streak", updatedStreak)
+                                // Also update “total_xp” locally if desired:
+                                .putInt("total_xp", prefs.getInt("total_xp", 0) + xpEarned)
+                                .apply();
+
+                        // Log a session entry
+                        writeSessionEntry(uid, score, xpEarned, gameType);
+
+                        // Finally update the UI:
+                        displayResults(score, isNewPb, xpEarned, updatedStreak);
+                    })
+                    .addOnFailureListener(e -> {
+                        // If Firestore merge fails, still do a local fallback
+                        int fallbackStreak = updateStreakLocallyOnly();
+                        prefs.edit()
+                                .putInt("total_xp", prefs.getInt("total_xp", 0) + xpEarned)
+                                .apply();
+                        writeSessionEntry(uid, score, xpEarned, gameType);
+                        displayResults(score, isNewPb, xpEarned, fallbackStreak);
+                    });
+        }).addOnFailureListener(e -> {
+            // If get() fails entirely, fallback to strictly local
+            int fallbackStreak = updateStreakLocallyOnly();
+            prefs.edit()
+                    .putInt("total_xp", prefs.getInt("total_xp", 0) + xpEarned)
+                    .apply();
+            writeSessionEntry(uid, score, xpEarned, gameType);
+            displayResults(score, isNewPb, xpEarned, fallbackStreak);
+        });
     }
 
     private void displayResults(int score, boolean isNewPb, int xpGained, int currentStreak) {
@@ -170,58 +384,6 @@ public class ResultActivity extends AppCompatActivity {
         totalXPText.setText(String.valueOf(totalXP));
 
         // New PB banner is already toggled in updateHighScoreLocal
-    }
-
-    private void writeToFirestore(String uid, int score, int xpGained, String gameType,
-                                  boolean isNewPb, int currentStreak) {
-        DocumentReference userRef = firestore.collection("users").document(uid);
-
-        // 1) Check existing bestWordDashScore in Firestore
-        userRef.get().addOnSuccessListener((DocumentSnapshot snapshot) -> {
-            int existingBest = 0;
-            if (snapshot.exists() && snapshot.contains("bestWordDashScore")) {
-                existingBest = snapshot.getLong("bestWordDashScore").intValue();
-            }
-
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("lastWordDashScore", score);
-
-            // If this run is a new PB, update bestWordDashScore
-            if (isNewPb && score > existingBest) {
-                updates.put("bestWordDashScore", score);
-            }
-
-            // Increment totalXP atomically
-            updates.put("totalXP", FieldValue.increment(xpGained));
-
-            // Overwrite currentStreak
-            updates.put("currentStreak", currentStreak);
-
-            // If they just hit a 7-day streak, award a trophy
-            if (currentStreak == 7) {
-                updates.put("trophies", FieldValue.arrayUnion("7DayStreak"));
-            }
-
-            // Merge these updates into users/{uid}
-            userRef.set(updates, com.google.firebase.firestore.SetOptions.merge())
-                    .addOnSuccessListener(aVoid -> {
-                        // 2) Write a session entry
-                        writeSessionEntry(uid, score, xpGained, gameType);
-                    })
-                    .addOnFailureListener(e -> {
-                        // If merging fails, still attempt to write session entry
-                        writeSessionEntry(uid, score, xpGained, gameType);
-                    });
-        }).addOnFailureListener(e -> {
-            // If get() fails (rare), still set minimal fields
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("lastWordDashScore", score);
-            updates.put("totalXP", FieldValue.increment(xpGained));
-            updates.put("currentStreak", currentStreak);
-            userRef.set(updates, com.google.firebase.firestore.SetOptions.merge())
-                    .addOnSuccessListener(aVoid -> writeSessionEntry(uid, score, xpGained, gameType))
-                    .addOnFailureListener(ex -> writeSessionEntry(uid, score, xpGained, gameType));
-        });
     }
 
     private void writeSessionEntry(String uid, int score, int xpGained, String gameType) {
@@ -242,34 +404,11 @@ public class ResultActivity extends AppCompatActivity {
                     // Failed to write session entry; ignore or log
                 });
     }
-
-    private void pushToLeaderboard(String uid, int score, String gameType) {
-        CollectionReference lbRef = firestore
-                .collection("users")
-                .document(uid)
-                .collection("leaderboard")
-                .document(gameType.toLowerCase())
-                .collection("entries");
-
-        Map<String, Object> entry = new HashMap<>();
-        entry.put("score", score);
-        entry.put("timestamp", com.google.firebase.Timestamp.now());
-
-        lbRef.add(entry)
-                .addOnSuccessListener(docRef -> {
-                    // Successfully added to leaderboard. No need to do anything else here.
-                })
-                .addOnFailureListener(e -> {
-                    // Log or swallow—leaderboard push failure shouldn’t block the user
-                });
-    }
     
-    private void setupButtons(String gameType, boolean isDailyChallenge) {
+    private void setupButtons(String gameType) {
         playAgainButton.setOnClickListener(v -> {
-            if (!isDailyChallenge) {
                 Intent gameIntent = new Intent(this, WordDashActivity.class);
                 startActivity(gameIntent);
-            }
             finish();
         });
         
@@ -279,9 +418,5 @@ public class ResultActivity extends AppCompatActivity {
             startActivity(homeIntent);
             finish();
         });
-        
-        // Disable play again for daily challenges
-        playAgainButton.setEnabled(!isDailyChallenge);
-        playAgainButton.setText(isDailyChallenge ? "Come Back Tomorrow" : "Play Again");
     }
 } 
