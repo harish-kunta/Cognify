@@ -25,6 +25,9 @@ import com.gigamind.cognify.databinding.MathGameCardBinding;
 import com.gigamind.cognify.databinding.WordGameCardBinding;
 import com.gigamind.cognify.ui.WordDashActivity;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 
@@ -35,7 +38,14 @@ public class HomeFragment extends Fragment {
     private CardView playWordDashButton;
     private CardView playQuickMathButton;
     private RelativeLayout cardView;
+
+    private TextView  streakCount;
+
     private SharedPreferences prefs;
+
+    // Firestore user
+    private FirebaseFirestore firestore;
+    private FirebaseUser firebaseUser;
 
     @Nullable
     @Override
@@ -54,6 +64,12 @@ public class HomeFragment extends Fragment {
         // Initialize SharedPreferences
         prefs = getContext().getSharedPreferences("GamePrefs", MODE_PRIVATE);
 
+        firestore = FirebaseFirestore.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // 4) Populate the streak UI
+        loadAndDisplayStreak();
+
         // Set up daily challenge
         setupDailyChallenge();
 
@@ -65,6 +81,44 @@ public class HomeFragment extends Fragment {
         playWordDashButton = binding.wordGameCard.getRoot();
         playQuickMathButton = binding.mathGameCard.getRoot();
         cardView = binding.cardView;
+        streakCount = binding.streakCount;
+    }
+
+    private void loadAndDisplayStreak() {
+        // If logged in, attempt Firestore read:
+        if (firebaseUser != null) {
+            String uid = firebaseUser.getUid();
+            firestore.collection("users")
+                    .document(uid)
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        if (snapshot.exists() && snapshot.contains("currentStreak")) {
+                            long streakFromFs = snapshot.getLong("currentStreak");
+                            int streakValue = (int) streakFromFs;
+
+                            // Display it
+                            streakCount.setText(String.valueOf(streakValue));
+
+                            // Also write it back into SharedPreferences so local cache updates
+                            prefs.edit().putInt("current_streak", streakValue).apply();
+                        } else {
+                            // Document exists but no field → fallback
+                            fallbackStreakDisplay();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Firestore read failed → fallback
+                        fallbackStreakDisplay();
+                    });
+        } else {
+            // Not signed in: just read local
+            fallbackStreakDisplay();
+        }
+    }
+
+    private void fallbackStreakDisplay() {
+        int localStreak = prefs.getInt("current_streak", 0);
+        streakCount.setText(String.valueOf(localStreak));
     }
 
     private void setupDailyChallenge() {

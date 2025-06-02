@@ -176,7 +176,7 @@ public class OnboardingActivity extends AppCompatActivity {
         // If you want to preserve existing scores/streaks if user returns:
         // you could call get() first, but for simplicity we set defaults on first sign-in:
         userData.put("score", 0);
-        userData.put("streak", 0);
+        userData.put("currentStreak", 0);
         userData.put("leaderboardRank", 0);
         userData.put("trophies", new ArrayList<>()); // empty list
 
