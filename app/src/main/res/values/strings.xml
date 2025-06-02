@@ -11,16 +11,13 @@
     <string name="next_challenge">Next Challenge in %1$s</string>
     <string name="profile">Profile</string>
     <string name="leaderboard">Leaderboard</string>
-    <string name="settings">Settings</string>
     <string name="home">Home</string>
     <string name="your_stats">Your Stats</string>
     <string name="games_played">Games Played</string>
     <string name="global_rank">Global Rank</string>
     <string name="high_score_label">High Score</string>
     <string name="global_leaderboard">Global Leaderboard</string>
-    <string name="sign_in_to_view_leaderboard">Sign in to view the leaderboard</string>
     <string name="preferences">Preferences</string>
-    <string name="sound_effects">Sound Effects</string>
     <string name="haptics">Haptics</string>
     <string name="animations">Animations</string>
     <string name="account">Account</string>
@@ -37,7 +34,6 @@
     <string name="no_scores_yet">No scores yet.\nBe the first to play!</string>
     <string name="error">Error</string>
     <string name="retry">Retry</string>
-    <string name="error_loading_leaderboard">Error loading leaderboard: %1$s</string>
     <string name="score_format">Score : %d</string>
     <string name="time_format">%d</string>
     <string name="game_over">Time is up!</string>
@@ -47,4 +43,38 @@
     <string name="invalid_word_formation">Invalid word</string>
     <string name="word_already_used">Word already used</string>
     <string name="invalid_word">Invalid word</string>
+    
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="back_home">Back to Home</string>
+    <string name="play_again">Play Again</string>
+    
+    <!-- Game Results -->
+    <string name="score">Score</string>
+    <string name="high_score_text">High Score</string>
+    <string name="new_high_score">🏆 New High Score!</string>
+    <string name="current_streak">Current Streak</string>
+    <string name="xp_gained">XP Gained</string>
+    <string name="total_xp">Total XP</string>
+    <string name="error_updating_results">Failed to update results. Your progress is saved locally.</string>
+    
+    <!-- Leaderboard -->
+    <string name="error_loading_leaderboard">Failed to load leaderboard: %1$s</string>
+    <string name="no_leaderboard_data">No leaderboard data available</string>
+    <string name="sign_in_to_view_leaderboard">Sign in to view the leaderboard</string>
+    
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="sound_effects">Sound Effects</string>
+    <string name="background_music">Background Music</string>
+    <string name="notifications">Notifications</string>
+    <string name="daily_reminder">Daily Reminder</string>
+    <string name="language">Language</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    
+    <!-- Game Types -->
+    <string name="word_dash">Word Dash</string>
+    <string name="quick_math">Quick Math</string>
 </resources>

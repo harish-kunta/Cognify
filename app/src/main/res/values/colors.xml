@@ -51,4 +51,7 @@
 
     <color name="settings_text">#8BF9A2</color>
     <color name="settings_background">#060D25</color>
+
+    <color name="gold">#FFD700</color>
+    <color name="info">#2196F3</color>
 </resources>

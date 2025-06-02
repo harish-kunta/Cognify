@@ -1,0 +1,1 @@
+As a staff software engineer, please update my project code to reuse the use of firebase database. Remove all the duplicates and apply design patterns, clean code and code complete book phylosophies 
