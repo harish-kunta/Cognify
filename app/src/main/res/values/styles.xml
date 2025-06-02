@@ -17,7 +17,7 @@
         <item name="cardViewStyle">@style/CardView.Custom</item>
         
         <!-- Button style -->
-        <item name="materialButtonStyle">@style/Button.Custom</item>
+        <item name="materialButtonStyle">@style/Button.Enabled</item>
     </style>
 
     <!-- Custom CardView style -->
@@ -25,21 +25,32 @@
         <item name="cardBackgroundColor">@color/card_background</item>
         <item name="cardCornerRadius">16dp</item>
         <item name="cardElevation">4dp</item>
-        <item name="contentPadding">16dp</item>
+        <item name="contentPadding">8dp</item>
+        <item name="height">16dp</item>
         <item name="rippleColor">@color/card_shadow</item>
     </style>
 
-    <!-- Custom Button style -->
-    <style name="Button.Custom" parent="Widget.MaterialComponents.Button">
+    <!-- Enabled Button style -->
+    <style name="Button.Enabled" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/text_white</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:padding">14dp</item>
         <item name="android:letterSpacing">0.025</item>
-        <item name="cornerRadius">8dp</item>
+        <item name="cornerRadius">100dp</item>
         <item name="elevation">2dp</item>
         <item name="rippleColor">@color/button_pressed</item>
         <item name="backgroundTint">@color/button_enabled</item>
+    </style>
+
+    <!-- Disbaled Button style -->
+    <style name="Button.Disabled" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:letterSpacing">0.025</item>
+        <item name="cornerRadius">100dp</item>
+        <item name="strokeColor">@color/white</item>
+        <item name="elevation">2dp</item>
     </style>
 
     <!-- Text Styles -->

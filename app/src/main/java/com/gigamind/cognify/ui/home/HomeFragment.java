@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +36,7 @@ public class HomeFragment extends Fragment {
     private MaterialButton playDailyChallengeButton;
     private MaterialButton playWordDashButton;
     private MaterialButton playQuickMathButton;
+    private RelativeLayout cardView;
     private MediaPlayer buttonSound;
     private SharedPreferences prefs;
 
@@ -67,6 +69,7 @@ public class HomeFragment extends Fragment {
         playDailyChallengeButton = binding.playDailyChallengeButton;
         playWordDashButton = binding.playWordDashButton;
         playQuickMathButton = binding.playQuickMathButton;
+        cardView = binding.cardView;
     }
 
     private void setupDailyChallenge() {
@@ -109,6 +112,7 @@ public class HomeFragment extends Fragment {
         playDailyChallengeButton.setOnClickListener(animatedClickListener);
         playWordDashButton.setOnClickListener(animatedClickListener);
         playQuickMathButton.setOnClickListener(animatedClickListener);
+        cardView.setOnClickListener(animatedClickListener);
     }
 
     private void handleGameLaunch(View v) {

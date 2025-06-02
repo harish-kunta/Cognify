@@ -86,8 +86,8 @@ public class WordDashActivity extends AppCompatActivity {
             button.setText(String.valueOf(letters[i]));
             button.setTextSize(20);
             button.setGravity(Gravity.CENTER);
-            button.setBackgroundTintList(getColorStateList(R.color.button_background));
-            button.setTextColor(getColor(R.color.text_primary));
+            button.setBackgroundTintList(getColorStateList(R.color.bg_color));
+            button.setTextColor(getColor(R.color.white));
 
             final int index = i;
             button.setOnClickListener(v -> {

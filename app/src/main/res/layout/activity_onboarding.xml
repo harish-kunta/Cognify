@@ -37,22 +37,19 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignIn"
+            style="@style/Button.Enabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/sign_in_with_google"
-            app:cornerRadius="100dp"
-            android:padding="14dp"
             app:icon="@drawable/ic_google" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnContinueAsGuest"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Button.Disabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cornerRadius="100dp"
-            android:padding="14dp"
-            app:strokeColor="#FFFFFF"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp"
             android:text="@string/continue_as_guest" />
 
