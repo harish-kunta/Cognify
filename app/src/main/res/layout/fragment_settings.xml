@@ -19,65 +19,69 @@
             android:text="Settings"
             android:textColor="@android:color/white"
             android:textSize="24sp"
+            android:layout_gravity="center"
             android:textStyle="bold" />
 
-        <!-- Top Card with Carousel Arrows -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+<!--        &lt;!&ndash; Top Card with Carousel Arrows &ndash;&gt;-->
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="220dp"-->
+<!--            android:layout_marginBottom="24dp"-->
+<!--            android:backgroundTint="@color/card_background"-->
+<!--            app:cardCornerRadius="16dp"-->
+<!--            app:cardElevation="4dp">-->
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <!-- Background Image (Carousel) -->
-                <ImageView
-                    android:id="@+id/cardBackgroundImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/bg_elliptical_layer" />
+<!--                &lt;!&ndash; Background Image (Carousel) &ndash;&gt;-->
+<!--                <ImageView-->
+<!--                    android:id="@+id/cardBackgroundImage"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:scaleType="centerCrop"-->
+<!--                    android:src="@drawable/bg_elliptical_layer" />-->
 
-                <!-- Left Arrow -->
-                <ImageButton
-                    android:id="@+id/arrowLeft"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_left" />
+<!--                &lt;!&ndash; Left Arrow &ndash;&gt;-->
+<!--                <ImageButton-->
+<!--                    android:id="@+id/arrowLeft"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_alignParentStart="true"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:background="@android:color/transparent"-->
+<!--                    android:src="@drawable/ic_arrow_left" />-->
 
-                <!-- Right Arrow -->
-                <ImageButton
-                    android:id="@+id/arrowRight"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_right" />
+<!--                &lt;!&ndash; Right Arrow &ndash;&gt;-->
+<!--                <ImageButton-->
+<!--                    android:id="@+id/arrowRight"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_alignParentEnd="true"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:background="@android:color/transparent"-->
+<!--                    android:src="@drawable/ic_arrow_right" />-->
 
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
+<!--            </RelativeLayout>-->
+<!--        </com.google.android.material.card.MaterialCardView>-->
 
         <!-- Sound & Haptics & Animations Preferences -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
             android:layout_marginBottom="24dp"
             android:backgroundTint="@color/card_background"
             app:cardCornerRadius="16dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp"
             app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/settings_background"
                 android:orientation="vertical"
                 android:padding="16dp">
 
