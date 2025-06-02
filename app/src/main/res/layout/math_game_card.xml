@@ -25,17 +25,14 @@
             android:textSize="32sp"
             android:layout_weight="3"/>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/playButton"
+            style="@style/Button.Play"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:text="PLAY"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            app:cornerRadius="12dp"
-            app:iconPadding="0dp"
             android:layout_weight="2"
-            app:backgroundTint="#36000000" />
+            app:rippleColor="#B8860B"
+            />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -42,7 +42,22 @@
         <item name="backgroundTint">@color/button_enabled</item>
     </style>
 
-    <!-- Disbaled Button style -->
+    <!-- Play Button style -->
+    <style name="Button.Play" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:elevation">0dp</item>
+        <!-- Make sure there is no stroke -->
+        <item name="strokeWidth">0dp</item>
+        <item name="android:strokeColor">@android:color/transparent</item>
+
+        <!-- Ripple and background color (also use `app:`) -->
+        <item name="rippleColor">@color/button_pressed</item>
+        <item name="android:backgroundTint">#36000000</item>
+    </style>
+
+    <!-- Disabled Button style -->
     <style name="Button.Disabled" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/text_white</item>
         <item name="android:textSize">16sp</item>
