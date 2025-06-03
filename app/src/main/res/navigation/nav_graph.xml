@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.dailybraingame.ui.profile.ProfileFragment"
+        android:name="com.gigamind.cognify.ui.profile.ProfileFragment"
         android:label="@string/profile" />
 
     <fragment

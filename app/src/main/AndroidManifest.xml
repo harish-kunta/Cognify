@@ -46,11 +46,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name="com.gigamind.cognify.ui.LeaderboardActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>

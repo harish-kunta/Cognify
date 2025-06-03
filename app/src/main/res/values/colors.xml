@@ -29,7 +29,7 @@
     <color name="card_shadow">#1A000000</color>
     
     <!-- Text colors -->
-    <color name="text_primary">#1E293B</color>
+    <color name="text_primary">@color/white</color>
     <color name="text_secondary">#64748B</color>
     <color name="text_white">@color/white</color>
     

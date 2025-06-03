@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
     implementation(libs.firebase.ai)
+    implementation(libs.circleimageview)
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
     testImplementation(libs.junit)
