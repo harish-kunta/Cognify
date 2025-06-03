@@ -10,6 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.gigamind.cognify"
         minSdk = 24
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -67,6 +68,11 @@ dependencies {
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
     testImplementation(libs.junit)
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+
+    // -------- Mockito for JUnit Jupiter --------
+    testImplementation("org.mockito:mockito-core:5.3.1")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
