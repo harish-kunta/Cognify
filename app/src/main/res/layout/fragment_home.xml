@@ -75,7 +75,7 @@
             app:cardElevation="8dp">
 
             <RelativeLayout
-                android:id="@+id/cardView"
+                android:id="@+id/welcomeCardView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_tile_gradient">

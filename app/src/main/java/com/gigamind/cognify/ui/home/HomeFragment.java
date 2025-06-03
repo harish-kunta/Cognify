@@ -20,7 +20,9 @@ import androidx.fragment.app.Fragment;
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.FragmentHomeBinding;
+import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,14 +36,14 @@ import java.util.Locale;
  * instead of calling Firestore directly.
  */
 public class HomeFragment extends Fragment {
+    MaterialButton wordGamePlayButton;
+    MaterialButton quickMathPlayButton;
     private FragmentHomeBinding binding;
-
     private TextView dailyChallengeTitle;
     private CardView playWordDashButton;
     private CardView playQuickMathButton;
     private RelativeLayout cardView;
     private TextView streakCount;
-
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -88,10 +90,12 @@ public class HomeFragment extends Fragment {
      */
     private void initializeViews() {
         dailyChallengeTitle = binding.dailyChallengeTitle;
-        playWordDashButton  = binding.wordGameCard.getRoot();
+        playWordDashButton = binding.wordGameCard.getRoot();
         playQuickMathButton = binding.mathGameCard.getRoot();
-        cardView            = binding.cardView;
-        streakCount         = binding.streakCount;
+        cardView = binding.welcomeCardView;
+        streakCount = binding.streakCount;
+        wordGamePlayButton = binding.wordGameCard.wordDashPlayButton;
+        quickMathPlayButton = binding.mathGameCard.quickMathPlayButton;
     }
 
     /**
@@ -151,15 +155,15 @@ public class HomeFragment extends Fragment {
      */
     private void setupClickListeners() {
         View.OnClickListener animatedClickListener = v -> {
-            // 1) Bounce animation
             v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
-            // 2) Delay to let the animation run, then launch game
-            v.postDelayed(() -> handleGameLaunch(v), 200);
+            handleGameLaunch(v);
         };
 
         dailyChallengeTitle.setOnClickListener(animatedClickListener);
         playWordDashButton.setOnClickListener(animatedClickListener);
         playQuickMathButton.setOnClickListener(animatedClickListener);
+        wordGamePlayButton.setOnClickListener(animatedClickListener);
+        quickMathPlayButton.setOnClickListener(animatedClickListener);
         cardView.setOnClickListener(animatedClickListener);
     }
 
@@ -168,13 +172,13 @@ public class HomeFragment extends Fragment {
      * and whether it was the daily challenge. Also marks daily challenge complete.
      */
     private void handleGameLaunch(View v) {
-        Intent intent = new Intent(getContext(), WordDashActivity.class);
-        boolean isDaily = (v.getId() == R.id.cardView);
-
-        if (v.getId() == R.id.wordGameCard ||
-                (isDaily && "Word Dash".equals(dailyChallengeTitle.getText().toString()))) {
+        boolean isDaily = (v.getId() == R.id.welcomeCardView);
+        Intent intent;
+        if (v.getId() == R.id.wordGameCard || v.getId() == R.id.wordDashPlayButton || v.getId() == R.id.welcomeCardView) {
+            intent = new Intent(getContext(), WordDashActivity.class);
             intent.putExtra("GAME_TYPE", "WORD");
         } else {
+            intent = new Intent(getContext(), QuickMathActivity.class);
             intent.putExtra("GAME_TYPE", "MATH");
         }
         intent.putExtra("IS_DAILY_CHALLENGE", isDaily);

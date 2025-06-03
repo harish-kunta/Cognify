@@ -29,7 +29,7 @@
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/playButton"
+            android:id="@+id/wordDashPlayButton"
             style="@style/Button.Play"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

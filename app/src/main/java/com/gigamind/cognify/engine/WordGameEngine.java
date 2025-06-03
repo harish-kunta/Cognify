@@ -24,10 +24,10 @@ public class WordGameEngine {
     private final Random random;
     private char[] currentGrid;
 
-    public WordGameEngine(Context context) {
-        dictionary = loadDictionary(context);
-        random = new Random();
-        currentGrid = generateGrid();
+    public WordGameEngine(Set<String> dictionary) {
+        this.dictionary = dictionary;
+        this.random = new Random();
+        this.currentGrid = generateGrid();
     }
 
     public char[] generateGrid() {

@@ -127,7 +127,7 @@
         app:layout_constraintTop_toBottomOf="@id/wordContainer"
         app:layout_constraintWidth_percent="0.9"
         app:strokeColor="@color/white"
-        app:strokeWidth="1dp">
+        app:strokeWidth="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
