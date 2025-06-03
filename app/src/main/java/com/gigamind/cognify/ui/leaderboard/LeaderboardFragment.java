@@ -16,6 +16,7 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.databinding.FragmentLeaderboardBinding;
 import com.gigamind.cognify.ui.OnboardingActivity;
+import com.gigamind.cognify.util.UserFields;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -31,14 +32,16 @@ public class LeaderboardFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, 
-                           @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         binding = FragmentLeaderboardBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         firebaseService = FirebaseService.getInstance();
@@ -100,10 +103,10 @@ public class LeaderboardFragment extends Fragment {
             return;
         }
 
-        // Query top 100 users by totalXP
+        // Query top 100 users by totalXP (use constant)
         firebaseService.getFirestore()
                 .collection(FirebaseService.COLLECTION_USERS)
-                .orderBy("totalXP", Query.Direction.DESCENDING)
+                .orderBy(UserFields.FIELD_TOTAL_XP, Query.Direction.DESCENDING)
                 .limit(100)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -120,14 +123,13 @@ public class LeaderboardFragment extends Fragment {
                     }
 
                     binding.swipeRefresh.setRefreshing(false);
-                    
+
                     if (items.isEmpty()) {
                         showView(binding.emptyView);
                     } else {
                         showView(binding.leaderboard);
                         adapter.submitList(items);
                     }
-
                     isLoading = false;
                 })
                 .addOnFailureListener(e -> {
@@ -146,4 +148,4 @@ public class LeaderboardFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-} 
+}
