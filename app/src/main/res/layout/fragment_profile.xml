@@ -17,13 +17,14 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="10">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="invisible"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="invisible">
 
                 <ImageView
                     android:id="@+id/streakImage"
@@ -37,8 +38,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="1"
                     android:padding="4dp"
+                    android:text="1"
                     android:textColor="@color/white"
                     android:textSize="24sp" />
             </LinearLayout>
@@ -64,317 +65,302 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
 
-        <!-- Sound & Haptics & Animations Preferences -->
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:strokeColor="@color/white"
-            app:strokeWidth="1dp">
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/profile_page_block_background"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/settings_background"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/userName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="User Name"
-                            android:textColor="@android:color/white"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/userEmail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="email"
-                            android:textColor="@android:color/white" />
-
-                        <TextView
-                            android:id="@+id/userJoined"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Joined August 2024"
-                            android:textColor="@android:color/white" />
-
-                    </LinearLayout>
-
-                    <!-- Profile Picture Section -->
-                    <FrameLayout
-                        android:id="@+id/profilePictureSection"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/profileImageView"
-                            app:civ_border_width="2dp"
-                            app:civ_border_color="@color/white"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp" />
-
-                        <ImageButton
-                            android:id="@+id/editProfileImageButton"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="end|bottom"
-                            android:background="@drawable/round_button"
-                            android:contentDescription="Profile Image"
-                            android:src="@drawable/ic_edit"
-                            app:tint="@color/white" />
-                    </FrameLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_weight="0.8"
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/userName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Overview" />
+                        android:text="User Name"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                    <!-- 2x2 Grid Layout -->
-                    <GridLayout
-                        android:id="@+id/profileGridLayout"
+                    <TextView
+                        android:id="@+id/userEmail"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:columnCount="2"
-                        android:orientation="horizontal"
-                        android:rowCount="2">
+                        android:layout_height="wrap_content"
+                        android:text="email"
+                        android:textColor="@android:color/white" />
 
-                        <!-- Custom Tile 1 -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_marginRight="4dp"
-                            android:background="@drawable/profile_page_block_background"
-                            android:orientation="vertical"
-                            android:padding="16dp"
-                            android:weightSum="2">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_streak" />
-
-                                <TextView
-                                    android:id="@+id/streakValue"
-                                    style="@style/ProfilePageUserNameStyle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="0"
-                                    android:textAppearance="?attr/textAppearanceListItem" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
-
-                                <View
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center" />
-
-                                <TextView
-                                    style="@style/ProfilePageSubtitleStyle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center"
-                                    android:text="Day streak"
-                                    android:textAppearance="?attr/textAppearanceListItem" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Custom Tile 2 -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_marginLeft="4dp"
-                            android:background="@drawable/profile_page_block_background"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/icon_flash" />
-
-                                <TextView
-                                    style="@style/ProfilePageUserNameStyle"
-                                    android:id="@+id/xpValue"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="0"
-                                    android:textAppearance="?attr/textAppearanceListItem" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
-
-                                <View
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center" />
-
-                                <TextView
-                                    style="@style/ProfilePageSubtitleStyle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="center"
-                                    android:text="Total XP"
-                                    android:textAppearance="?attr/textAppearanceListItem" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Custom Tile 3 -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/profile_page_block_background"
-                            android:orientation="vertical"
-                            android:padding="16dp"
-                            android:visibility="gone">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/icon_flash" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="League"
-                                android:textAppearance="?attr/textAppearanceListItem" />
-                        </LinearLayout>
-
-                        <!-- Custom Tile 4 -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/profile_page_block_background"
-                            android:orientation="vertical"
-                            android:padding="16dp"
-                            android:visibility="gone">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:src="@drawable/icon_flash" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="Tile 4"
-                                android:textAppearance="?attr/textAppearanceListItem" />
-                        </LinearLayout>
-
-                    </GridLayout>
+                    <TextView
+                        android:id="@+id/userJoined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Joined August 2024"
+                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
+
+                <!-- Profile Picture Section -->
+                <FrameLayout
+                    android:id="@+id/profilePictureSection"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profileImageView"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        app:civ_border_color="@color/white"
+                        app:civ_border_width="2dp" />
+
+                    <ImageButton
+                        android:id="@+id/editProfileImageButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="end|bottom"
+                        android:background="@drawable/round_button"
+                        android:contentDescription="Profile Image"
+                        android:src="@drawable/ic_edit"
+                        app:tint="@color/white" />
+                </FrameLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 2x2 Grid Layout -->
+            <GridLayout
+                android:id="@+id/profileGridLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:columnCount="2"
+                android:orientation="horizontal"
+                android:rowCount="2">
+
+                <!-- Custom Tile 1 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_marginRight="4dp"
+                    android:background="@drawable/profile_page_block_background"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_streak" />
+
+                        <TextView
+                            android:id="@+id/streakValue"
+                            style="@style/ProfilePageUserNameStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="0"
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            style="@style/ProfilePageSubtitleStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:text="Day streak"
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Custom Tile 2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_marginLeft="4dp"
                     android:background="@drawable/profile_page_block_background"
                     android:orientation="vertical"
                     android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/app_icon" />
+                            android:src="@drawable/icon_flash" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/xpValue"
+                            style="@style/ProfilePageUserNameStyle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="8dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                style="@style/ProfilePageUserNameStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Invite friends" />
-
-                            <TextView
-                                style="@style/ProfilePageSubtitleStyle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Tell your friends it's free and easy to practice for driving tests" />
-                        </LinearLayout>
+                            android:layout_height="match_parent"
+                            android:text="0"
+                            android:textAppearance="?attr/textAppearanceListItem" />
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/inviteFriendsButton"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            style="@style/ProfilePageSubtitleStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:text="Total XP"
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Custom Tile 3 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/profile_page_block_background"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_flash" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="League"
+                        android:textAppearance="?attr/textAppearanceListItem" />
+                </LinearLayout>
+
+                <!-- Custom Tile 4 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/profile_page_block_background"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_flash" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Tile 4"
+                        android:textAppearance="?attr/textAppearanceListItem" />
+                </LinearLayout>
+
+            </GridLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/profile_page_block_background"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/app_icon" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/ProfilePageUserNameStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="INVITE FRIENDS" />
+                        android:text="Invite friends" />
 
+                    <TextView
+                        style="@style/ProfilePageSubtitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tell your friends it's free and easy to practice for driving tests" />
                 </LinearLayout>
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+
+            <Button
+                android:id="@+id/inviteFriendsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
+                android:text="INVITE FRIENDS" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

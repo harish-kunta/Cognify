@@ -75,7 +75,7 @@
             android:backgroundTint="@color/card_background"
             app:cardCornerRadius="16dp"
             app:strokeColor="@color/white"
-            app:strokeWidth="1dp"
+            app:strokeWidth="2dp"
             app:cardElevation="4dp">
 
             <LinearLayout
