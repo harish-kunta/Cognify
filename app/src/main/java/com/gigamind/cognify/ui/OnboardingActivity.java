@@ -203,8 +203,29 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        binding.btnSignIn.setOnClickListener(v -> signIn());
-        binding.btnContinueAsGuest.setOnClickListener(v -> continueAsGuest());
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            // Already signed in
+            binding.btnSignIn.setVisibility(View.GONE);
+            binding.btnContinueAsGuest.setVisibility(View.GONE);
+
+            binding.btnLetsGo.setVisibility(View.VISIBLE);
+            binding.btnLetsGo.setOnClickListener(v -> {
+                Intent i = new Intent(OnboardingActivity.this, MainActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                finish();
+            });
+        } else {
+            // Not signed in
+            binding.btnLetsGo.setVisibility(View.GONE);
+
+            binding.btnSignIn.setVisibility(View.VISIBLE);
+            binding.btnSignIn.setOnClickListener(v -> signIn());
+
+            binding.btnContinueAsGuest.setVisibility(View.VISIBLE);
+            binding.btnContinueAsGuest.setOnClickListener(v -> continueAsGuest());
+        }
     }
 
     private void signIn() {
