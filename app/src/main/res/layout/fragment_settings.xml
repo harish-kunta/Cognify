@@ -10,16 +10,60 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Settings Title -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Settings"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:layout_gravity="center"
-            android:textStyle="bold" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/streakImage"
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_streak" />
+
+                <TextView
+                    android:id="@+id/streakCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="Settings"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/settingsIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_settings"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
 
 <!--        &lt;!&ndash; Top Card with Carousel Arrows &ndash;&gt;-->
 <!--        <com.google.android.material.card.MaterialCardView-->
