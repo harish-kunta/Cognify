@@ -30,14 +30,13 @@ import java.util.Map;
  * and only update once the server response arrives—eliminating any flicker.
  */
 public class UserRepository {
-    private static final String PREFS_NAME = "GamePrefs";
-
     // SharedPreferences keys, matching Firestore fields:
-    public static final String KEY_LAST_PLAYED_DATE  = UserFields.FIELD_LAST_PLAYED_DATE;    // "yyyy-MM-dd"
-    public static final String KEY_LAST_PLAYED_TS    = UserFields.FIELD_LAST_PLAYED_TS;      // raw millis
-    public static final String KEY_CURRENT_STREAK   = UserFields.FIELD_CURRENT_STREAK;
-    public static final String KEY_TOTAL_XP         = UserFields.FIELD_TOTAL_XP;
-
+    public static final String KEY_LAST_PLAYED_DATE = UserFields.FIELD_LAST_PLAYED_DATE;    // "yyyy-MM-dd"
+    public static final String KEY_LAST_PLAYED_TS = UserFields.FIELD_LAST_PLAYED_TS;      // raw millis
+    public static final String KEY_CURRENT_STREAK = UserFields.FIELD_CURRENT_STREAK;
+    public static final String KEY_TOTAL_XP = UserFields.FIELD_TOTAL_XP;
+    public static final String KEY_PERSONAL_BEST_XP = UserFields.FIELD_PERSONAL_BEST_XP;
+    private static final String PREFS_NAME = "GamePrefs";
     private final SharedPreferences prefs;
     private final FirebaseService firebaseService;
 
@@ -49,10 +48,10 @@ public class UserRepository {
     /**
      * “Real-time” listener that keeps SharedPreferences in sync with Firestore.
      * Returns a ListenerRegistration so the caller can remove() it when no longer needed.
-     *
+     * <p>
      * As soon as this is attached, Firestore will fire the listener with any cached document,
      * and immediately thereafter with the server copy. That way there’s no flicker from a stale default.
-     *
+     * <p>
      * If the user is not signed in, this returns null.
      */
     @Nullable
@@ -92,6 +91,13 @@ public class UserRepository {
                         long ts = snapshot.getLong(KEY_LAST_PLAYED_TS);
                         editor.putLong(KEY_LAST_PLAYED_TS, ts);
                     }
+
+
+                    if (snapshot.contains(KEY_PERSONAL_BEST_XP)) {
+                        // Write into SharedPrefs under “pb_<gameType>”
+                        int pbVal = snapshot.getLong(KEY_PERSONAL_BEST_XP).intValue();
+                        editor.putInt(KEY_PERSONAL_BEST_XP, pbVal);
+                    }
                     editor.apply();
 
                     // Notify the UI (on the main thread) to read from SharedPreferences
@@ -102,61 +108,23 @@ public class UserRepository {
     }
 
     /**
-     * If you still need a “one-time sync” (e.g. on sign-in), you can call this:
-     * but in most “live” screens you’ll prefer attachUserDocumentListener().
-     */
-    @Nullable
-    public Task<DocumentSnapshot> syncUserDataOnce() {
-        if (!firebaseService.isUserSignedIn()) {
-            return null;
-        }
-        return firebaseService.getUserDocument().get()
-                .addOnSuccessListener(snapshot -> {
-                    if (!snapshot.exists()) return;
-
-                    SharedPreferences.Editor editor = prefs.edit();
-
-                    if (snapshot.contains(KEY_CURRENT_STREAK)) {
-                        editor.putInt(
-                                KEY_CURRENT_STREAK,
-                                snapshot.getLong(KEY_CURRENT_STREAK).intValue()
-                        );
-                    }
-                    if (snapshot.contains(KEY_TOTAL_XP)) {
-                        editor.putInt(
-                                KEY_TOTAL_XP,
-                                snapshot.getLong(KEY_TOTAL_XP).intValue()
-                        );
-                    }
-                    if (snapshot.contains(KEY_LAST_PLAYED_DATE)) {
-                        editor.putString(
-                                KEY_LAST_PLAYED_DATE,
-                                snapshot.getString(KEY_LAST_PLAYED_DATE)
-                        );
-                    }
-                    if (snapshot.contains(KEY_LAST_PLAYED_TS)) {
-                        editor.putLong(
-                                KEY_LAST_PLAYED_TS,
-                                snapshot.getLong(KEY_LAST_PLAYED_TS)
-                        );
-                    }
-                    editor.apply();
-                });
-    }
-
-    /**
      * Whenever the user finishes a game, call this to update:
-     *   - lastPlayedDate  = today (yyyy-MM-dd)
-     *   - lastPlayedTimestamp = System.currentTimeMillis()
-     *   - currentStreak, totalXP, last<GameType>Score (and any trophies)
-     *
+     * - lastPlayedDate  = today (yyyy-MM-dd)
+     * - lastPlayedTimestamp = System.currentTimeMillis()
+     * - currentStreak, totalXP, last<GameType>Score (and any trophies)
+     * <p>
      * If signed in, fetch remote first to preserve cross-device continuity.
      * Otherwise, fall back to purely local update.
      */
-    public Task<Void> updateGameResults(String gameType, int score, int xpEarned) {
+    public Task<Void> updateGameResults(
+            String gameType,
+            int score,
+            int xpEarned,
+            @Nullable Integer newPersonalBest  // if null, don’t write PB to Firestore
+    ) {
         // 1) Compute “today” and “yesterday”
         Calendar now = Calendar.getInstance();
-        String today     = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(now.getTime());
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(now.getTime());
         now.add(Calendar.DAY_OF_YEAR, -1);
         String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(now.getTime());
 
@@ -174,8 +142,8 @@ public class UserRepository {
 
                         DocumentSnapshot snapshot = fetchTask.getResult();
                         String remoteLastDate = "";
-                        long remoteLastTs    = 0;
-                        int remoteStreak     = 0;
+                        long remoteLastTs = 0;
+                        int remoteStreak = 0;
 
                         if (snapshot.exists()) {
                             if (snapshot.contains(KEY_LAST_PLAYED_DATE)) {
@@ -218,6 +186,10 @@ public class UserRepository {
                         updates.put(KEY_TOTAL_XP, FieldValue.increment(xpEarned));
                         updates.put(UserFields.lastGameScoreField(gameType), score);
 
+                        if (newPersonalBest != null) {
+                            updates.put(KEY_PERSONAL_BEST_XP, newPersonalBest);
+                        }
+
                         if (updatedStreak == 7) {
                             updates.put(UserFields.FIELD_TROPHIES, FieldValue.arrayUnion("7DayStreak"));
                         }
@@ -240,7 +212,9 @@ public class UserRepository {
         return null;
     }
 
-    /** Local-only fallback if the user isn’t signed in or fetch failed. */
+    /**
+     * Local-only fallback if the user isn’t signed in or fetch failed.
+     */
     private void updateLocalOnly(
             String gameType,
             int score,
@@ -250,7 +224,7 @@ public class UserRepository {
             long nowMillis) {
 
         String lastPlayedDate = prefs.getString(KEY_LAST_PLAYED_DATE, "");
-        int   currentStreak   = prefs.getInt(KEY_CURRENT_STREAK, 0);
+        int currentStreak = prefs.getInt(KEY_CURRENT_STREAK, 0);
 
         int updatedStreak;
         if (yesterday.equals(lastPlayedDate)) {
@@ -269,27 +243,37 @@ public class UserRepository {
         editor.apply();
     }
 
-    /** Returns locally stored “currentStreak.” */
+    /**
+     * Returns locally stored “currentStreak.”
+     */
     public int getCurrentStreak() {
         return prefs.getInt(KEY_CURRENT_STREAK, 0);
     }
 
-    /** Returns locally stored “totalXP.” */
+    /**
+     * Returns locally stored “totalXP.”
+     */
     public int getTotalXP() {
         return prefs.getInt(KEY_TOTAL_XP, 0);
     }
 
-    /** Returns locally stored “lastPlayedDate” (yyyy-MM-dd). */
+    /**
+     * Returns locally stored “lastPlayedDate” (yyyy-MM-dd).
+     */
     public String getLastPlayedDate() {
         return prefs.getString(KEY_LAST_PLAYED_DATE, "");
     }
 
-    /** Returns locally stored “lastPlayedTimestamp” (millis). */
+    /**
+     * Returns locally stored “lastPlayedTimestamp” (millis).
+     */
     public long getLastPlayedTimestamp() {
         return prefs.getLong(KEY_LAST_PLAYED_TS, -1L);
     }
 
-    /** Callback interface: UI should implement this to refresh its views. */
+    /**
+     * Callback interface: UI should implement this to refresh its views.
+     */
     public interface OnUserDataChanged {
         void onDataChanged();
     }

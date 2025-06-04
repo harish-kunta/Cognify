@@ -3,6 +3,7 @@ package com.gigamind.cognify.ui;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_LAST_PLAYED_DATE;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_LAST_PLAYED_TS;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_CURRENT_STREAK;
+import static com.gigamind.cognify.data.repository.UserRepository.KEY_PERSONAL_BEST_XP;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_TOTAL_XP;
 import static com.gigamind.cognify.util.Constants.BONUS_NEW_PB;
 import static com.gigamind.cognify.util.Constants.BONUS_STREAK_PER_DAY;
@@ -84,6 +85,12 @@ public class ResultActivity extends AppCompatActivity {
         // 2) Update local high‐score synchronously
         boolean isNewPb = updateHighScoreLocal(score, gameType);
 
+        int newPbValue  = -1;
+        if (isNewPb) {
+            // We just wrote a new “pb_worddash” into SharedPrefs; read it back:
+            newPbValue = prefs.getInt(KEY_PERSONAL_BEST_XP, 0);
+        }
+
         // 3) Read “old” streak / XP from prefs (already kept in sync elsewhere)
         String oldDate = prefs.getString(KEY_LAST_PLAYED_DATE, "");
         int oldStreak = prefs.getInt(KEY_CURRENT_STREAK, 0);
@@ -115,10 +122,11 @@ public class ResultActivity extends AppCompatActivity {
                 .putLong(KEY_LAST_PLAYED_TS, nowMillis)
                 .putInt(KEY_CURRENT_STREAK, newStreak)
                 .putInt(KEY_TOTAL_XP, newTotalXp)
+                .putInt(KEY_PERSONAL_BEST_XP, newPbValue)
                 .apply();
 
         // 8) Kick off background Firestore merge (we don’t block UI on this)
-        Task<Void> updateTask = userRepository.updateGameResults(gameType, score, xpEarned);
+        Task<Void> updateTask = userRepository.updateGameResults(gameType, score, xpEarned, newPbValue);
 
         // 9) Schedule next streak notification
         String uid = (firebaseUser != null) ? firebaseUser.getUid() : null;
@@ -189,7 +197,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private boolean updateHighScoreLocal(int score, String gameType) {
-        String highScoreKey = "high_score_" + gameType.toLowerCase();
+        String highScoreKey = KEY_PERSONAL_BEST_XP;
         int currentHigh = prefs.getInt(highScoreKey, 0);
 
         if (score > currentHigh) {

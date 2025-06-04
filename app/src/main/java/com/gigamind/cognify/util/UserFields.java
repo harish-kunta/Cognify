@@ -4,6 +4,7 @@ package com.gigamind.cognify.util;
  * All Firestore field names (and matching SharedPreferences keys) for user data.
  */
 public final class UserFields {
+
     private UserFields() { /* no‐op */ }
 
     // Basic profile
@@ -19,6 +20,7 @@ public final class UserFields {
     public static final String FIELD_LAST_PLAYED_TS    = "lastPlayedTimestamp";
     public static final String FIELD_LEADERBOARD_RANK  = "leaderboardRank";
     public static final String FIELD_TROPHIES          = "trophies";
+    public static final String FIELD_PERSONAL_BEST_XP = "personalBestXP";
 
     /**
      * Returns the Firestore field name for "last<gameType>Score".
