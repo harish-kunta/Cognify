@@ -47,6 +47,20 @@
             android:layout_weight="7"
             android:orientation="vertical">
 
+            <!-- 2) An overlay “encouragement” TextView that briefly fades‐in, then out -->
+            <TextView
+                android:id="@+id/encouragementText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@android:color/white"
+                android:textSize="48sp"
+                android:textStyle="bold"
+                android:alpha="0"
+                android:layout_margin="16dp"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -292,16 +306,4 @@
                 android:text="Back to Home" />
         </LinearLayout>
     </LinearLayout>
-
-    <!-- 2) An overlay “encouragement” TextView that briefly fades‐in, then out -->
-    <TextView
-        android:id="@+id/encouragementText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Amazing!"
-        android:textColor="@android:color/white"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:alpha="0"
-        android:layout_gravity="center" />
 </FrameLayout>
