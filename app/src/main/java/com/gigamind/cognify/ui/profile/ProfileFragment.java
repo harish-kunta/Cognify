@@ -35,8 +35,6 @@ public class ProfileFragment extends Fragment {
     private TextView userNameText;
     private TextView userEmailText;
     private TextView userJoinedText;
-    private ImageView profileImageView;
-    private ImageButton editProfileImageButton;
     private ImageView settingsIcon;
     private TextView streakValueText;
     private TextView xpValueText;
@@ -65,8 +63,6 @@ public class ProfileFragment extends Fragment {
         userNameText            = view.findViewById(R.id.userName);
         userEmailText           = view.findViewById(R.id.userEmail);
         userJoinedText          = view.findViewById(R.id.userJoined);
-        profileImageView        = view.findViewById(R.id.profileImageView);
-        editProfileImageButton  = view.findViewById(R.id.editProfileImageButton);
         settingsIcon            = view.findViewById(R.id.settingsIcon);
         streakValueText         = view.findViewById(R.id.streakValue);
         xpValueText             = view.findViewById(R.id.xpValue);
@@ -111,7 +107,6 @@ public class ProfileFragment extends Fragment {
             userNameText.setText("Guest");
             userEmailText.setText("");
             userJoinedText.setText("");
-            profileImageView.setImageResource(R.drawable.ic_avatar); // placeholder
         }
     }
 
@@ -151,10 +146,6 @@ public class ProfileFragment extends Fragment {
         // (Alternatively, open a real SettingsActivity)
         settingsIcon.setOnClickListener(v -> {
             Toast.makeText(requireContext(), "Settings tapped", Toast.LENGTH_SHORT).show();
-        });
-
-        editProfileImageButton.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Edit profile picture", Toast.LENGTH_SHORT).show();
         });
 
         inviteFriendsButton.setOnClickListener(v -> {

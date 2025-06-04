@@ -27,16 +27,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="1" />
 
-        <!-- 2) User Avatar or Country Flag -->
-        <ImageView
-            android:id="@+id/flagImage"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@id/rankText"
-            app:layout_constraintTop_toTopOf="@id/rankText"
-            app:layout_constraintBottom_toBottomOf="@id/rankText"
-            tools:srcCompat="@drawable/circle_background" />
 
         <!-- 3) Display Name (max 1 line, ellipsized) -->
         <TextView
@@ -49,7 +39,7 @@
             android:maxLines="1"
             android:textColor="@color/white"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@id/flagImage"
+            app:layout_constraintStart_toEndOf="@id/rankText"
             app:layout_constraintEnd_toStartOf="@id/badgeImage"
             app:layout_constraintTop_toTopOf="@id/rankText"
             app:layout_constraintBottom_toBottomOf="@id/rankText"

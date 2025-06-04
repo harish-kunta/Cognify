@@ -109,31 +109,6 @@
                         android:textColor="@android:color/white" />
 
                 </LinearLayout>
-
-                <!-- Profile Picture Section -->
-                <FrameLayout
-                    android:id="@+id/profilePictureSection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/profileImageView"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        app:civ_border_color="@color/white"
-                        app:civ_border_width="2dp" />
-
-                    <ImageButton
-                        android:id="@+id/editProfileImageButton"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="end|bottom"
-                        android:background="@drawable/round_button"
-                        android:contentDescription="Profile Image"
-                        android:src="@drawable/ic_edit"
-                        app:tint="@color/white" />
-                </FrameLayout>
             </LinearLayout>
 
         </LinearLayout>

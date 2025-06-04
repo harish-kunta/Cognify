@@ -57,21 +57,6 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
         void bind(LeaderboardItem item) {
             binding.rankText.setText(String.valueOf(item.getRank()));
 
-            // 2) Country Flag / Avatar
-            String country = item.getCountryCode();
-            if (country != null && !country.isEmpty()) {
-                // e.g. if countryCode = "ID", we expect a drawable named "flag_id"
-                // or fallback to a default avatar if that resource does not exist.
-                int drawableId = getFlagDrawableId(country);
-                if (drawableId != 0) {
-                    binding.flagImage.setImageResource(drawableId);
-                } else {
-                    binding.flagImage.setImageResource(R.drawable.circle_background);
-                }
-            } else {
-                binding.flagImage.setImageResource(R.drawable.circle_background);
-            }
-
             // 3) Display Name
             binding.nameText.setText(item.getName());
 
