@@ -33,6 +33,33 @@ public class DictionaryProvider {
     private static volatile boolean sIsLoading = false;
 
     /**
+     * Call this as early as possible (e.g. Application.onCreate() or MainActivity.onCreate())
+     * so that by the time WordDashActivity wants it, it's already ready.
+     */
+    public static void preloadDictionary(Context context) {
+        if (sDictionary != null || sIsLoading) return;
+        sIsLoading = true;
+
+        new Thread(() -> {
+            Set<String> dict = new HashSet<>();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(context.getAssets().open("words.txt")))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.length() >= 3) {
+                        dict.add(line.toUpperCase(Locale.US));
+                    }
+                }
+            } catch (IOException e) {
+                // swallow or log
+            }
+            sDictionary = dict;
+            sIsLoading = false;
+            // If you need a callback on main thread, you could post to a Handler here.
+        }).start();
+    }
+
+    /**
      * If `sDictionary` is already loaded, invokes callback immediately on main thread.
      * Otherwise, kicks off a background load (once) and invokes callback when done.
      */

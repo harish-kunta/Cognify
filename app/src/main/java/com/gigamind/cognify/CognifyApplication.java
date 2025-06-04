@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.gigamind.cognify.engine.DictionaryProvider;
 
 public class CognifyApplication extends Application {
     private static final String TAG = "CognifyApplication";
@@ -22,6 +23,8 @@ public class CognifyApplication extends Application {
 
         // (1) Initialize Firebase if not already done
         FirebaseApp.initializeApp(this);
+
+        DictionaryProvider.preloadDictionary(this);
 
         UserRepository repo = new UserRepository(getApplicationContext());
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
