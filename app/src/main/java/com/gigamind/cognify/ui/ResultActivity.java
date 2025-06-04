@@ -11,11 +11,12 @@ import static com.gigamind.cognify.util.Constants.INTENT_SCORE;
 import static com.gigamind.cognify.util.Constants.INTENT_TYPE;
 
 import android.animation.Animator;
-import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,7 +49,7 @@ import java.util.Random;
 public class ResultActivity extends AppCompatActivity {
 
     private TextView headerText;
-    private TextView scoreValue, totalXPValue, totalWordText, highScoreText, xpGainedText, streakText;
+    private TextView scoreValue, totalXPValue, totalWordText, highScoreText, streakText;
     private TextView newHighScoreText, encouragementText;
     private MaterialButton playAgainButton, homeButton;
     private LinearLayout playContainer;
@@ -145,7 +146,6 @@ public class ResultActivity extends AppCompatActivity {
         totalXPValue     = findViewById(R.id.totalXPValue);
         totalWordText    = findViewById(R.id.totalWordText);
         highScoreText    = findViewById(R.id.highScoreText);
-        xpGainedText     = findViewById(R.id.xpGainedText);
         streakText       = findViewById(R.id.streakText);
         newHighScoreText = findViewById(R.id.newHighScoreText);
         encouragementText= findViewById(R.id.encouragementText);
@@ -159,7 +159,6 @@ public class ResultActivity extends AppCompatActivity {
         scoreValue.setText("0");
         totalXPValue.setText("0");
         totalWordText.setText("0");
-        xpGainedText.setText("0");
         streakText.setAlpha(0f);
         newHighScoreText.setAlpha(0f);
         playContainer.setAlpha(0f);
@@ -249,7 +248,6 @@ public class ResultActivity extends AppCompatActivity {
                 xpAnim.setDuration(500);
                 xpAnim.addUpdateListener(anim -> {
                     int val = (Integer) anim.getAnimatedValue();
-                    xpGainedText.setText(String.valueOf(val));
                 });
                 xpAnim.start();
 
@@ -338,19 +336,25 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void showEncouragement(String message) {
-        encouragementText.setText(message);
+        Shader myShader = new LinearGradient(
+                0, 100, 0, 100,
+                Color.parseColor("#f7e307"), Color.parseColor("#fda200"),
+                Shader.TileMode.CLAMP);
+        // 1) Enable software rendering for BlurMaskFilter to work correctly:
+        encouragementText.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+// 2) Grab the TextView’s Paint and attach a BlurMaskFilter for the glow
+        float radius = 32f;  // how “big” the glow is (increase for a softer halo)
+        int glowColor = Color.argb(150, 255, 255, 0); // semi‐transparent yellow glow
+
+//        encouragementText.getPaint().setColor(glowColor);
+        encouragementText.getPaint().setShader( myShader );
+        encouragementText.setText(message.toUpperCase());
         encouragementText.setAlpha(0f);
         encouragementText.animate()
                 .alpha(1f)
                 .setDuration(400)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
-                .withEndAction(() -> {
-                    encouragementText.animate()
-                            .alpha(0f)
-                            .setStartDelay(800)
-                            .setDuration(400)
-                            .start();
-                })
                 .start();
     }
 
