@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
+import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,6 +54,12 @@ public class ResultActivity extends AppCompatActivity {
         boolean isNewPb = updateHighScoreLocal(score, gameType);
 
         userRepository.updateGameResults(gameType, score, xpEarned);
+
+        StreakNotificationScheduler.scheduleFromSharedPrefs(
+                /* firebaseUid= */ FirebaseAuth.getInstance().getCurrentUser() != null
+                        ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                        : null,
+                ResultActivity.this);
 
         final int updatedStreak = userRepository.getCurrentStreak();
         final int updatedTotalXp = userRepository.getTotalXP();

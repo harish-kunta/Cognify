@@ -38,12 +38,7 @@ import java.util.Locale;
  */
 public class WordDashFragment extends Fragment {
     MaterialButton wordGamePlayButton;
-    MaterialButton quickMathPlayButton;
     private FragmentWordDashBinding binding;
-    private TextView dailyChallengeTitle;
-    private CardView playWordDashButton;
-    private CardView playQuickMathButton;
-    private RelativeLayout cardView;
     private TextView streakCount;
     private SharedPreferences prefs;
     private UserRepository userRepository;
@@ -79,9 +74,6 @@ public class WordDashFragment extends Fragment {
         // 1) Populate the streak UI
         loadAndDisplayStreak();
 
-        // 2) Set up daily challenge text
-        setupDailyChallenge();
-
         // 3) Set up click listeners on UI
         setupClickListeners();
     }
@@ -90,13 +82,8 @@ public class WordDashFragment extends Fragment {
      * Binds view references from the layout.
      */
     private void initializeViews() {
-        dailyChallengeTitle = binding.dailyChallengeTitle;
-        playWordDashButton = binding.wordGameCard.getRoot();
-        playQuickMathButton = binding.mathGameCard.getRoot();
-        cardView = binding.welcomeCardView;
         streakCount = binding.streakCount;
-        wordGamePlayButton = binding.wordGameCard.wordDashPlayButton;
-        quickMathPlayButton = binding.mathGameCard.quickMathPlayButton;
+        wordGamePlayButton = binding.playWordDashButton;
     }
 
     /**
@@ -131,26 +118,6 @@ public class WordDashFragment extends Fragment {
     }
 
     /**
-     * Determines and displays today's challenge ("Word Dash" or "Quick Math"),
-     * then disables it if already completed today (based on local prefs).
-     */
-    private void setupDailyChallenge() {
-        Calendar calendar = Calendar.getInstance();
-        boolean isWordDay = (calendar.get(Calendar.DAY_OF_WEEK) % 2) == 0;
-        String challengeType = isWordDay ? "Word Dash" : "Quick Math";
-        dailyChallengeTitle.setText(challengeType);
-
-        // Use a consistent "YYYY-DDD" key in prefs to mark completion
-        String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US).format(calendar.getTime());
-        boolean isDailyCompleted = prefs.getBoolean("daily_completed_" + todayKey, false);
-
-        if (isDailyCompleted) {
-            dailyChallengeTitle.setText("Completed Today");
-            dailyChallengeTitle.setEnabled(false);
-        }
-    }
-
-    /**
      * Sets up bounce animation and routing to the appropriate game
      * when the user clicks any of the cards or the daily challenge banner.
      */
@@ -159,13 +126,7 @@ public class WordDashFragment extends Fragment {
             v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
             handleGameLaunch(v);
         };
-
-        dailyChallengeTitle.setOnClickListener(animatedClickListener);
-        playWordDashButton.setOnClickListener(animatedClickListener);
-        playQuickMathButton.setOnClickListener(animatedClickListener);
         wordGamePlayButton.setOnClickListener(animatedClickListener);
-        quickMathPlayButton.setOnClickListener(animatedClickListener);
-        cardView.setOnClickListener(animatedClickListener);
     }
 
     /**
@@ -175,7 +136,7 @@ public class WordDashFragment extends Fragment {
     private void handleGameLaunch(View v) {
         boolean isDaily = (v.getId() == R.id.welcomeCardView);
         Intent intent;
-        if (v.getId() == R.id.wordGameCard || v.getId() == R.id.wordDashPlayButton || v.getId() == R.id.welcomeCardView) {
+        if (v.getId() == R.id.playWordDashButton) {
             intent = new Intent(getContext(), WordDashActivity.class);
             intent.putExtra("GAME_TYPE", "WORD");
         } else {

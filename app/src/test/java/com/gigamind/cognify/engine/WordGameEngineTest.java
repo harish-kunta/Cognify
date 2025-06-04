@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -51,7 +52,7 @@ public class WordGameEngineTest {
                 .thenReturn(dictionaryStream);
 
         // Instantiate the engine (it will call loadDictionary → read our TEST_DICTIONARY)
-        wordGameEngine = new WordGameEngine(mockContext);
+        wordGameEngine = new WordGameEngine(new HashSet<>());
     }
 
     @Test

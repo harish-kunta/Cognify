@@ -76,4 +76,7 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    implementation("androidx.core:core-ktx:1.9.0")
 }

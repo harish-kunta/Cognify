@@ -1,12 +1,22 @@
 package com.gigamind.cognify.ui;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.OnboardingAdapter;
@@ -34,21 +44,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * OnboardingActivity now uses UserFields constants for all Firestore field names,
- * so that we never hard-code key names in multiple places.
+ * OnboardingActivity now also asks for notification permission during onboarding.
+ * We show a rationale dialog until the user either grants the permission
+ * (Android 13+) or explicitly taps “No thanks” to decline.
  */
 public class OnboardingActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
+    private static final String PREFS_NAME = "GamePrefs";
+    private static final String PREF_ASKED_NOTIFICATIONS = "asked_for_notifications";
+
     private ActivityOnboardingBinding binding;
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
+    private SharedPreferences prefs;
+
+    // Launcher for the new Android 13+ notification permission request
+    private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityOnboardingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -60,8 +80,79 @@ public class OnboardingActivity extends AppCompatActivity {
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        // 1) Set up the permission launcher (Android 13+)
+        setupNotificationPermissionLauncher();
+
+        // 2) Immediately check if we should ask for notification permission
+        checkAndAskNotificationPermissionIfNeeded();
+
+        // 3) Proceed with the rest of onboarding
         setupOnboarding();
         setupButtons();
+    }
+
+    /**
+     * Configure the ActivityResultLauncher for the POST_NOTIFICATIONS permission (API 33+).
+     */
+    private void setupNotificationPermissionLauncher() {
+        requestNotificationPermissionLauncher =
+                registerForActivityResult(
+                        new ActivityResultContracts.RequestPermission(),
+                        isGranted -> {
+                            if (isGranted) {
+                                // User granted POST_NOTIFICATIONS; no further action needed
+                                Toast.makeText(this, "Notifications enabled. You won’t lose your streak!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // User denied. We’ll treat this as “No thanks” and stop asking again.
+                                prefs.edit()
+                                        .putBoolean(PREF_ASKED_NOTIFICATIONS, true)
+                                        .apply();
+                                Toast.makeText(this, "Notifications disabled. You may lose your streak if you don't play.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
+    }
+
+    /**
+     * If notifications aren’t enabled yet, and we haven’t already asked, show a rationale dialog.
+     * This will loop until the user either grants permission or taps “No thanks.”
+     */
+    private void checkAndAskNotificationPermissionIfNeeded() {
+        // If device < Android 13, no runtime permission needed—return early.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+
+        // If user already tapped “No thanks,” we don’t ask again.
+        boolean alreadyAsked = prefs.getBoolean(PREF_ASKED_NOTIFICATIONS, false);
+        if (alreadyAsked) {
+            return;
+        }
+
+        // If permission is already granted, nothing to do.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        // Otherwise, show a custom rationale dialog explaining why we need notifications:
+        new AlertDialog.Builder(this)
+                .setTitle("Keep Your Streak Alive!")
+                .setMessage("We’d like to send you a daily reminder so you won’t lose your hard-earned streak. " +
+                        "Allow notifications to receive gentle nudges if you haven’t played today.")
+                .setPositiveButton("Enable", (dialog, which) -> {
+                    // Launch the system permission prompt
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                })
+                .setNegativeButton("No thanks", (dialog, which) -> {
+                    // User does not want notifications: record that and close dialog
+                    prefs.edit()
+                            .putBoolean(PREF_ASKED_NOTIFICATIONS, true)
+                            .apply();
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void setupOnboarding() {
@@ -167,7 +258,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     /**
-     * Writes or merges the newly signed‐in user’s data into Firestore.
+     * Writes or merges the newly signed-in user’s data into Firestore.
      * Uses UserFields constants for all field names.
      */
     private void createOrUpdateUserInFirestore(FirebaseUser user, GoogleSignInAccount gAccount) {
@@ -201,4 +292,6 @@ public class OnboardingActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 });
     }
+
+    // If the user manually taps “back,” we might want to re-ask next time, so do not override onBackPressed here.
 }

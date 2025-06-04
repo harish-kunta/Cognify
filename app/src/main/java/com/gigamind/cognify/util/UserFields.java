@@ -16,6 +16,7 @@ public final class UserFields {
     public static final String FIELD_CURRENT_STREAK    = "currentStreak";
     public static final String FIELD_LAST_PLAYED_DATE  = "lastPlayedDate";
     public static final String FIELD_TOTAL_XP          = "totalXP";
+    public static final String FIELD_LAST_PLAYED_TS    = "lastPlayedTimestamp";
     public static final String FIELD_LEADERBOARD_RANK  = "leaderboardRank";
     public static final String FIELD_TROPHIES          = "trophies";
 

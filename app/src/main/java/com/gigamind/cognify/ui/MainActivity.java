@@ -23,9 +23,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupNavigation();
-
-        // Initialize sound effects
-        //buttonSound = MediaPlayer.create(this, R.raw.button_click);
     }
 
     private void setupNavigation() {
@@ -46,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh daily challenge status
-        //setupDailyChallenge();
     }
 
     @Override
