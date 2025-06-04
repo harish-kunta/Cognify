@@ -97,7 +97,7 @@
                     android:layout_width="280dp"
                     android:layout_height="280dp"
                     android:layout_marginBottom="32dp"
-                    android:src="@drawable/ic_abc_blocks"
+                    android:src="@drawable/ic_abc"
                     android:contentDescription="Word Dash Blocks"
                     android:adjustViewBounds="true" />
 
