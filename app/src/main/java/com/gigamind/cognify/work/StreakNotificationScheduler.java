@@ -36,9 +36,10 @@ public class StreakNotificationScheduler {
         long twentyFourH = TimeUnit.HOURS.toMillis(1); // 1 hour for testing, but 24h in prod
         long runAt = lastMillis + twentyFourH;
         long delay = runAt - now;
-        if (delay < 0) {
-            // If already past 24 h, schedule immediately (or skip?)
-            delay = 0;
+        if (delay <= 0) {
+            // If we've already passed the 24 h window, do NOT enqueue at all.
+            // (That way opening the app after 24 h doesn’t fire immediately.)
+            return;
         }
 
         // Package the firebaseUid into Worker’s input so it can re-sync if offline
