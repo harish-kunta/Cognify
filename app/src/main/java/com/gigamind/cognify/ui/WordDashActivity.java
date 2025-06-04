@@ -25,7 +25,6 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,16 +72,16 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        scoreText        = findViewById(R.id.scoreText);
-        timerText        = findViewById(R.id.timerText);
-        currentWordText  = findViewById(R.id.currentWordText);
-        letterGrid       = findViewById(R.id.letterGrid);
+        scoreText = findViewById(R.id.scoreText);
+        timerText = findViewById(R.id.timerText);
+        currentWordText = findViewById(R.id.currentWordText);
+        letterGrid = findViewById(R.id.letterGrid);
         foundWordsRecycler = findViewById(R.id.foundWordsRecycler);
     }
 
     private void setupButtons() {
-        MaterialButton submitButton    = findViewById(R.id.submitButton);
-        MaterialButton clearButton     = findViewById(R.id.clearButton);
+        MaterialButton submitButton = findViewById(R.id.submitButton);
+        MaterialButton clearButton = findViewById(R.id.clearButton);
         MaterialButton backspaceButton = findViewById(R.id.backspaceButton);
 
         submitButton.setOnClickListener(v -> submitWord());
@@ -133,7 +132,7 @@ public class WordDashActivity extends AppCompatActivity {
             params.width = 0;  // Use weight to distribute columns evenly
             params.height = GridLayout.LayoutParams.WRAP_CONTENT;
             params.columnSpec = GridLayout.spec(i % 4, 1f);
-            params.rowSpec    = GridLayout.spec(i / 4, 1f);
+            params.rowSpec = GridLayout.spec(i / 4, 1f);
             params.setMargins(4, 4, 4, 4);
 
             button.setLayoutParams(params);
@@ -272,13 +271,7 @@ public class WordDashActivity extends AppCompatActivity {
     private void endGame() {
         gameStateManager.endGame();
 
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.game_over)
-                .setMessage(getString(R.string.final_score,
-                        gameStateManager.getScore().getValue()))
-                .setCancelable(false)
-                .setPositiveButton(R.string.view_results, (dialog, which) -> showResults())
-                .show();
+        showResults();
     }
 
     private void showResults() {

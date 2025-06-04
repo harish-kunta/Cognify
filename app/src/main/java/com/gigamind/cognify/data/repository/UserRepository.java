@@ -35,8 +35,8 @@ public class UserRepository {
     // SharedPreferences keys, matching Firestore fields:
     public static final String KEY_LAST_PLAYED_DATE  = UserFields.FIELD_LAST_PLAYED_DATE;    // "yyyy-MM-dd"
     public static final String KEY_LAST_PLAYED_TS    = UserFields.FIELD_LAST_PLAYED_TS;      // raw millis
-    private static final String KEY_CURRENT_STREAK   = UserFields.FIELD_CURRENT_STREAK;
-    private static final String KEY_TOTAL_XP         = UserFields.FIELD_TOTAL_XP;
+    public static final String KEY_CURRENT_STREAK   = UserFields.FIELD_CURRENT_STREAK;
+    public static final String KEY_TOTAL_XP         = UserFields.FIELD_TOTAL_XP;
 
     private final SharedPreferences prefs;
     private final FirebaseService firebaseService;

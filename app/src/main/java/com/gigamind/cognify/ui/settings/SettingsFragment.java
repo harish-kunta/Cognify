@@ -1,5 +1,7 @@
 package com.gigamind.cognify.ui.settings;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -88,6 +90,8 @@ public class SettingsFragment extends Fragment {
         if (auth.getCurrentUser() != null) {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
+                SharedPreferences prefs = requireActivity().getSharedPreferences("GamePrefs", MODE_PRIVATE);
+                prefs.edit().clear().apply();
                 auth.signOut();
                 requireActivity().recreate();
             });

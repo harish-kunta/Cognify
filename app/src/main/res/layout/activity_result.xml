@@ -1,272 +1,307 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/resultRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_elliptical_layer"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:weightSum="10">
+    android:background="@drawable/bg_elliptical_layer">
 
+    <!-- 1) A LottieAnimationView (or any particle-confetti view) sitting behind everything, GONE by default -->
+    <!-- You’ll need to add the Lottie dependency in your Gradle:
+         implementation "com.airbnb.android:lottie:5.0.3"  (or whatever the latest version is) -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/confettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.85"
+        android:visibility="gone"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/confetti"
+    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal"
+        android:weightSum="10">
+
+        <!-- “Game Over!” header with a brief fade-in -->
+        <TextView
+            android:id="@+id/headerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:text="Game Over!"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:alpha="0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/card_background"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/settings_background"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Score Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_volume" />
+
+                        <TextView
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="5"
+                            android:text="Score" />
+
+                        <!-- This valueText will animate from 0→finalScore -->
+                        <TextView
+                            android:id="@+id/scoreValue"
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:text="0" />
+                    </LinearLayout>
+
+                    <!-- Total XP Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_volume" />
+
+                        <TextView
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="5"
+                            android:text="Total XP" />
+
+                        <TextView
+                            android:id="@+id/totalXPValue"
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:text="0" />
+                    </LinearLayout>
+
+                    <!-- Word Count Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_volume" />
+
+                        <TextView
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="5"
+                            android:text="Words Found" />
+
+                        <TextView
+                            android:id="@+id/totalWordText"
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:text="0" />
+                    </LinearLayout>
+
+                    <!-- High Score Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_volume" />
+
+                        <TextView
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="5"
+                            android:text="High Score" />
+
+                        <TextView
+                            android:id="@+id/highScoreText"
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:text="0" />
+                    </LinearLayout>
+
+                    <!-- XP Gained Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_volume" />
+
+                        <TextView
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="5"
+                            android:text="XP Gained" />
+
+                        <TextView
+                            android:id="@+id/xpGainedText"
+                            style="@style/TextAppearance.Settings"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:text="0" />
+                    </LinearLayout>
+
+                    <!-- Streak -->
+                    <TextView
+                        android:id="@+id/streakText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="🔥 0 Day Streak"
+                        android:textColor="@color/accent"
+                        android:textSize="20sp"
+                        android:alpha="0" />
+
+                    <!-- New High Score Banner (pulsing) -->
+                    <TextView
+                        android:id="@+id/newHighScoreText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="🏆 New High Score!"
+                        android:textColor="@color/success"
+                        android:textSize="20sp"
+                        android:visibility="gone"
+                        android:alpha="0" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:alpha="0">
+
+            <!-- Play Again Button (fades in after animations) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playAgainButton"
+                style="@style/Button.Enabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Play Again"
+                app:icon="@drawable/ic_replay" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/homeButton"
+                style="@style/Button.Disabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Back to Home" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 2) An overlay “encouragement” TextView that briefly fades‐in, then out -->
     <TextView
+        android:id="@+id/encouragementText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="24dp"
-        android:layout_weight="1"
-        android:text="Game over!"
+        android:text="Amazing!"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="7"
-        android:orientation="vertical">
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:strokeColor="@color/white"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/settings_background"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- Sound Effects Toggle -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_volume" />
-
-                    <TextView
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="5"
-                        android:text="Score" />
-
-                    <TextView
-                        android:id="@+id/scoreValue"
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="0" />
-
-                </LinearLayout>
-
-                <!-- Sound Effects Toggle -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_volume" />
-
-                    <TextView
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="5"
-                        android:text="Total XP" />
-
-                    <TextView
-                        android:id="@+id/totalXPValue"
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="0" />
-
-                </LinearLayout>
-
-                <!-- Sound Effects Toggle -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_volume" />
-
-                    <TextView
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="5"
-                        android:text="Word Count" />
-
-                    <TextView
-                        android:id="@+id/totalWordText"
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="0" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_volume" />
-
-                    <TextView
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="5"
-                        android:text="High Score" />
-
-                    <TextView
-                        android:id="@+id/highScoreText"
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="0" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:weightSum="10">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_volume" />
-
-                    <TextView
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="5"
-                        android:text="XP gained" />
-
-                    <TextView
-                        android:id="@+id/xpGainedText"
-                        style="@style/TextAppearance.Settings"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:text="0" />
-
-                </LinearLayout>
-
-                <!-- Streak (for daily challenges) -->
-                <TextView
-                    android:id="@+id/streakText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="🔥 0 Day Streak"
-                    android:textColor="@color/accent"
-                    android:textSize="20sp" />
-
-
-                <TextView
-                    android:id="@+id/newHighScoreText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:text="🏆 New High Score!"
-                    android:textColor="@color/success"
-                    android:textSize="20sp"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:orientation="vertical">
-
-        <!-- Sign In Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/playAgainButton"
-            style="@style/Button.Enabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Play Again"
-            app:icon="@drawable/ic_replay" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/homeButton"
-            style="@style/Button.Disabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Back to Home" />
-    </LinearLayout>
-
-</LinearLayout>
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:alpha="0"
+        android:layout_gravity="center" />
+</FrameLayout>
