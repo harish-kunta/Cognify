@@ -9,22 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
-import com.gigamind.cognify.databinding.FragmentHomeBinding;
 import com.gigamind.cognify.databinding.FragmentWordDashBinding;
 import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -45,6 +43,7 @@ public class WordDashFragment extends Fragment {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private ListenerRegistration homeListener;
+    private ImageView userProfileButton;
 
     @Nullable
     @Override
@@ -86,6 +85,7 @@ public class WordDashFragment extends Fragment {
     private void initializeViews() {
         streakCount = binding.streakCount;
         wordGamePlayButton = binding.playWordDashButton;
+        userProfileButton = binding.currentUserAvatar;
     }
 
     /**
@@ -118,6 +118,11 @@ public class WordDashFragment extends Fragment {
             handleGameLaunch(v);
         };
         wordGamePlayButton.setOnClickListener(animatedClickListener);
+
+        userProfileButton.setOnClickListener(v -> {
+            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNavigation);
+            bottomNav.setSelectedItemId(R.id.navigation_profile);
+        });
     }
 
     /**
