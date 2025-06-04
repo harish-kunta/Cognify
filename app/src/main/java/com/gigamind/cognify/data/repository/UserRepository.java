@@ -39,8 +39,10 @@ public class UserRepository {
     private static final String PREFS_NAME = "GamePrefs";
     private final SharedPreferences prefs;
     private final FirebaseService firebaseService;
+    private Context context;
 
     public UserRepository(Context context) {
+        this.context = context;
         this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         this.firebaseService = FirebaseService.getInstance();
     }
@@ -238,8 +240,7 @@ public class UserRepository {
         updateLocalOnly(gameType, score, xpEarned, today, yesterday, nowMillis);
         // Reschedule notification from the (now-updated) SharedPreferences:
         StreakNotificationScheduler.scheduleFromSharedPrefs(
-                /*uid=*/ null,
-                /*appCtx=*/ null  // Your scheduler can retrieve the prefs itself
+                null, context
         );
         return null;
     }
