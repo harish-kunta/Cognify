@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.gigamind.cognify.R;
+import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.FragmentSettingsBinding;
 import com.gigamind.cognify.ui.OnboardingActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -91,7 +92,14 @@ public class SettingsFragment extends Fragment {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
                 SharedPreferences prefs = requireActivity().getSharedPreferences("GamePrefs", MODE_PRIVATE);
-                prefs.edit().clear().apply();
+                // Only remove streak‐related / XP‐related fields:
+                prefs.edit()
+                        .remove(UserRepository.KEY_LAST_PLAYED_DATE)
+                        .remove(UserRepository.KEY_LAST_PLAYED_TS)
+                        .remove(UserRepository.KEY_CURRENT_STREAK)
+                        .remove(UserRepository.KEY_TOTAL_XP)
+                        .remove(UserRepository.KEY_PERSONAL_BEST_XP)
+                        .apply();
                 auth.signOut();
                 requireActivity().recreate();
             });

@@ -1,7 +1,6 @@
 package com.gigamind.cognify.ui;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -21,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.OnboardingAdapter;
 import com.gigamind.cognify.data.firebase.FirebaseService;
+import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.ActivityOnboardingBinding;
 import com.gigamind.cognify.util.OnboardingItem;
 import com.gigamind.cognify.util.UserFields;
@@ -58,6 +58,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
     private SharedPreferences prefs;
+    private UserRepository userRepository;
 
     // Launcher for the new Android 13+ notification permission request
     private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
@@ -72,6 +73,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        userRepository = new UserRepository(this);
 
         // Configure Google Sign In (web client ID stored in strings.xml)
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -278,41 +280,92 @@ public class OnboardingActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Writes or merges the newly signed-in user’s data into Firestore.
-     * Uses UserFields constants for all field names.
-     */
     private void createOrUpdateUserInFirestore(FirebaseUser user, GoogleSignInAccount gAccount) {
         String uid = user.getUid();
         String name = gAccount.getDisplayName();
         String email = gAccount.getEmail();
 
-        Map<String, Object> userData = new HashMap<>();
-        userData.put(UserFields.FIELD_UID, uid);
-        userData.put(UserFields.FIELD_NAME, (name != null ? name : ""));
-        userData.put(UserFields.FIELD_EMAIL, (email != null ? email : ""));
-        userData.put(UserFields.FIELD_SCORE, 0);
-        userData.put(UserFields.FIELD_CURRENT_STREAK, 0);
-        userData.put(UserFields.FIELD_LEADERBOARD_RANK, 0);
-        userData.put(UserFields.FIELD_TROPHIES, new ArrayList<>());
-
         DocumentReference userRef = firestore
                 .collection(FirebaseService.COLLECTION_USERS)
                 .document(uid);
 
-        userRef.set(userData, com.google.firebase.firestore.SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    Intent intent = new Intent(OnboardingActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(OnboardingActivity.this,
-                            "Failed to save user data: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                });
+        // First, fetch the document once to see if it already exists:
+        userRef.get().addOnSuccessListener(snapshot -> {
+            if (snapshot.exists()) {
+                // Document already exists → do not reset currentStreak or totalXP.
+                // We still might want to ensure name/email are up to date:
+                Map<String, Object> updates = new HashMap<>();
+                updates.put(UserFields.FIELD_NAME, (name != null ? name : ""));
+                updates.put(UserFields.FIELD_EMAIL, (email != null ? email : ""));
+                userRef.set(updates, com.google.firebase.firestore.SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            // Now pull down the existing streak/XP into SharedPrefs:
+                            userRepository.syncUserDataOnce()
+                                    .addOnSuccessListener(snap -> {
+                                        launchMainActivity();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Even if syncing fails, at least go on to MainActivity:
+                                        launchMainActivity();
+                                    });
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(
+                                    OnboardingActivity.this,
+                                    "Failed to update user profile: " + e.getMessage(),
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        });
+            } else {
+                // First time ever: document does not exist. Initialize everything to zero:
+                Map<String, Object> newUserData = new HashMap<>();
+                newUserData.put(UserFields.FIELD_UID, uid);
+                newUserData.put(UserFields.FIELD_NAME, (name != null ? name : ""));
+                newUserData.put(UserFields.FIELD_EMAIL, (email != null ? email : ""));
+                newUserData.put(UserFields.FIELD_CURRENT_STREAK, 0);
+                newUserData.put(UserFields.FIELD_TOTAL_XP, 0);
+                newUserData.put(UserFields.FIELD_LAST_PLAYED_DATE, "");      // or omit if you prefer
+                newUserData.put(UserFields.FIELD_LAST_PLAYED_TS, 0L);       // or omit
+                newUserData.put(UserFields.FIELD_LEADERBOARD_RANK, 0);
+                newUserData.put(UserFields.FIELD_TROPHIES, new ArrayList<>());
+                // (Add any other “first-time” defaults here)
+
+                userRef.set(newUserData, com.google.firebase.firestore.SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> {
+                            // Since we just initialized streak=0 and totalXP=0,
+                            // we can write those four keys into SharedPrefs immediately:
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putInt(UserRepository.KEY_CURRENT_STREAK, 0);
+                            editor.putInt(UserRepository.KEY_TOTAL_XP, 0);
+                            editor.putString(UserRepository.KEY_LAST_PLAYED_DATE, "");
+                            editor.putLong(UserRepository.KEY_LAST_PLAYED_TS, 0L);
+                            editor.apply();
+
+                            // Now launch MainActivity:
+                            launchMainActivity();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(
+                                    OnboardingActivity.this,
+                                    "Failed to create new user in Firestore: " + e.getMessage(),
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        });
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(
+                    OnboardingActivity.this,
+                    "Error checking user document: " + e.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
+        });
     }
 
+    private void launchMainActivity() {
+        Intent intent = new Intent(OnboardingActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
     // If the user manually taps “back,” we might want to re-ask next time, so do not override onBackPressed here.
 }

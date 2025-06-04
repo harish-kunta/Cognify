@@ -45,6 +45,38 @@ public class UserRepository {
         this.firebaseService = FirebaseService.getInstance();
     }
 
+    @Nullable
+    public Task<DocumentSnapshot> syncUserDataOnce() {
+        if (!firebaseService.isUserSignedIn()) {
+            return null;
+        }
+
+        return firebaseService.getUserDocument().get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.exists()) return;
+
+                    SharedPreferences.Editor editor = prefs.edit();
+
+                    if (snapshot.contains(UserFields.FIELD_CURRENT_STREAK)) {
+                        int streak = snapshot.getLong(UserFields.FIELD_CURRENT_STREAK).intValue();
+                        editor.putInt(KEY_CURRENT_STREAK, streak);
+                    }
+                    if (snapshot.contains(UserFields.FIELD_TOTAL_XP)) {
+                        int xp = snapshot.getLong(UserFields.FIELD_TOTAL_XP).intValue();
+                        editor.putInt(KEY_TOTAL_XP, xp);
+                    }
+                    if (snapshot.contains(UserFields.FIELD_LAST_PLAYED_DATE)) {
+                        String dateStr = snapshot.getString(UserFields.FIELD_LAST_PLAYED_DATE);
+                        editor.putString(KEY_LAST_PLAYED_DATE, dateStr);
+                    }
+                    if (snapshot.contains(UserFields.FIELD_LAST_PLAYED_TS)) {
+                        long ts = snapshot.getLong(UserFields.FIELD_LAST_PLAYED_TS);
+                        editor.putLong(KEY_LAST_PLAYED_TS, ts);
+                    }
+                    editor.apply();
+                });
+    }
+
     /**
      * “Real-time” listener that keeps SharedPreferences in sync with Firestore.
      * Returns a ListenerRegistration so the caller can remove() it when no longer needed.
