@@ -60,11 +60,6 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
             // 3) Display Name
             binding.nameText.setText(item.getName());
 
-            // 4) Badge Icon (bronze / silver / gold) based on totalXP
-            String badgeType = item.getBadgeType(); // returns "bronze" / "silver" / "gold"
-            int badgeRes = getBadgeDrawableId(badgeType);
-            binding.badgeImage.setImageResource(badgeRes);
-
             // 5) Points (Total XP)
             binding.pointsText.setText(String.valueOf(item.getTotalXP()));
 

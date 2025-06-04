@@ -19,6 +19,7 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.UserFields;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -145,7 +146,8 @@ public class ProfileFragment extends Fragment {
     private void setupClickListeners() {
         // (Alternatively, open a real SettingsActivity)
         settingsIcon.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Settings tapped", Toast.LENGTH_SHORT).show();
+            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNavigation);
+            bottomNav.setSelectedItemId(R.id.navigation_settings);
         });
 
         inviteFriendsButton.setOnClickListener(v -> {
