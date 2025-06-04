@@ -255,6 +255,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Reset Progress"
+                        android:visibility="gone"
                         android:layout_margin="8dp"
                         android:textColor="@color/error"
                         app:strokeColor="@color/error"
