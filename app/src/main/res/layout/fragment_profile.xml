@@ -89,7 +89,7 @@
                         android:id="@+id/userName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="User Name"
+                        android:text=""
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -98,14 +98,14 @@
                         android:id="@+id/userEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="email"
+                        android:text=""
                         android:textColor="@android:color/white" />
 
                     <TextView
                         android:id="@+id/userJoined"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Joined August 2024"
+                        android:text=""
                         android:textColor="@android:color/white" />
 
                 </LinearLayout>
@@ -181,7 +181,7 @@
                             style="@style/ProfilePageUserNameStyle"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="0"
+                            android:text=""
                             android:textAppearance="?attr/textAppearanceListItem" />
                     </LinearLayout>
 
@@ -233,7 +233,7 @@
                             style="@style/ProfilePageUserNameStyle"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="0"
+                            android:text=""
                             android:textAppearance="?attr/textAppearanceListItem" />
                     </LinearLayout>
 

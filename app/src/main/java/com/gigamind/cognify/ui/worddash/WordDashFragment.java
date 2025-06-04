@@ -27,6 +27,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,6 +44,7 @@ public class WordDashFragment extends Fragment {
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
+    private ListenerRegistration homeListener;
 
     @Nullable
     @Override
@@ -93,23 +95,12 @@ public class WordDashFragment extends Fragment {
     private void loadAndDisplayStreak() {
         // If user is signed in, sync from Firestore into local prefs first
         if (firebaseUser != null) {
-            userRepository.syncUserData()
-                    .addOnSuccessListener(snapshot -> {
-                        // Once sync succeeds (or even if the document doesn't exist),
-                        // read the local value (which was just updated).
-                        int streakValue = userRepository.getCurrentStreak();
-                        streakCount.setText(String.valueOf(streakValue));
-                    })
-                    .addOnFailureListener(e -> {
-                        // If syncing fails, fallback to purely local
-                        int localStreak = userRepository.getCurrentStreak();
-                        streakCount.setText(String.valueOf(localStreak));
-                        Snackbar.make(
-                                binding.getRoot(),
-                                "Could not load streak from server. Showing local value.",
-                                Snackbar.LENGTH_LONG
-                        ).show();
-                    });
+            homeListener = userRepository.attachUserDocumentListener(() -> {
+                int streak = userRepository.getCurrentStreak();
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> streakCount.setText(String.valueOf(streak)));
+                }
+            });
         } else {
             // Not signed in: read local-only streak from prefs
             int localStreak = userRepository.getCurrentStreak();

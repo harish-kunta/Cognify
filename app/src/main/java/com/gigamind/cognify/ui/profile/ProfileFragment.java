@@ -1,7 +1,6 @@
 package com.gigamind.cognify.ui.profile;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,17 +19,17 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.UserFields;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * ProfileFragment populates user information (name, email, joined date)
- * and overview tiles (streak and total XP) via UserRepository and FirebaseService.
+ * ProfileFragment now uses a real-time Firestore listener (attachUserDocumentListener),
+ * so that any cached values appear immediately, and only the “server update” happens once.
+ * This eliminates any flicker of a stale “0” or “1” on screen.
  */
 public class ProfileFragment extends Fragment {
     private TextView userNameText;
@@ -45,6 +44,7 @@ public class ProfileFragment extends Fragment {
 
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
+    private ListenerRegistration userDocListener;
 
     @Nullable
     @Override
@@ -52,7 +52,6 @@ public class ProfileFragment extends Fragment {
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -62,26 +61,26 @@ public class ProfileFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1) Bind views
-        userNameText             = view.findViewById(R.id.userName);
-        userEmailText            = view.findViewById(R.id.userEmail);
-        userJoinedText           = view.findViewById(R.id.userJoined);
-        profileImageView         = view.findViewById(R.id.profileImageView);
-        editProfileImageButton   = view.findViewById(R.id.editProfileImageButton);
-        settingsIcon             = view.findViewById(R.id.settingsIcon);
-        streakValueText          = view.findViewById(R.id.streakValue);
-        xpValueText              = view.findViewById(R.id.xpValue);
-        inviteFriendsButton      = view.findViewById(R.id.inviteFriendsButton);
+        // 1) Bind all views
+        userNameText            = view.findViewById(R.id.userName);
+        userEmailText           = view.findViewById(R.id.userEmail);
+        userJoinedText          = view.findViewById(R.id.userJoined);
+        profileImageView        = view.findViewById(R.id.profileImageView);
+        editProfileImageButton  = view.findViewById(R.id.editProfileImageButton);
+        settingsIcon            = view.findViewById(R.id.settingsIcon);
+        streakValueText         = view.findViewById(R.id.streakValue);
+        xpValueText             = view.findViewById(R.id.xpValue);
+        inviteFriendsButton     = view.findViewById(R.id.inviteFriendsButton);
 
-        // 2) Initialize FirebaseUser and UserRepository
-        firebaseUser = FirebaseService.getInstance().getCurrentUser();
+        // 2) Initialize FirebaseUser & UserRepository
+        firebaseUser   = FirebaseService.getInstance().getCurrentUser();
         userRepository = new UserRepository(requireContext());
 
-        // 3) Populate profile fields
+        // 3) Populate static profile info (name, email, joined date)
         populateUserInfo();
 
-        // 4) Populate overview tiles (streak & XP)
-        populateOverview();
+        // 4) Set up “overview” tiles (streak & XP) via real-time listener
+        attachRealtimeOverviewListener();
 
         // 5) Hook up click listeners
         setupClickListeners();
@@ -89,16 +88,16 @@ public class ProfileFragment extends Fragment {
 
     private void populateUserInfo() {
         if (firebaseUser != null) {
-            // Display name and email
+            // Display name & email
             String displayName = firebaseUser.getDisplayName();
             String email       = firebaseUser.getEmail();
             userNameText.setText(displayName != null ? displayName : "Unknown User");
             userEmailText.setText(email != null ? email : "");
 
-            // Joined date from FirebaseUser metadata
+            // “Joined” date from FirebaseUser metadata
             long creationTs = firebaseUser.getMetadata() != null
                     ? firebaseUser.getMetadata().getCreationTimestamp()
-                    : 0;
+                    : 0L;
             if (creationTs > 0) {
                 String joinedDate = DateFormat.getDateInstance().format(new Date(creationTs));
                 userJoinedText.setText("Joined " + joinedDate);
@@ -106,57 +105,55 @@ public class ProfileFragment extends Fragment {
                 userJoinedText.setText("");
             }
 
-            // TODO: Load profileImageView from a URL if stored (omitted here)
+            // TODO: if you store a profile‐picture URL, load it into ‘profileImageView’ here
         } else {
             // Guest user
             userNameText.setText("Guest");
             userEmailText.setText("");
             userJoinedText.setText("");
-            profileImageView.setImageResource(R.drawable.ic_avatar); // a placeholder
+            profileImageView.setImageResource(R.drawable.ic_avatar); // placeholder
         }
     }
 
-    private void populateOverview() {
+    private void attachRealtimeOverviewListener() {
+        // 1) Start with blank values—so nothing flickers before we get “cache or server” data
+        streakValueText.setText("");
+        xpValueText.setText("");
+
         if (firebaseUser != null) {
-            // Sync remote data into local prefs first
-            Task<DocumentSnapshot> syncTask = userRepository.syncUserData();
-            if (syncTask != null) {
-                syncTask.addOnSuccessListener(snapshot -> {
-                    displayStreakAndXp();
-                }).addOnFailureListener(e -> {
-                    // Show local fallback and notify
-                    displayStreakAndXp();
-                    Snackbar.make(
-                            requireView(),
-                            "Unable to fetch latest data. Showing cached values.",
-                            Snackbar.LENGTH_LONG
-                    ).show();
-                });
-                return;
-            }
+            // 2) Attach the Firestore listener
+            userDocListener = userRepository.attachUserDocumentListener(new UserRepository.OnUserDataChanged() {
+                @Override
+                public void onDataChanged() {
+                    // Firestore just updated SharedPreferences; read from there:
+                    final int streak = userRepository.getCurrentStreak();
+                    final int totalXp = userRepository.getTotalXP();
+
+                    // Always update UI on main thread
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            streakValueText.setText(String.valueOf(streak));
+                            xpValueText.setText(String.valueOf(totalXp));
+                        });
+                    }
+                }
+            });
+        } else {
+            // 3) If not signed in, simply read local prefs once
+            int streak  = userRepository.getCurrentStreak();
+            int totalXp = userRepository.getTotalXP();
+            streakValueText.setText(String.valueOf(streak));
+            xpValueText.setText(String.valueOf(totalXp));
         }
-        // Not signed in or syncTask == null: just display local values
-        displayStreakAndXp();
-    }
-
-    private void displayStreakAndXp() {
-        int streak = userRepository.getCurrentStreak();
-        int totalXp = userRepository.getTotalXP();
-
-        streakValueText.setText(String.valueOf(streak));
-        xpValueText.setText(String.valueOf(totalXp));
     }
 
     private void setupClickListeners() {
-        // Open settings when the gear icon is tapped
-//        settingsIcon.setOnClickListener(v -> {
-//            // TODO: Replace with actual settings activity
-//            Intent intent = new Intent(requireContext(), SettingsActivity.class);
-//            startActivity(intent);
-//        });
+        // (Alternatively, open a real SettingsActivity)
+        settingsIcon.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "Settings tapped", Toast.LENGTH_SHORT).show();
+        });
 
         editProfileImageButton.setOnClickListener(v -> {
-            // TODO: Open image picker or profile edit UI
             Toast.makeText(requireContext(), "Edit profile picture", Toast.LENGTH_SHORT).show();
         });
 
@@ -165,9 +162,19 @@ public class ProfileFragment extends Fragment {
             shareIntent.setType("text/plain");
             shareIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "Join me on Cognify! Download the app: https://example.com/app"
+                    "Join me on Cognify! Download on Play Store: https://example.com/app"
             );
             startActivity(Intent.createChooser(shareIntent, "Invite Friends"));
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Always remove the Firestore listener to prevent memory leaks
+        if (userDocListener != null) {
+            userDocListener.remove();
+            userDocListener = null;
+        }
     }
 }
