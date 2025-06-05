@@ -37,6 +37,17 @@ public class MathGameEngineTest {
     }
 
     @Test
+    void testOptionsWithinRange() {
+        engine.generateQuestion();
+        int answer = engine.getCurrentAnswer();
+        for (int option : engine.getOptions()) {
+            assertTrue(option > 0, "Options should be positive");
+            assertTrue(Math.abs(option - answer) <= 3,
+                    "Option out of range from correct answer");
+        }
+    }
+
+    @Test
     void testCheckAnswerAndScore() {
         engine.generateQuestion();
         int correct = engine.getCurrentAnswer();

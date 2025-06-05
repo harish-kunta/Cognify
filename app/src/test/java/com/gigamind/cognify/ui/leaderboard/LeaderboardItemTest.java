@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LeaderboardItemTest {
     @ParameterizedTest
-    @CsvSource({"50,bronze", "1000,silver", "1500,silver", "2500,gold"})
+    @CsvSource({"50,bronze", "0,bronze", "-10,bronze", "1000,silver", "1500,silver", "2000,gold", "2500,gold"})
     void badgeTypeMatchesXpThreshold(int xp, String expected) {
         LeaderboardItem item = new LeaderboardItem("id", "name", xp, "US");
         assertEquals(expected, item.getBadgeType());
