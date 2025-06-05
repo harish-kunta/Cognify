@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
+import com.gigamind.cognify.util.ExceptionLogger;
 
 import androidx.annotation.NonNull;
 
@@ -37,8 +38,13 @@ public class CognifyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-                Log.e(TAG, "Uncaught exception in thread " + t.getName(), e));
+        Thread.UncaughtExceptionHandler previousHandler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            ExceptionLogger.log(TAG, e);
+            if (previousHandler != null) {
+                previousHandler.uncaughtException(t, e);
+            }
+        });
 
         // (1) Initialize Firebase
         FirebaseApp.initializeApp(this);

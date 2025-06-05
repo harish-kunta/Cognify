@@ -29,6 +29,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.gigamind.cognify.util.ExceptionLogger;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.AuthCredential;
@@ -260,6 +261,7 @@ public class OnboardingActivity extends AppCompatActivity {
                     firebaseAuthWithGoogle(account.getIdToken(), account);
                 }
             } catch (ApiException e) {
+                ExceptionLogger.log("OnboardingActivity", e);
                 Toast.makeText(this,
                         "Google sign-in failed: " + e.getMessage(),
                         Toast.LENGTH_LONG).show();
