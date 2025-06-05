@@ -48,7 +48,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="8"
                 android:gravity="center"
-                android:text="Home"
+                android:text="@string/home"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -91,7 +91,7 @@
                         android:id="@+id/titleText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Welcome to Cognify!"
+                        android:text="@string/welcome_card_title"
                         android:textColor="@android:color/white"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/titleText"
                         android:layout_marginTop="8dp"
-                        android:text="Let’s start to\nLearn and\nPlay the game"
+                        android:text="@string/welcome_card_subtitle"
                         android:textColor="#FFFF00"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -127,7 +127,7 @@
                             android:id="@+id/dailyChallengeTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Leaderboards"
+                            android:text="@string/leaderboards"
                             android:textColor="@android:color/white"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -153,7 +153,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Play More Games"
+            android:text="@string/play_more_games"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -162,7 +162,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Choose a brain booster today 👇"
+            android:text="@string/choose_booster"
             android:textColor="@color/white"
             android:textSize="16sp" />
 

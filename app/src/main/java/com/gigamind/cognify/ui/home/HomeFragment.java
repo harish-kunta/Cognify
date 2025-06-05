@@ -140,15 +140,15 @@ public class HomeFragment extends Fragment {
     private void setupDailyChallenge() {
         Calendar calendar = Calendar.getInstance();
         boolean isWordDay = (calendar.get(Calendar.DAY_OF_WEEK) % 2) == 0;
-        String challengeType = isWordDay ? "Word Dash" : "Quick Math";
+        String challengeType = isWordDay ? getString(R.string.word_dash) : getString(R.string.quick_math);
         dailyChallengeTitle.setText(challengeType);
 
         // Use a consistent "YYYY-DDD" key in prefs to mark completion
         String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US).format(calendar.getTime());
-        boolean isDailyCompleted = prefs.getBoolean("daily_completed_" + todayKey, false);
+        boolean isDailyCompleted = prefs.getBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, false);
 
         if (isDailyCompleted) {
-            dailyChallengeTitle.setText("Completed Today");
+            dailyChallengeTitle.setText(getString(R.string.completed_today));
             dailyChallengeTitle.setEnabled(false);
         }
     }
@@ -194,12 +194,12 @@ public class HomeFragment extends Fragment {
         Intent intent;
         if (v.getId() == R.id.wordGameCard || v == binding.wordGameCard.playButton || v.getId() == R.id.welcomeCardView) {
             intent = new Intent(getContext(), WordDashActivity.class);
-            intent.putExtra("GAME_TYPE", "WORD");
+            intent.putExtra(Constants.INTENT_GAME_TYPE, Constants.GAME_TYPE_WORD);
         } else {
             intent = new Intent(getContext(), QuickMathActivity.class);
-            intent.putExtra("GAME_TYPE", "MATH");
+            intent.putExtra(Constants.INTENT_GAME_TYPE, Constants.GAME_TYPE_MATH);
         }
-        intent.putExtra("IS_DAILY_CHALLENGE", isDaily);
+        intent.putExtra(Constants.INTENT_IS_DAILY, isDaily);
         startActivity(intent);
 
         if (isDaily) {
@@ -207,7 +207,7 @@ public class HomeFragment extends Fragment {
             Calendar calendar = Calendar.getInstance();
             String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US)
                     .format(calendar.getTime());
-            prefs.edit().putBoolean("daily_completed_" + todayKey, true).apply();
+            prefs.edit().putBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, true).apply();
         }
     }
 

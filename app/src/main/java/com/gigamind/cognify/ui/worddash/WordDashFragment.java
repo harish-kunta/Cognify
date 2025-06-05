@@ -135,12 +135,12 @@ public class WordDashFragment extends Fragment {
         Intent intent;
         if (v.getId() == R.id.playWordDashButton) {
             intent = new Intent(getContext(), WordDashActivity.class);
-            intent.putExtra("GAME_TYPE", "WORD");
+            intent.putExtra(Constants.INTENT_GAME_TYPE, Constants.GAME_TYPE_WORD);
         } else {
             intent = new Intent(getContext(), QuickMathActivity.class);
-            intent.putExtra("GAME_TYPE", "MATH");
+            intent.putExtra(Constants.INTENT_GAME_TYPE, Constants.GAME_TYPE_MATH);
         }
-        intent.putExtra("IS_DAILY_CHALLENGE", isDaily);
+        intent.putExtra(Constants.INTENT_IS_DAILY, isDaily);
         startActivity(intent);
 
         if (isDaily) {
@@ -148,7 +148,7 @@ public class WordDashFragment extends Fragment {
             Calendar calendar = Calendar.getInstance();
             String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US)
                     .format(calendar.getTime());
-            prefs.edit().putBoolean("daily_completed_" + todayKey, true).apply();
+            prefs.edit().putBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, true).apply();
         }
     }
 

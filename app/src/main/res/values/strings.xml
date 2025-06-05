@@ -78,4 +78,17 @@
     <string name="word_dash">Word Dash</string>
     <string name="quick_math">Quick Math</string>
     <string name="lets_go">Let’s Go</string>
+    <string name="completed_today">Completed Today</string>
+    <string name="notif_streak_title">🔥 Your streak is in danger!</string>
+    <string name="notif_streak_text">You haven\u2019t played for 24 hours. Tap here to keep it alive.</string>
+    <string name="streak_channel_name">Streak Reminder</string>
+    <string name="streak_channel_desc">Notifies if you haven\u2019t played in 24 hours</string>
+    <string name="welcome_card_title">Welcome to Cognify!</string>
+    <string name="welcome_card_subtitle">Let's start to Learn and Play the game</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="play_more_games">Play More Games</string>
+    <string name="choose_booster">Choose a brain booster today</string>
+    <string name="quick_math_score_placeholder">Score: 0</string>
+    <string name="quick_math_question_placeholder">Question 1/10</string>
+    <string name="quick_math_equation_placeholder">7 + 5 = ?</string>
 </resources>

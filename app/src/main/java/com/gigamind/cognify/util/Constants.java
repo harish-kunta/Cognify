@@ -22,6 +22,13 @@ public class Constants {
     public static final String PREF_NOTIFICATION = "notification_preferences";
     public static final String PREF_NOTIFICATION_ENABLED = "notifications_enabled";
 
+    // Intent extras and other keys
+    public static final String INTENT_GAME_TYPE = "GAME_TYPE";
+    public static final String INTENT_IS_DAILY = "IS_DAILY_CHALLENGE";
+    public static final String GAME_TYPE_WORD = "WORD";
+    public static final String GAME_TYPE_MATH = "MATH";
+    public static final String PREF_DAILY_COMPLETED_PREFIX = "daily_completed_";
+
     // Analytics screen names
     public static final String ANALYTICS_SCREEN_RESULT = "result_screen";
     public static final String ANALYTICS_SCREEN_WORD_DASH = "word_dash_game";
