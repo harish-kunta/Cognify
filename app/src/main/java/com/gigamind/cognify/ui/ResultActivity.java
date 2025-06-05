@@ -68,8 +68,10 @@ public class ResultActivity extends AppCompatActivity {
 
         initializeViews();
 
-        // Optional: a “ding” sound for big wins
-        dingSound = MediaPlayer.create(this, R.raw.success_sound);
+        // Initialize MediaPlayer only if it hasn't been created yet
+        if (dingSound == null) {
+            dingSound = MediaPlayer.create(this, R.raw.success_sound);
+        }
 
         prefs          = getSharedPreferences("GamePrefs", MODE_PRIVATE);
         userRepository = new UserRepository(this);
@@ -90,12 +92,12 @@ public class ResultActivity extends AppCompatActivity {
             newPbValue = prefs.getInt(KEY_PERSONAL_BEST_XP, 0);
         }
 
-        // (3) Read “old” streak / XP from prefs (already kept in sync elsewhere)
+        // (3) Read "old" streak / XP from prefs (already kept in sync elsewhere)
         String oldDate    = prefs.getString(KEY_LAST_PLAYED_DATE, "");
         int    oldStreak  = prefs.getInt(KEY_CURRENT_STREAK, 0);
         int    oldTotalXp = prefs.getInt(KEY_TOTAL_XP, 0);
 
-        // (4) Compute “today” / “yesterday”
+        // (4) Compute "today" / "yesterday"
         Calendar nowCal = Calendar.getInstance();
         String todayStr    = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
                 .format(nowCal.getTime());
@@ -276,8 +278,12 @@ public class ResultActivity extends AppCompatActivity {
                                     animateNewHighScoreBanner();
                                 }
 
-                                // 6) Show encouragement text (e.g. “Amazing!”)
+                                // 6) Show encouragement text (e.g. "Amazing!")
                                 showEncouragement(randomEncouragement());
+
+                                // 2) Fire off confetti
+                                confettiView.setVisibility(View.VISIBLE);
+                                confettiView.playAnimation();
 
                                 // 7) Finally, fade in Play/Back buttons after 800ms
                                 AnimationUtils.fadeInWithDelay(playContainer, 800, 400);
@@ -290,7 +296,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void animateNewHighScoreBanner() {
-        // 1) Pulse the “New High Score!” text
+        // 1) Pulse the "New High Score!" text
         newHighScoreText.setAlpha(0f);
         newHighScoreText.setScaleX(0.5f);
         newHighScoreText.setScaleY(0.5f);
@@ -304,10 +310,6 @@ public class ResultActivity extends AppCompatActivity {
                         AnimationUtils.pulse(newHighScoreText, 1.1f, 300),
                 500
         );
-
-        // 2) Fire off confetti
-        confettiView.setVisibility(View.VISIBLE);
-        confettiView.playAnimation();
     }
 
     private void showEncouragement(String message) {
@@ -345,8 +347,19 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        // Release MediaPlayer in onStop to handle configuration changes
+        if (dingSound != null) {
+            dingSound.release();
+            dingSound = null;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        // Ensure MediaPlayer is released
         if (dingSound != null) {
             dingSound.release();
             dingSound = null;

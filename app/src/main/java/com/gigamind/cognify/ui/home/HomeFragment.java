@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -105,19 +106,25 @@ public class HomeFragment extends Fragment {
      * Falls back to local if not signed-in or network fails.
      */
     private void loadAndDisplayStreak() {
-        // If user is signed in, sync from Firestore into local prefs first
-        if (firebaseUser != null) {
-            homeListener = userRepository.attachUserDocumentListener(() -> {
-                int streak = userRepository.getCurrentStreak();
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> streakCount.setText(String.valueOf(streak)));
-                }
-            });
-        } else {
-            // Not signed in: read local-only streak from prefs
-            int localStreak = userRepository.getCurrentStreak();
-            streakCount.setText(String.valueOf(localStreak));
+        if (firebaseUser == null) {
+            // Handle not signed in state
+            streakCount.setText("0");
+            binding.streakContainer.setVisibility(View.GONE);
+            return;
         }
+
+        binding.streakContainer.setVisibility(View.VISIBLE);
+
+        userRepository.attachUserDocumentListener(() -> {
+            int streak = userRepository.getCurrentStreak();
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    if (isAdded() && getActivity() != null) {
+                        streakCount.setText(String.valueOf(streak));
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -188,5 +195,8 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        if (homeListener != null) {
+            homeListener.remove();
+        }
     }
 }

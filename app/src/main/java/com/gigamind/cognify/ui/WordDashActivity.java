@@ -44,6 +44,7 @@ public class WordDashActivity extends AppCompatActivity {
     private StringBuilder currentWord;
     private CountDownTimer countDownTimer;
     private List<String> foundWordsList;
+    private boolean isDictionaryLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +57,28 @@ public class WordDashActivity extends AppCompatActivity {
         observeGameState();
         setupFoundWordsRecycler();
 
+        disableGameInteractions();
+
         // 2) Kick off dictionary loading. As soon as it's ready, we build gameEngine and letter grid.
         DictionaryProvider.getDictionaryAsync(
                 getApplicationContext(),
                 dictionary -> {
                     // Called on main thread once dictionary is loaded or on error (dictionary may be empty)
-                    gameEngine = new WordGameEngine(dictionary);
-                    foundWordsList = new ArrayList<>();
-                    currentWord = new StringBuilder();
-                    gameStateManager = GameStateManager.getInstance();
-                    setupLetterGrid(); // Now safe—gameEngine is non-null
-                    startGame();       // Begin the game timer
+                    if (dictionary != null && !dictionary.isEmpty()) {
+                        gameEngine = new WordGameEngine(dictionary);
+                        foundWordsList = new ArrayList<>();
+                        currentWord = new StringBuilder();
+                        gameStateManager = GameStateManager.getInstance();
+                        setupLetterGrid(); // Now safe—gameEngine is non-null
+
+                        enableGameInteractions();
+                        isDictionaryLoaded = true;
+                        startGame();       // Begin the game timer
+                    } else {
+                        // Handle dictionary load error
+                        Toast.makeText(this, "Error loading game dictionary", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
                 }
         );
     }
@@ -293,6 +305,42 @@ public class WordDashActivity extends AppCompatActivity {
             currentWord.deleteCharAt(currentWord.length() - 1);
             currentWordText.setText(currentWord.toString());
             v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+        }
+    }
+
+    private void disableGameInteractions() {
+        if (letterGrid != null) {
+            letterGrid.setEnabled(false);
+            for (int i = 0; i < letterGrid.getChildCount(); i++) {
+                View child = letterGrid.getChildAt(i);
+                child.setEnabled(false);
+            }
+        }
+    }
+
+    private void enableGameInteractions() {
+        if (letterGrid != null) {
+            letterGrid.setEnabled(true);
+            for (int i = 0; i < letterGrid.getChildCount(); i++) {
+                View child = letterGrid.getChildAt(i);
+                child.setEnabled(true);
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isDictionaryLoaded && countDownTimer == null) {
+            startGame();
         }
     }
 

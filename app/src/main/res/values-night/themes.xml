@@ -1,16 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Cognify" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Cognify" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryLight</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/black</item>
         <item name="android:statusBarColor">@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
+
+        <!-- Text colors -->
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+
+        <!-- Card style -->
+        <item name="cardViewStyle">@style/CardView.Custom.Dark</item>
+        
+        <!-- Button style -->
+        <item name="materialButtonStyle">@style/Button.Enabled.Dark</item>
     </style>
 
     <style name="Theme.Cognify.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Custom CardView style for dark theme -->
+    <style name="CardView.Custom.Dark" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="contentPadding">8dp</item>
+        <item name="height">16dp</item>
+        <item name="rippleColor">@color/card_shadow</item>
+    </style>
+
+    <!-- Button style for dark theme -->
+    <style name="Button.Enabled.Dark" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/colorPrimaryLight</item>
+        <item name="rippleColor">@color/colorAccent</item>
     </style>
 </resources>

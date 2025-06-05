@@ -46,12 +46,13 @@ import java.util.Map;
 /**
  * OnboardingActivity now also asks for notification permission during onboarding.
  * We show a rationale dialog until the user either grants the permission
- * (Android 13+) or explicitly taps “No thanks” to decline.
+ * (Android 13+) or explicitly taps "No thanks" to decline.
  */
 public class OnboardingActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
     private static final String PREFS_NAME = "GamePrefs";
     private static final String PREF_ASKED_NOTIFICATIONS = "asked_for_notifications";
+    private static final String KEY_IS_GUEST = "is_guest_mode";
 
     private ActivityOnboardingBinding binding;
     private GoogleSignInClient googleSignInClient;
@@ -103,9 +104,9 @@ public class OnboardingActivity extends AppCompatActivity {
                         isGranted -> {
                             if (isGranted) {
                                 // User granted POST_NOTIFICATIONS; no further action needed
-                                Toast.makeText(this, "Notifications enabled. You won’t lose your streak!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Notifications enabled. You won't lose your streak!", Toast.LENGTH_SHORT).show();
                             } else {
-                                // User denied. We’ll treat this as “No thanks” and stop asking again.
+                                // User denied. We'll treat this as "No thanks" and stop asking again.
                                 prefs.edit()
                                         .putBoolean(PREF_ASKED_NOTIFICATIONS, true)
                                         .apply();
@@ -116,8 +117,8 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     /**
-     * If notifications aren’t enabled yet, and we haven’t already asked, show a rationale dialog.
-     * This will loop until the user either grants permission or taps “No thanks.”
+     * If notifications aren't enabled yet, and we haven't already asked, show a rationale dialog.
+     * This will loop until the user either grants permission or taps "No thanks."
      */
     private void checkAndAskNotificationPermissionIfNeeded() {
         // If device < Android 13, no runtime permission needed—return early.
@@ -125,7 +126,7 @@ public class OnboardingActivity extends AppCompatActivity {
             return;
         }
 
-        // If user already tapped “No thanks,” we don’t ask again.
+        // If user already tapped "No thanks," we don't ask again.
         boolean alreadyAsked = prefs.getBoolean(PREF_ASKED_NOTIFICATIONS, false);
         if (alreadyAsked) {
             return;
@@ -140,8 +141,8 @@ public class OnboardingActivity extends AppCompatActivity {
         // Otherwise, show a custom rationale dialog explaining why we need notifications:
         new AlertDialog.Builder(this)
                 .setTitle("Keep Your Streak Alive!")
-                .setMessage("We’d like to send you a daily reminder so you won’t lose your hard-earned streak. " +
-                        "Allow notifications to receive gentle nudges if you haven’t played today.")
+                .setMessage("We'd like to send you a daily reminder so you won't lose your hard-earned streak. " +
+                        "Allow notifications to receive gentle nudges if you haven't played today.")
                 .setPositiveButton("Enable", (dialog, which) -> {
                     // Launch the system permission prompt
                     requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
@@ -236,6 +237,14 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void continueAsGuest() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(KEY_IS_GUEST, true);
+        editor.putInt(UserRepository.KEY_CURRENT_STREAK, 0);
+        editor.putInt(UserRepository.KEY_TOTAL_XP, 0);
+        editor.putString(UserRepository.KEY_LAST_PLAYED_DATE, "");
+        editor.putLong(UserRepository.KEY_LAST_PLAYED_TS, 0L);
+        editor.apply();
+
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
@@ -328,7 +337,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 newUserData.put(UserFields.FIELD_LAST_PLAYED_TS, 0L);       // or omit
                 newUserData.put(UserFields.FIELD_LEADERBOARD_RANK, 0);
                 newUserData.put(UserFields.FIELD_TROPHIES, new ArrayList<>());
-                // (Add any other “first-time” defaults here)
+                // (Add any other "first-time" defaults here)
 
                 userRef.set(newUserData, com.google.firebase.firestore.SetOptions.merge())
                         .addOnSuccessListener(aVoid -> {
@@ -367,5 +376,5 @@ public class OnboardingActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    // If the user manually taps “back,” we might want to re-ask next time, so do not override onBackPressed here.
+    // If the user manually taps "back," we might want to re-ask next time, so do not override onBackPressed here.
 }
