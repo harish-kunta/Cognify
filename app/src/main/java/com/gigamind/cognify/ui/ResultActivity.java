@@ -22,10 +22,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
-import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,8 +32,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
+import com.gigamind.cognify.util.AnimationUtils;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,38 +71,40 @@ public class ResultActivity extends AppCompatActivity {
         // Optional: a “ding” sound for big wins
         dingSound = MediaPlayer.create(this, R.raw.success_sound);
 
-        prefs = getSharedPreferences("GamePrefs", MODE_PRIVATE);
+        prefs          = getSharedPreferences("GamePrefs", MODE_PRIVATE);
         userRepository = new UserRepository(this);
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser   = FirebaseAuth.getInstance().getCurrentUser();
 
-        int score = getIntent().getIntExtra(INTENT_SCORE, 0);
-        String gameType = getIntent().getStringExtra(INTENT_TYPE);
-        int wordsFound = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
+        int score        = getIntent().getIntExtra(INTENT_SCORE, 0);
+        String gameType  = getIntent().getStringExtra(INTENT_TYPE);
+        int wordsFound   = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
 
-        // 1) Compute how much XP was earned (PB + streak bonus)
+        // (1) Compute how much XP was earned (PB + streak bonus)
         int xpEarned = calculateXpEarned(score, gameType);
 
-        // 2) Update local high‐score synchronously
+        // (2) Update local high‐score synchronously
         boolean isNewPb = updateHighScoreLocal(score, gameType);
 
-        int newPbValue  = -1;
+        int newPbValue = -1;
         if (isNewPb) {
-            // We just wrote a new “pb_worddash” into SharedPrefs; read it back:
+            // We just wrote a new “pb_<gametype>” into SharedPrefs; read it back:
             newPbValue = prefs.getInt(KEY_PERSONAL_BEST_XP, 0);
         }
 
-        // 3) Read “old” streak / XP from prefs (already kept in sync elsewhere)
-        String oldDate = prefs.getString(KEY_LAST_PLAYED_DATE, "");
-        int oldStreak = prefs.getInt(KEY_CURRENT_STREAK, 0);
-        int oldTotalXp = prefs.getInt(KEY_TOTAL_XP, 0);
+        // (3) Read “old” streak / XP from prefs (already kept in sync elsewhere)
+        String oldDate    = prefs.getString(KEY_LAST_PLAYED_DATE, "");
+        int    oldStreak  = prefs.getInt(KEY_CURRENT_STREAK, 0);
+        int    oldTotalXp = prefs.getInt(KEY_TOTAL_XP, 0);
 
-        // 4) Compute “today” / “yesterday”
+        // (4) Compute “today” / “yesterday”
         Calendar nowCal = Calendar.getInstance();
-        String todayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(nowCal.getTime());
+        String todayStr    = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(nowCal.getTime());
         nowCal.add(Calendar.DAY_OF_YEAR, -1);
-        String yesterdayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(nowCal.getTime());
+        String yesterdayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(nowCal.getTime());
 
-        // 5) Compute newStreak locally:
+        // (5) Compute newStreak locally:
         int newStreak;
         if (yesterdayStr.equals(oldDate)) {
             newStreak = oldStreak + 1;
@@ -115,10 +114,10 @@ public class ResultActivity extends AppCompatActivity {
             newStreak = oldStreak;
         }
 
-        // 6) Compute newTotalXp:
+        // (6) Compute newTotalXp:
         int newTotalXp = oldTotalXp + xpEarned;
 
-        // 7) Immediately write those new values into SharedPreferences:
+        // (7) Write new values into SharedPreferences:
         long nowMillis = System.currentTimeMillis();
         prefs.edit()
                 .putString(KEY_LAST_PLAYED_DATE, todayStr)
@@ -128,16 +127,20 @@ public class ResultActivity extends AppCompatActivity {
                 .putInt(KEY_PERSONAL_BEST_XP, newPbValue)
                 .apply();
 
-        // 8) Kick off background Firestore merge (we don’t block UI on this)
-        Task<Void> updateTask = userRepository.updateGameResults(gameType, score, xpEarned, newPbValue);
+        // (8) Kick off Firestore merge in background
+        Task<Void> updateTask = userRepository.updateGameResults(
+                gameType, score, xpEarned, newPbValue
+        );
 
-        // 9) Schedule next streak notification
+        // (9) Schedule next streak notification (uses prefs key we just wrote)
         String uid = (firebaseUser != null) ? firebaseUser.getUid() : null;
         StreakNotificationScheduler.scheduleFromSharedPrefs(uid, this);
 
-        // 10) Animate everything in sequence:
+        // (10) Animate everything in sequence:
         animateHeader();
-        animateNumbersSequentially(score, xpEarned, newTotalXp, newStreak, isNewPb, updateTask != null, wordsFound);
+        animateNumbersSequentially(
+                score, xpEarned, newTotalXp, newStreak, isNewPb, (updateTask != null), wordsFound
+        );
 
         setupButtons(gameType);
     }
@@ -167,39 +170,35 @@ public class ResultActivity extends AppCompatActivity {
         encouragementText.setAlpha(0f);
     }
 
-    private String randomEncouragement() {
-        int idx = new Random().nextInt(ENCOURAGEMENTS.length);
-        return ENCOURAGEMENTS[idx];
-    }
-
     private int calculateXpEarned(int score, String gameType) {
         int xp = score;
 
-        // Personal best bonus:
-        String pbKey = "pb_" + gameType.toLowerCase();
+        // (1) Personal best bonus
+        String pbKey    = "pb_" + gameType.toLowerCase();
         int existingPb = prefs.getInt(pbKey, 0);
         if (score > existingPb) {
             xp += BONUS_NEW_PB;
         }
 
-        // Streak bonus if lastPlayedDate (in prefs) was yesterday:
+        // (2) Streak bonus if lastPlayedDate (in prefs) was yesterday
         String lastDate = prefs.getString(KEY_LAST_PLAYED_DATE, "");
         if (!lastDate.isEmpty()) {
             Calendar cal = Calendar.getInstance();
-            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(cal.getTime());
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    .format(cal.getTime());
             cal.add(Calendar.DAY_OF_YEAR, -1);
-            String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(cal.getTime());
+            String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    .format(cal.getTime());
             if (yesterday.equals(lastDate)) {
                 xp += BONUS_STREAK_PER_DAY;
             }
         }
-
         return xp;
     }
 
     private boolean updateHighScoreLocal(int score, String gameType) {
         String highScoreKey = KEY_PERSONAL_BEST_XP;
-        int currentHigh = prefs.getInt(highScoreKey, 0);
+        int currentHigh     = prefs.getInt(highScoreKey, 0);
 
         if (score > currentHigh) {
             prefs.edit().putInt(highScoreKey, score).apply();
@@ -214,11 +213,8 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void animateHeader() {
-        headerText.animate()
-                .alpha(1f)
-                .setDuration(400)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .start();
+        // Fade headerText in over 400ms
+        AnimationUtils.fadeIn(headerText, 400);
     }
 
     private void animateNumbersSequentially(
@@ -228,8 +224,8 @@ public class ResultActivity extends AppCompatActivity {
             final int finalStreak,
             final boolean isNewPb,
             final boolean willSyncRemote,
-            final int wordsFound) {
-
+            final int wordsFound
+    ) {
         // 1) Score count‐up
         ValueAnimator scoreAnim = ValueAnimator.ofInt(0, finalScore);
         scoreAnim.setDuration(600);
@@ -239,62 +235,51 @@ public class ResultActivity extends AppCompatActivity {
         });
         scoreAnim.start();
 
-
-        // 2) After score animation finishes, animate XP Gained
-        scoreAnim.addListener(new SimpleAnimatorListener() {
+        // 2) After score animation finishes → animate words found (totalWordText)
+        scoreAnim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(@NonNull Animator animation) {
-                // Play a little “ding” on XP reveal
+            public void onAnimationEnd(Animator animation) {
+                // Ding sound on XP reveal:
                 if (xpGained > 0 && dingSound != null) dingSound.start();
 
-                ValueAnimator xpAnim = ValueAnimator.ofInt(0, wordsFound);
-                xpAnim.setDuration(500);
-                xpAnim.addUpdateListener(anim -> {
-                    int val = (Integer) anim.getAnimatedValue();
-                    totalWordText.setText(String.valueOf(val));
+                ValueAnimator wordsAnim = ValueAnimator.ofInt(0, wordsFound);
+                wordsAnim.setDuration(500);
+                wordsAnim.addUpdateListener(anim2 -> {
+                    int val2 = (Integer) anim2.getAnimatedValue();
+                    totalWordText.setText(String.valueOf(val2));
                 });
-                xpAnim.start();
+                wordsAnim.start();
 
-                xpAnim.addListener(new SimpleAnimatorListener() {
+                wordsAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         // 3) Animate Total XP
-                        ValueAnimator totalXpAnim =
-                                ValueAnimator.ofInt(prefs.getInt(KEY_TOTAL_XP, 0) - xpGained,
-                                        finalTotalXp);
-                        totalXpAnim.setDuration(600);
-                        totalXpAnim.addUpdateListener(anim2 -> {
-                            int val2 = (Integer) anim2.getAnimatedValue();
-                            totalXPValue.setText(String.valueOf(val2));
+                        int startXp = prefs.getInt(KEY_TOTAL_XP, 0) - xpGained;
+                        ValueAnimator xpAnim = ValueAnimator.ofInt(startXp, finalTotalXp);
+                        xpAnim.setDuration(600);
+                        xpAnim.addUpdateListener(anim3 -> {
+                            int val3 = (Integer) anim3.getAnimatedValue();
+                            totalXPValue.setText(String.valueOf(val3));
                         });
-                        totalXpAnim.start();
+                        xpAnim.start();
 
-                        totalXpAnim.addListener(new SimpleAnimatorListener() {
+                        xpAnim.addListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 // 4) Animate Streak
                                 streakText.setText("🔥 " + finalStreak + " Day Streak");
-                                streakText.animate()
-                                        .alpha(1f)
-                                        .setDuration(400)
-                                        .setInterpolator(new AccelerateDecelerateInterpolator())
-                                        .start();
+                                AnimationUtils.fadeIn(streakText, 400);
 
-                                // 5) If new PB, pulse that banner and launch confetti
+                                // 5) If new PB → pulse banner + launch confetti
                                 if (isNewPb) {
                                     animateNewHighScoreBanner();
                                 }
 
-                                // 6) Show a brief encouraging phrase in the center
+                                // 6) Show encouragement text (e.g. “Amazing!”)
                                 showEncouragement(randomEncouragement());
 
-                                // 7) Finally, fade in the “Play Again” & “Back to Home” buttons
-                                new Handler().postDelayed(() -> {
-                                    playContainer.animate()
-                                            .alpha(1f)
-                                            .setDuration(400)
-                                            .start();
-                                }, 800);
+                                // 7) Finally, fade in Play/Back buttons after 800ms
+                                AnimationUtils.fadeInWithDelay(playContainer, 800, 400);
                             }
                         });
                     }
@@ -304,29 +289,20 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void animateNewHighScoreBanner() {
-        // 1) Fade in “New High Score!” text with a bounce
+        // 1) Pulse the “New High Score!” text
         newHighScoreText.setAlpha(0f);
         newHighScoreText.setScaleX(0.5f);
         newHighScoreText.setScaleY(0.5f);
         newHighScoreText.setVisibility(View.VISIBLE);
-        newHighScoreText.animate()
-                .alpha(1f)
-                .scaleX(1f)
-                .scaleY(1f)
-                .setDuration(500)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .withEndAction(() -> {
-                    // After it’s fully visible, pulse a few times
-                    ScaleAnimation pulse = new ScaleAnimation(
-                            1f, 1.1f, 1f, 1.1f,
-                            Animation.RELATIVE_TO_SELF, 0.5f,
-                            Animation.RELATIVE_TO_SELF, 0.5f);
-                    pulse.setDuration(300);
-                    pulse.setRepeatCount(2);
-                    pulse.setRepeatMode(Animation.REVERSE);
-                    newHighScoreText.startAnimation(pulse);
-                })
-                .start();
+
+        // Fade in first
+        AnimationUtils.fadeIn(newHighScoreText, 500);
+
+        // Then pulse
+        new Handler().postDelayed(() ->
+                        AnimationUtils.pulse(newHighScoreText, 1.1f, 300),
+                500
+        );
 
         // 2) Fire off confetti
         confettiView.setVisibility(View.VISIBLE);
@@ -336,37 +312,26 @@ public class ResultActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             confettiView.cancelAnimation();
             confettiView.setVisibility(View.GONE);
-        }, 2000);
+        }, 4000);
     }
 
     private void showEncouragement(String message) {
+        // Apply glow shader
         Shader myShader = new LinearGradient(
                 0, 100, 0, 100,
                 Color.parseColor("#f7e307"), Color.parseColor("#fda200"),
-                Shader.TileMode.CLAMP);
-        // 1) Enable software rendering for BlurMaskFilter to work correctly:
+                Shader.TileMode.CLAMP
+        );
         encouragementText.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-// 2) Grab the TextView’s Paint and attach a BlurMaskFilter for the glow
-        float radius = 32f;  // how “big” the glow is (increase for a softer halo)
-        int glowColor = Color.argb(150, 255, 255, 0); // semi‐transparent yellow glow
-
-//        encouragementText.getPaint().setColor(glowColor);
-        encouragementText.getPaint().setShader( myShader );
+        encouragementText.getPaint().setShader(myShader);
         encouragementText.setText(message.toUpperCase());
-        encouragementText.setAlpha(0f);
-        encouragementText.animate()
-                .alpha(1f)
-                .setDuration(400)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .start();
+
+        AnimationUtils.fadeIn(encouragementText, 400);
     }
 
-    // Utility listener to avoid boilerplate
-    private abstract static class SimpleAnimatorListener implements Animator.AnimatorListener {
-        @Override public void onAnimationStart(Animator animation) {}
-        @Override public void onAnimationCancel(Animator animation) {}
-        @Override public void onAnimationRepeat(Animator animation) {}
+    private String randomEncouragement() {
+        int idx = new Random().nextInt(ENCOURAGEMENTS.length);
+        return ENCOURAGEMENTS[idx];
     }
 
     private void setupButtons(String gameType) {
@@ -391,5 +356,13 @@ public class ResultActivity extends AppCompatActivity {
             dingSound.release();
             dingSound = null;
         }
+    }
+
+    // A tiny AnimatorListenerAdapter to avoid boilerplate
+    private abstract static class AnimatorListenerAdapter implements Animator.AnimatorListener {
+        @Override public void onAnimationStart(Animator animation) {}
+        @Override public void onAnimationCancel(Animator animation) {}
+        @Override public void onAnimationRepeat(Animator animation) {}
+        @Override public void onAnimationEnd(Animator animation) {}
     }
 }
