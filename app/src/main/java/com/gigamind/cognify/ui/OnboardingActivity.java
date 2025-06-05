@@ -160,26 +160,26 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void setupOnboarding() {
         List<OnboardingItem> items = new ArrayList<>();
-        items.add(new OnboardingItem(
-                R.drawable.brain_train,
-                "Train your brain in 60 seconds a day",
-                "Quick, fun exercises to keep your mind sharp"
-        ));
-        items.add(new OnboardingItem(
-                R.drawable.word_math,
-                "Form words. Solve math. Beat the clock!",
-                "Challenge yourself with various brain games"
-        ));
-        items.add(new OnboardingItem(
-                R.drawable.rewards,
-                "Earn streaks, top leaderboards!",
-                "Compete and track your progress"
-        ));
-        items.add(new OnboardingItem(
-                R.drawable.profile,
-                "Sign in to save progress",
-                "Or continue as guest to try it out"
-        ));
+        items.add(new OnboardingItem.Builder()
+                .imageResId(R.drawable.brain_train)
+                .title("Train your brain in 60 seconds a day")
+                .description("Quick, fun exercises to keep your mind sharp")
+                .build());
+        items.add(new OnboardingItem.Builder()
+                .imageResId(R.drawable.word_math)
+                .title("Form words. Solve math. Beat the clock!")
+                .description("Challenge yourself with various brain games")
+                .build());
+        items.add(new OnboardingItem.Builder()
+                .imageResId(R.drawable.rewards)
+                .title("Earn streaks, top leaderboards!")
+                .description("Compete and track your progress")
+                .build());
+        items.add(new OnboardingItem.Builder()
+                .imageResId(R.drawable.profile)
+                .title("Sign in to save progress")
+                .description("Or continue as guest to try it out")
+                .build());
 
         OnboardingAdapter adapter = new OnboardingAdapter(items);
         binding.viewPager.setAdapter(adapter);

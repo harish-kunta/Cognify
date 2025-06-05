@@ -32,9 +32,9 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.On
     @Override
     public void onBindViewHolder(@NonNull OnboardingViewHolder holder, int position) {
         OnboardingItem item = items.get(position);
-        holder.imageView.setImageResource(item.imageResId);
-        holder.titleText.setText(item.title);
-        holder.descriptionText.setText(item.description);
+        holder.imageView.setImageResource(item.getImageResId());
+        holder.titleText.setText(item.getTitle());
+        holder.descriptionText.setText(item.getDescription());
     }
 
     @Override
