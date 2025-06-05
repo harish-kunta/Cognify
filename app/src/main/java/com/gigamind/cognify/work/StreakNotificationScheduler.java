@@ -33,7 +33,7 @@ public class StreakNotificationScheduler {
         }
 
         long now = System.currentTimeMillis();
-        long twentyFourH = TimeUnit.HOURS.toMillis(1); // 1 hour for testing, but 24h in prod
+        long twentyFourH = TimeUnit.HOURS.toMillis(24); // 24 hours
         long runAt = lastMillis + twentyFourH;
         long delay = runAt - now;
         if (delay <= 0) {
