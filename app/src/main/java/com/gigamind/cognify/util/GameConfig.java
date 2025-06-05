@@ -2,7 +2,8 @@ package com.gigamind.cognify.util;
 
 public final class GameConfig {
     // Game durations
-    public static final long WORD_DASH_DURATION_MS = 15_000; // 60 seconds
+    // Duration for the Word Dash game in milliseconds (60 seconds)
+    public static final long WORD_DASH_DURATION_MS = 60_000;
     public static final long QUICK_MATH_DURATION_MS = 45_000; // 45 seconds
 
     // Word game settings
