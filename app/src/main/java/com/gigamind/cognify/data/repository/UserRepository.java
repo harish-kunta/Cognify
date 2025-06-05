@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.UserFields;
+import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -36,7 +37,7 @@ public class UserRepository {
     public static final String KEY_CURRENT_STREAK = UserFields.FIELD_CURRENT_STREAK;
     public static final String KEY_TOTAL_XP = UserFields.FIELD_TOTAL_XP;
     public static final String KEY_PERSONAL_BEST_XP = UserFields.FIELD_PERSONAL_BEST_XP;
-    private static final String PREFS_NAME = "GamePrefs";
+    private static final String PREFS_NAME = Constants.PREFS_NAME;
     private final SharedPreferences prefs;
     private final FirebaseService firebaseService;
     private Context context;

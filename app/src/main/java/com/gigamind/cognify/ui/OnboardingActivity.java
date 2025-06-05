@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.gigamind.cognify.util.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,9 +51,6 @@ import java.util.Map;
  */
 public class OnboardingActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
-    private static final String PREFS_NAME = "GamePrefs";
-    private static final String PREF_ASKED_NOTIFICATIONS = "asked_for_notifications";
-    private static final String KEY_IS_GUEST = "is_guest_mode";
 
     private ActivityOnboardingBinding binding;
     private GoogleSignInClient googleSignInClient;
@@ -70,7 +68,7 @@ public class OnboardingActivity extends AppCompatActivity {
         binding = ActivityOnboardingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -108,7 +106,7 @@ public class OnboardingActivity extends AppCompatActivity {
                             } else {
                                 // User denied. We'll treat this as "No thanks" and stop asking again.
                                 prefs.edit()
-                                        .putBoolean(PREF_ASKED_NOTIFICATIONS, true)
+                                        .putBoolean(Constants.PREF_ASKED_NOTIFICATIONS, true)
                                         .apply();
                                 Toast.makeText(this, "Notifications disabled. You may lose your streak if you don't play.", Toast.LENGTH_SHORT).show();
                             }
@@ -127,7 +125,7 @@ public class OnboardingActivity extends AppCompatActivity {
         }
 
         // If user already tapped "No thanks," we don't ask again.
-        boolean alreadyAsked = prefs.getBoolean(PREF_ASKED_NOTIFICATIONS, false);
+        boolean alreadyAsked = prefs.getBoolean(Constants.PREF_ASKED_NOTIFICATIONS, false);
         if (alreadyAsked) {
             return;
         }
@@ -150,7 +148,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 .setNegativeButton("No thanks", (dialog, which) -> {
                     // User does not want notifications: record that and close dialog
                     prefs.edit()
-                            .putBoolean(PREF_ASKED_NOTIFICATIONS, true)
+                            .putBoolean(Constants.PREF_ASKED_NOTIFICATIONS, true)
                             .apply();
                     dialog.dismiss();
                 })
@@ -238,7 +236,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void continueAsGuest() {
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(KEY_IS_GUEST, true);
+        editor.putBoolean(Constants.PREF_IS_GUEST, true);
         editor.putInt(UserRepository.KEY_CURRENT_STREAK, 0);
         editor.putInt(UserRepository.KEY_TOTAL_XP, 0);
         editor.putString(UserRepository.KEY_LAST_PLAYED_DATE, "");

@@ -32,7 +32,7 @@ public class QuickMathActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quick_math);
 
         analytics = GameAnalytics.getInstance(this);
-        analytics.logScreenView("quick_math_game");
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_QUICK_MATH);
         analytics.logGameStart(GameType.MATH);
 
         // Initialize views

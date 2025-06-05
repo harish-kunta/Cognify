@@ -9,6 +9,7 @@ import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.databinding.ActivitySplashBinding;
+import com.gigamind.cognify.util.Constants;
 
 public class SplashActivity extends AppCompatActivity {
     private ActivitySplashBinding binding;
@@ -21,8 +22,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // Check if first time launch
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        boolean isFirstLaunch = prefs.getBoolean("isFirstLaunch", true);
+        SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
+        boolean isFirstLaunch = prefs.getBoolean(Constants.PREF_IS_FIRST_LAUNCH, true);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent intent;
@@ -30,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
                 // First time launch - go to onboarding
                 intent = new Intent(SplashActivity.this, OnboardingActivity.class);
                 // Set first launch to false
-                prefs.edit().putBoolean("isFirstLaunch", false).apply();
+                prefs.edit().putBoolean(Constants.PREF_IS_FIRST_LAUNCH, false).apply();
             } else {
                 // Regular launch - go to main activity
                 intent = new Intent(SplashActivity.this, MainActivity.class);
