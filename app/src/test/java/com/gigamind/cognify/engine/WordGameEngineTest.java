@@ -51,8 +51,9 @@ public class WordGameEngineTest {
         when(mockAssetManager.open(anyString()))
                 .thenReturn(dictionaryStream);
 
-        // Instantiate the engine (it will call loadDictionary → read our TEST_DICTIONARY)
-        wordGameEngine = new WordGameEngine(new HashSet<>());
+        // Instantiate the engine using the convenience constructor that loads
+        // the dictionary from the provided Context
+        wordGameEngine = new WordGameEngine(mockContext);
     }
 
     @Test
