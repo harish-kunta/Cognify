@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,10 +31,10 @@ public class GameAnalytics {
 
     private GameAnalytics(Context context) {
         firebaseAnalytics = FirebaseAnalytics.getInstance(context);
-        firestore = FirebaseFirestore.getInstance();
+        firestore = FirebaseService.getInstance().getFirestore();
         prefs = context.getSharedPreferences("GameAnalytics", Context.MODE_PRIVATE);
         
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseService.getInstance().getCurrentUser();
         userId = user != null ? user.getUid() : "guest_" + prefs.getString("guest_id", "unknown");
         
         wordLengthDistribution = new HashMap<>();

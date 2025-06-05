@@ -38,7 +38,7 @@ import com.gigamind.cognify.util.AnimationUtils;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
@@ -81,7 +81,7 @@ public class ResultActivity extends AppCompatActivity {
 
         prefs          = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         userRepository = new UserRepository(this);
-        firebaseUser   = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser   = FirebaseService.getInstance().getCurrentUser();
 
         int score        = getIntent().getIntExtra(INTENT_SCORE, 0);
         String gameType  = getIntent().getStringExtra(INTENT_TYPE);

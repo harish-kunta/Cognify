@@ -43,6 +43,11 @@ public class FirebaseService {
         return auth.getCurrentUser();
     }
 
+    public String getCurrentUserId() {
+        FirebaseUser user = getCurrentUser();
+        return user != null ? user.getUid() : null;
+    }
+
     public boolean isUserSignedIn() {
         return getCurrentUser() != null;
     }

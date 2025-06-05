@@ -16,7 +16,7 @@ import androidx.work.WorkerParameters;
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.ui.MainActivity;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -74,9 +74,7 @@ public class StreakNotificationWorker extends Worker {
         if (currentStreak > 0) {
             StreakNotificationScheduler.scheduleFromSharedPrefs(
                     /*firebaseUid=*/ (repo.getLastPlayedTimestamp() > 0 ?
-                            (FirebaseAuth.getInstance().getCurrentUser() != null
-                                    ? FirebaseAuth.getInstance().getCurrentUser().getUid()
-                                    : null)
+                            FirebaseService.getInstance().getCurrentUserId()
                             : null),
                     ctx
             );

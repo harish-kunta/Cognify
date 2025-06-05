@@ -28,7 +28,7 @@ import android.graphics.Color;
 import android.content.res.ColorStateList;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
         userRepository = new UserRepository(requireContext());
 
         // Check signed-in user
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = FirebaseService.getInstance().getCurrentUser();
 
         // 1) Populate the streak UI
         loadAndDisplayStreak();

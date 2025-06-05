@@ -19,7 +19,7 @@ import com.gigamind.cognify.databinding.FragmentSettingsBinding;
 import com.gigamind.cognify.ui.OnboardingActivity;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
@@ -92,8 +92,8 @@ public class SettingsFragment extends Fragment {
         });
 
         // Show sign in or sign out button based on auth state
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        FirebaseService service = FirebaseService.getInstance();
+        if (service.isUserSignedIn()) {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
                 new MaterialAlertDialogBuilder(requireContext())
@@ -115,7 +115,7 @@ public class SettingsFragment extends Fragment {
                                     .remove(UserRepository.KEY_PERSONAL_BEST_XP)
                                     .apply();
 
-                            FirebaseAuth.getInstance().signOut();
+                            FirebaseService.getInstance().signOut();
                             Intent i = new Intent(requireActivity(), OnboardingActivity.class);
                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
