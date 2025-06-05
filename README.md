@@ -2,10 +2,6 @@
 
 **Cognify** is an Android brain-training game built in Java. It features an engaging onboarding flow, daily challenges, streak tracking and Firebase-powered leaderboards.
 
-<p align="center">
-  <img src="UI.png" alt="Cognify UI" width="600"/>
-</p>
-
 ## Features
 
 - 🎉 **Animated Onboarding** – A splash screen and onboarding carousel introduce the game in seconds.
