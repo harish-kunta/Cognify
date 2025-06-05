@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -41,19 +42,17 @@ public class WordGameEngineTest {
                     "VOWEL";         // Valid
 
     @BeforeEach
-    void setUp() throws Exception {
-        // Ensure our Context.getAssets() returns the mocked AssetManager
-        when(mockContext.getAssets()).thenReturn(mockAssetManager);
+    void setUp() {
+        // Parse the test dictionary into a Set just like the production loader
+        Set<String> words = new HashSet<>();
+        for (String w : TEST_DICTIONARY.split("\n")) {
+            if (w.length() >= GameConfig.MIN_WORD_LENGTH) {
+                words.add(w.toUpperCase());
+            }
+        }
 
-        // Provide a fake InputStream for “words.txt”
-        InputStream dictionaryStream = new ByteArrayInputStream(
-                TEST_DICTIONARY.getBytes(StandardCharsets.UTF_8));
-        when(mockAssetManager.open(anyString()))
-                .thenReturn(dictionaryStream);
-
-        // Instantiate the engine using the convenience constructor that loads
-        // the dictionary from the provided Context
-        wordGameEngine = new WordGameEngine(mockContext);
+        // Create the engine using the pre-parsed dictionary
+        wordGameEngine = new WordGameEngine(words);
     }
 
     @Test
