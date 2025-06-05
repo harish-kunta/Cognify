@@ -85,9 +85,8 @@ public class ResultActivity extends AppCompatActivity {
         // (2) Update local high‐score synchronously
         boolean isNewPb = updateHighScoreLocal(score, gameType);
 
-        int newPbValue = -1;
+        Integer newPbValue = null;
         if (isNewPb) {
-            // We just wrote a new “pb_<gametype>” into SharedPrefs; read it back:
             newPbValue = prefs.getInt(KEY_PERSONAL_BEST_XP, 0);
         }
 
@@ -119,13 +118,18 @@ public class ResultActivity extends AppCompatActivity {
 
         // (7) Write new values into SharedPreferences:
         long nowMillis = System.currentTimeMillis();
-        prefs.edit()
-                .putString(KEY_LAST_PLAYED_DATE, todayStr)
-                .putLong(KEY_LAST_PLAYED_TS, nowMillis)
-                .putInt(KEY_CURRENT_STREAK, newStreak)
-                .putInt(KEY_TOTAL_XP, newTotalXp)
-                .putInt(KEY_PERSONAL_BEST_XP, newPbValue)
-                .apply();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(KEY_LAST_PLAYED_DATE, todayStr);
+        editor.putLong(KEY_LAST_PLAYED_TS, nowMillis);
+        editor.putInt(KEY_CURRENT_STREAK, newStreak);
+        editor.putInt(KEY_TOTAL_XP, newTotalXp);
+
+        // Only overwrite personal‐best if this run was a new PB
+        if (isNewPb) {
+            editor.putInt(KEY_PERSONAL_BEST_XP, newPbValue);
+        }
+
+        editor.apply();
 
         // (8) Kick off Firestore merge in background
         Task<Void> updateTask = userRepository.updateGameResults(
@@ -173,9 +177,7 @@ public class ResultActivity extends AppCompatActivity {
     private int calculateXpEarned(int score, String gameType) {
         int xp = score;
 
-        // (1) Personal best bonus
-        String pbKey    = "pb_" + gameType.toLowerCase();
-        int existingPb = prefs.getInt(pbKey, 0);
+        int existingPb = prefs.getInt(KEY_PERSONAL_BEST_XP, 0);
         if (score > existingPb) {
             xp += BONUS_NEW_PB;
         }
@@ -241,7 +243,7 @@ public class ResultActivity extends AppCompatActivity {
             public void onAnimationEnd(Animator animation) {
                 // Ding sound on XP reveal:
                 if (xpGained > 0 && dingSound != null) dingSound.start();
-
+                AnimationUtils.fadeIn(totalWordText, 300);
                 ValueAnimator wordsAnim = ValueAnimator.ofInt(0, wordsFound);
                 wordsAnim.setDuration(500);
                 wordsAnim.addUpdateListener(anim2 -> {
@@ -270,7 +272,6 @@ public class ResultActivity extends AppCompatActivity {
                                 streakText.setText("🔥 " + finalStreak + " Day Streak");
                                 AnimationUtils.fadeIn(streakText, 400);
 
-                                // 5) If new PB → pulse banner + launch confetti
                                 if (isNewPb) {
                                     animateNewHighScoreBanner();
                                 }
@@ -307,12 +308,6 @@ public class ResultActivity extends AppCompatActivity {
         // 2) Fire off confetti
         confettiView.setVisibility(View.VISIBLE);
         confettiView.playAnimation();
-
-        // Hide confetti after ~2 seconds
-        new Handler().postDelayed(() -> {
-            confettiView.cancelAnimation();
-            confettiView.setVisibility(View.GONE);
-        }, 4000);
     }
 
     private void showEncouragement(String message) {
