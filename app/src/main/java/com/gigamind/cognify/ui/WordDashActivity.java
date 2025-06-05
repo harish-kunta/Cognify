@@ -22,6 +22,7 @@ import com.gigamind.cognify.engine.GameStateManager;
 import com.gigamind.cognify.engine.WordGameEngine;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.GameConfig;
+import com.gigamind.cognify.util.GameType;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -57,7 +58,7 @@ public class WordDashActivity extends AppCompatActivity {
 
         analytics = GameAnalytics.getInstance(this);
         analytics.logScreenView("word_dash_game");
-        analytics.logGameStart("WORD");
+        analytics.logGameStart(GameType.WORD);
         
         // 1) Bind all views and set up UI scaffolding that does NOT use gameEngine yet
         initializeViews();
@@ -301,7 +302,7 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void endGame() {
         gameStateManager.endGame();
-        analytics.logGameEnd("WORD", 
+        analytics.logGameEnd(GameType.WORD,
             gameStateManager.getScore().getValue(),
             (int)(GameConfig.WORD_DASH_DURATION_MS / 1000),
             true);
@@ -355,7 +356,7 @@ public class WordDashActivity extends AppCompatActivity {
         super.onPause();
         if (countDownTimer != null) {
             countDownTimer.cancel();
-            analytics.logGameEnd("WORD", 
+            analytics.logGameEnd(GameType.WORD,
                 gameStateManager.getScore().getValue(),
                 (int)(GameConfig.WORD_DASH_DURATION_MS / 1000),
                 false);

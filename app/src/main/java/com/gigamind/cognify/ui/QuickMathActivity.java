@@ -11,6 +11,7 @@ import com.gigamind.cognify.engine.MathGameEngine;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.material.button.MaterialButton;
 import com.gigamind.cognify.analytics.GameAnalytics;
+import com.gigamind.cognify.util.GameType;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class QuickMathActivity extends AppCompatActivity {
 
         analytics = GameAnalytics.getInstance(this);
         analytics.logScreenView("quick_math_game");
-        analytics.logGameStart("MATH");
+        analytics.logGameStart(GameType.MATH);
 
         // Initialize views
         scoreText = findViewById(R.id.scoreText);
@@ -106,7 +107,7 @@ public class QuickMathActivity extends AppCompatActivity {
     }
 
     private void endGame() {
-        analytics.logGameEnd("MATH", 
+        analytics.logGameEnd(GameType.MATH,
             currentScore,
             questionCount,
             true);
@@ -122,7 +123,7 @@ public class QuickMathActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        analytics.logGameEnd("MATH", 
+        analytics.logGameEnd(GameType.MATH,
             currentScore,
             questionCount,
             false);
