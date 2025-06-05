@@ -24,6 +24,10 @@ import com.google.firebase.auth.FirebaseAuth;
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
     private SharedPreferences prefs;
+    private static final String KEY_SOUND_ENABLED = "sound_enabled";
+    private static final String KEY_HAPTICS_ENABLED = "haptics_enabled";
+    private static final String KEY_ANIMATIONS_ENABLED = "animations_enabled";
+    private static final String KEY_TUTORIAL_COMPLETED = "tutorial_completed";
 
     @Nullable
     @Override
@@ -43,19 +47,19 @@ public class SettingsFragment extends Fragment {
 
     private void setupPreferences() {
         // Load saved preferences
-        binding.soundEffectsSwitch.setChecked(prefs.getBoolean("sound_enabled", true));
-        binding.hapticsSwitch.setChecked(prefs.getBoolean("haptics_enabled", true));
-        binding.animationsSwitch.setChecked(prefs.getBoolean("animations_enabled", true));
+        binding.soundEffectsSwitch.setChecked(prefs.getBoolean(KEY_SOUND_ENABLED, true));
+        binding.hapticsSwitch.setChecked(prefs.getBoolean(KEY_HAPTICS_ENABLED, true));
+        binding.animationsSwitch.setChecked(prefs.getBoolean(KEY_ANIMATIONS_ENABLED, true));
 
         // Set up listeners
         binding.soundEffectsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                prefs.edit().putBoolean("sound_enabled", isChecked).apply());
+                prefs.edit().putBoolean(KEY_SOUND_ENABLED, isChecked).apply());
 
         binding.hapticsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                prefs.edit().putBoolean("haptics_enabled", isChecked).apply());
+                prefs.edit().putBoolean(KEY_HAPTICS_ENABLED, isChecked).apply());
 
         binding.animationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                prefs.edit().putBoolean("animations_enabled", isChecked).apply());
+                prefs.edit().putBoolean(KEY_ANIMATIONS_ENABLED, isChecked).apply());
     }
 
     private void setupButtons() {
@@ -64,7 +68,7 @@ public class SettingsFragment extends Fragment {
                     .setTitle(R.string.replay_tutorial)
                     .setMessage(R.string.replay_tutorial_confirm)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        prefs.edit().putBoolean("tutorial_completed", false).apply();
+                        prefs.edit().putBoolean(KEY_TUTORIAL_COMPLETED, false).apply();
                         startActivity(new Intent(requireContext(), OnboardingActivity.class));
                         requireActivity().finish();
                     })
@@ -80,7 +84,7 @@ public class SettingsFragment extends Fragment {
                         // Clear all preferences except tutorial completion
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.clear();
-                        editor.putBoolean("tutorial_completed", true);
+                        editor.putBoolean(KEY_TUTORIAL_COMPLETED, true);
                         editor.apply();
                     })
                     .setNegativeButton(R.string.no, null)
@@ -93,13 +97,13 @@ public class SettingsFragment extends Fragment {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
                 new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Are you sure?")
-                        .setMessage("If you log out now, your score and streak won’t be saved. Do you really want to sign out?")
-                        .setNegativeButton("Cancel", (dialog, which) -> {
+                        .setTitle(R.string.logout_confirm_title)
+                        .setMessage(R.string.logout_confirm_message)
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
                             // Just dismiss
                             dialog.dismiss();
                         })
-                        .setPositiveButton("Yes, Sign Out", (dialog, which) -> {
+                        .setPositiveButton(R.string.logout_confirm_positive, (dialog, which) -> {
                             // Clear only streak/xp/personal‐best from prefs:
                             SharedPreferences prefs = requireActivity()
                                     .getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);

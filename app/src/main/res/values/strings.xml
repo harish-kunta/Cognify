@@ -113,4 +113,20 @@
     <string name="day_streak">Day streak</string>
     <string name="league">League</string>
     <string name="tile_four">Tile 4</string>
+    <string name="number_zero">0</string>
+    <string name="number_one">1</string>
+    <string name="notification_permission_rationale_title">Keep Your Streak Alive!</string>
+    <string name="notification_permission_rationale_msg">We'd like to send you a daily reminder so you won't lose your hard-earned streak. Allow notifications to receive gentle nudges if you haven't played today.</string>
+    <string name="enable">Enable</string>
+    <string name="no_thanks">No thanks</string>
+    <string name="notifications_enabled_msg">Notifications enabled. You won't lose your streak!</string>
+    <string name="notifications_disabled_msg">Notifications disabled. You may lose your streak if you don't play.</string>
+    <string name="logout_confirm_title">Are you sure?</string>
+    <string name="logout_confirm_message">If you log out now, your score and streak won’t be saved. Do you really want to sign out?</string>
+    <string name="logout_confirm_positive">Yes, Sign Out</string>
+    <string name="unknown_user">Unknown User</string>
+    <string name="guest">Guest</string>
+    <string name="joined_prefix">Joined %1$s</string>
+    <string name="invite_message">Join me on Cognify! Download on Play Store: https://example.com/app</string>
+    <string name="invite_chooser_title">Invite Friends</string>
 </resources>

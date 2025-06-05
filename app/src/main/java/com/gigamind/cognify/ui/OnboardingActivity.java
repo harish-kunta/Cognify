@@ -43,7 +43,7 @@ import java.util.Map;
 /**
  * OnboardingActivity now also asks for notification permission during onboarding.
  * We show a rationale dialog until the user either grants the permission
- * (Android 13+) or explicitly taps "No thanks" to decline.
+ * (Android 13+) or explicitly taps getString(R.string.no_thanks) to decline.
  */
 public class OnboardingActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
@@ -88,6 +88,68 @@ public class OnboardingActivity extends AppCompatActivity {
         setupButtons();
     }
 
+    /**
+     * Configure the ActivityResultLauncher for the POST_NOTIFICATIONS permission (API 33+).
+     */
+    private void setupNotificationPermissionLauncher() {
+        requestNotificationPermissionLauncher =
+                registerForActivityResult(
+                        new ActivityResultContracts.RequestPermission(),
+                        isGranted -> {
+                            if (isGranted) {
+                                // User granted POST_NOTIFICATIONS; no further action needed
+                                Toast.makeText(this, getString(R.string.notifications_enabled_msg), Toast.LENGTH_SHORT).show();
+                            } else {
+                                // User denied. We'll treat this as getString(R.string.no_thanks) and stop asking again.
+                                prefs.edit()
+                                        .putBoolean(Constants.PREF_ASKED_NOTIFICATIONS, true)
+                                        .apply();
+                                Toast.makeText(this, getString(R.string.notifications_disabled_msg), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
+    }
+
+    /**
+     * If notifications aren't enabled yet, and we haven't already asked, show a rationale dialog.
+     * This will loop until the user either grants permission or taps "No thanks."
+     */
+    private void checkAndAskNotificationPermissionIfNeeded() {
+        // If device < Android 13, no runtime permission needed—return early.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+
+        // If user already tapped "No thanks," we don't ask again.
+        boolean alreadyAsked = prefs.getBoolean(Constants.PREF_ASKED_NOTIFICATIONS, false);
+        if (alreadyAsked) {
+            return;
+        }
+
+        // If permission is already granted, nothing to do.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        // Otherwise, show a custom rationale dialog explaining why we need notifications:
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.notification_permission_rationale_title))
+                .setMessage(getString(R.string.notification_permission_rationale_msg))
+                .setPositiveButton(getString(R.string.enable), (dialog, which) -> {
+                    // Launch the system permission prompt
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                })
+                .setNegativeButton(getString(R.string.no_thanks), (dialog, which) -> {
+                    // User does not want notifications: record that and close dialog
+                    prefs.edit()
+                            .putBoolean(Constants.PREF_ASKED_NOTIFICATIONS, true)
+                            .apply();
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
+    }
 
     private void setupOnboarding() {
         List<OnboardingItem> items = new ArrayList<>();
