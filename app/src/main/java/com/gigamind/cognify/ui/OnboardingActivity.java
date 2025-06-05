@@ -48,7 +48,7 @@ import java.util.Map;
 /**
  * OnboardingActivity now also asks for notification permission during onboarding.
  * We show a rationale dialog until the user either grants the permission
- * (Android 13+) or explicitly taps "No thanks" to decline.
+ * (Android 13+) or explicitly taps getString(R.string.no_thanks) to decline.
  */
 public class OnboardingActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
@@ -103,13 +103,13 @@ public class OnboardingActivity extends AppCompatActivity {
                         isGranted -> {
                             if (isGranted) {
                                 // User granted POST_NOTIFICATIONS; no further action needed
-                                Toast.makeText(this, "Notifications enabled. You won't lose your streak!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.notifications_enabled_msg), Toast.LENGTH_SHORT).show();
                             } else {
-                                // User denied. We'll treat this as "No thanks" and stop asking again.
+                                // User denied. We'll treat this as getString(R.string.no_thanks) and stop asking again.
                                 prefs.edit()
                                         .putBoolean(Constants.PREF_ASKED_NOTIFICATIONS, true)
                                         .apply();
-                                Toast.makeText(this, "Notifications disabled. You may lose your streak if you don't play.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, getString(R.string.notifications_disabled_msg), Toast.LENGTH_SHORT).show();
                             }
                         }
                 );
@@ -139,14 +139,13 @@ public class OnboardingActivity extends AppCompatActivity {
 
         // Otherwise, show a custom rationale dialog explaining why we need notifications:
         new AlertDialog.Builder(this)
-                .setTitle("Keep Your Streak Alive!")
-                .setMessage("We'd like to send you a daily reminder so you won't lose your hard-earned streak. " +
-                        "Allow notifications to receive gentle nudges if you haven't played today.")
-                .setPositiveButton("Enable", (dialog, which) -> {
+                .setTitle(getString(R.string.notification_permission_rationale_title))
+                .setMessage(getString(R.string.notification_permission_rationale_msg))
+                .setPositiveButton(getString(R.string.enable), (dialog, which) -> {
                     // Launch the system permission prompt
                     requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
                 })
-                .setNegativeButton("No thanks", (dialog, which) -> {
+                .setNegativeButton(getString(R.string.no_thanks), (dialog, which) -> {
                     // User does not want notifications: record that and close dialog
                     prefs.edit()
                             .putBoolean(Constants.PREF_ASKED_NOTIFICATIONS, true)

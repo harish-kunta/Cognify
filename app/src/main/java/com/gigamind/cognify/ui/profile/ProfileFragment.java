@@ -88,7 +88,7 @@ public class ProfileFragment extends Fragment {
             // Display name & email
             String displayName = firebaseUser.getDisplayName();
             String email       = firebaseUser.getEmail();
-            userNameText.setText(displayName != null ? displayName : "Unknown User");
+            userNameText.setText(displayName != null ? displayName : getString(R.string.unknown_user));
             userEmailText.setText(email != null ? email : "");
 
             // “Joined” date from FirebaseUser metadata
@@ -97,7 +97,7 @@ public class ProfileFragment extends Fragment {
                     : 0L;
             if (creationTs > 0) {
                 String joinedDate = DateFormat.getDateInstance().format(new Date(creationTs));
-                userJoinedText.setText("Joined " + joinedDate);
+                userJoinedText.setText(getString(R.string.joined_prefix, joinedDate));
             } else {
                 userJoinedText.setText("");
             }
@@ -105,7 +105,7 @@ public class ProfileFragment extends Fragment {
             // TODO: if you store a profile‐picture URL, load it into ‘profileImageView’ here
         } else {
             // Guest user
-            userNameText.setText("Guest");
+            userNameText.setText(getString(R.string.guest));
             userEmailText.setText("");
             userJoinedText.setText("");
         }
@@ -155,9 +155,9 @@ public class ProfileFragment extends Fragment {
             shareIntent.setType("text/plain");
             shareIntent.putExtra(
                     Intent.EXTRA_TEXT,
-                    "Join me on Cognify! Download on Play Store: https://example.com/app"
+                    getString(R.string.invite_message)
             );
-            startActivity(Intent.createChooser(shareIntent, "Invite Friends"));
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
         });
     }
 
