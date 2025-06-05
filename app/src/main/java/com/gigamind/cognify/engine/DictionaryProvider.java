@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -51,7 +52,7 @@ public class DictionaryProvider {
                     }
                 }
             } catch (IOException e) {
-                // swallow or log
+                Log.e("DictionaryProvider", "Error preloading dictionary", e);
             }
             sDictionary = dict;
             sIsLoading = false;
@@ -102,7 +103,7 @@ public class DictionaryProvider {
                     }
                     reader.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e("DictionaryProvider", "Error loading dictionary", e);
                 }
                 // freeze into unmodifiable set
                 sDictionary = Collections.unmodifiableSet(dict);

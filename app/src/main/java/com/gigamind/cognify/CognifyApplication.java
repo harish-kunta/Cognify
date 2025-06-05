@@ -37,6 +37,9 @@ public class CognifyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
+                Log.e(TAG, "Uncaught exception in thread " + t.getName(), e));
+
         // (1) Initialize Firebase
         FirebaseApp.initializeApp(this);
 

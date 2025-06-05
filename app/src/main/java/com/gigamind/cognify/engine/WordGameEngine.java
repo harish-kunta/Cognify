@@ -3,6 +3,8 @@ package com.gigamind.cognify.engine;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.gigamind.cognify.exception.GameException;
+
 import com.gigamind.cognify.util.GameConfig;
 
 import java.io.BufferedReader;
@@ -117,7 +119,11 @@ public class WordGameEngine {
             }
             reader.close();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load dictionary: " + e.getMessage());
+            throw new GameException(
+                    GameException.ErrorCode.DICTIONARY_LOAD_ERROR,
+                    "Failed to load dictionary",
+                    e
+            );
         }
         return words;
     }
