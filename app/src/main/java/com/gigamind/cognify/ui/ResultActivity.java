@@ -75,7 +75,7 @@ public class ResultActivity extends AppCompatActivity {
 
         // Initialize MediaPlayer only if it hasn't been created yet
         if (dingSound == null) {
-            dingSound = MediaPlayer.create(this, R.raw.success_sound);
+            dingSound = MediaPlayer.create(this, R.raw.lesson_complete);
         }
 
         prefs          = getSharedPreferences("GamePrefs", MODE_PRIVATE);
