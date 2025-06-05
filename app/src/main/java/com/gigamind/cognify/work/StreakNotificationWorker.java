@@ -104,8 +104,8 @@ public class StreakNotificationWorker extends Worker {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_streak)
-                .setContentTitle("🔥 Your streak is in danger!")
-                .setContentText("You haven’t played for 24 hours. Tap here to keep it alive.")
+                .setContentTitle(context.getString(R.string.notif_streak_title))
+                .setContentText(context.getString(R.string.notif_streak_text))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
                 .setContentIntent(pi);
@@ -119,8 +119,8 @@ public class StreakNotificationWorker extends Worker {
 
     private void createNotificationChannelIfNeeded(Context ctx) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name        = "Streak Reminder";
-            String description       = "Notifies if you haven’t played in 24 hours";
+            CharSequence name        = ctx.getString(R.string.streak_channel_name);
+            String description       = ctx.getString(R.string.streak_channel_desc);
             int importance           = NotificationManager.IMPORTANCE_HIGH;
 
             NotificationChannel channel =
