@@ -9,8 +9,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.gigamind.cognify.analytics.ResponseTimeBucket;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.EnumMap;
+
+import com.gigamind.cognify.util.GameType;
 
 public class GameAnalytics {
     private static GameAnalytics instance;
@@ -21,8 +26,8 @@ public class GameAnalytics {
     private long sessionStartTime;
     private int sessionWordCount;
     private int sessionMathCount;
-    private Map<String, Integer> wordLengthDistribution;
-    private Map<String, Long> responseTimeDistribution;
+    private Map<Integer, Integer> wordLengthDistribution;
+    private EnumMap<ResponseTimeBucket, Long> responseTimeDistribution;
 
     private GameAnalytics(Context context) {
         firebaseAnalytics = FirebaseAnalytics.getInstance(context);
@@ -33,7 +38,7 @@ public class GameAnalytics {
         userId = user != null ? user.getUid() : "guest_" + prefs.getString("guest_id", "unknown");
         
         wordLengthDistribution = new HashMap<>();
-        responseTimeDistribution = new HashMap<>();
+        responseTimeDistribution = new EnumMap<>(ResponseTimeBucket.class);
         sessionStartTime = System.currentTimeMillis();
     }
 
@@ -79,29 +84,29 @@ public class GameAnalytics {
     }
 
     // Game Performance Analytics
-    public void logGameStart(String gameType) {
+    public void logGameStart(GameType gameType) {
         Bundle bundle = new Bundle();
-        bundle.putString("game_type", gameType);
+        bundle.putString("game_type", gameType.id());
         firebaseAnalytics.logEvent("game_start", bundle);
     }
 
-    public void logGameEnd(String gameType, int score, int duration, boolean completed) {
+    public void logGameEnd(GameType gameType, int score, int duration, boolean completed) {
         Bundle bundle = new Bundle();
-        bundle.putString("game_type", gameType);
+        bundle.putString("game_type", gameType.id());
         bundle.putInt("score", score);
         bundle.putInt("duration", duration);
         bundle.putBoolean("completed", completed);
         firebaseAnalytics.logEvent("game_end", bundle);
 
-        if (gameType.equals("WORD")) {
+        if (gameType == GameType.WORD) {
             sessionWordCount++;
-        } else if (gameType.equals("MATH")) {
+        } else if (gameType == GameType.MATH) {
             sessionMathCount++;
         }
 
         // Store game data in Firestore
         Map<String, Object> gameData = new HashMap<>();
-        gameData.put("game_type", gameType);
+        gameData.put("game_type", gameType.id());
         gameData.put("score", score);
         gameData.put("duration", duration);
         gameData.put("completed", completed);
@@ -122,15 +127,18 @@ public class GameAnalytics {
         firebaseAnalytics.logEvent("word_found", bundle);
 
         // Track word length distribution
-        String lengthKey = String.valueOf(word.length());
-        wordLengthDistribution.put(lengthKey, 
-            wordLengthDistribution.getOrDefault(lengthKey, 0) + 1);
+        int lengthKey = word.length();
+        wordLengthDistribution.put(
+            lengthKey,
+            wordLengthDistribution.getOrDefault(lengthKey, 0) + 1
+        );
 
         // Track response time distribution
-        String timeKey = timeSpent < 3000 ? "fast" : 
-                        timeSpent < 6000 ? "medium" : "slow";
-        responseTimeDistribution.put(timeKey,
-            responseTimeDistribution.getOrDefault(timeKey, 0L) + 1);
+        ResponseTimeBucket bucket = ResponseTimeBucket.fromTime(timeSpent);
+        responseTimeDistribution.put(
+            bucket,
+            responseTimeDistribution.getOrDefault(bucket, 0L) + 1
+        );
     }
 
     public void logInvalidWord(String word) {
@@ -192,11 +200,14 @@ public class GameAnalytics {
     }
 
     // Get Analytics Data
-    public Map<String, Integer> getWordLengthDistribution() {
+    public Map<Integer, Integer> getWordLengthDistribution() {
         return new HashMap<>(wordLengthDistribution);
     }
 
-    public Map<String, Long> getResponseTimeDistribution() {
-        return new HashMap<>(responseTimeDistribution);
+    public Map<ResponseTimeBucket, Long> getResponseTimeDistribution() {
+        EnumMap<ResponseTimeBucket, Long> copy =
+                new EnumMap<>(ResponseTimeBucket.class);
+        copy.putAll(responseTimeDistribution);
+        return copy;
     }
 } 
