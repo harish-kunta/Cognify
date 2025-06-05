@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.widget.Toast;
 
+import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -25,17 +26,19 @@ public class NotificationPermissionHelper {
         void onPermissionResult(boolean granted);
     }
 
-    private final Activity activity;
+    private final ComponentActivity activity;
     private final SharedPreferences prefs;
     private final ActivityResultLauncher<String> launcher;
     private final PermissionCallback callback;
 
-    public NotificationPermissionHelper(@NonNull Activity activity,
-                                        @NonNull SharedPreferences prefs,
-                                        @NonNull PermissionCallback callback) {
+    public NotificationPermissionHelper(
+            @NonNull ComponentActivity activity,
+            @NonNull SharedPreferences prefs,
+            @NonNull PermissionCallback callback) {
         this.activity = activity;
         this.prefs = prefs;
         this.callback = callback;
+
         this.launcher = activity.registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
@@ -55,7 +58,6 @@ public class NotificationPermissionHelper {
                 }
         );
     }
-
     /**
      * Checks whether the permission should be requested and, if so,
      * presents a rationale dialog before launching the system prompt.
