@@ -25,6 +25,12 @@ public class GameTimer {
         this.listener = listener;
     }
 
+    private GameTimer(Builder builder) {
+        this.durationMs = builder.durationMs;
+        this.tickIntervalMs = builder.tickIntervalMs;
+        this.listener = builder.listener;
+    }
+
     public void start() {
         stop();
         timer = new CountDownTimer(durationMs, tickIntervalMs) {
@@ -50,4 +56,40 @@ public class GameTimer {
             timer = null;
         }
     }
+
+    /** Builder pattern for creating {@link GameTimer} instances in a readable
+     *  manner. Example:
+     *  <pre>
+     *      GameTimer timer = new GameTimer.Builder()
+     *              .duration(60000)
+     *              .tickInterval(1000)
+     *              .listener(myListener)
+     *              .build();
+     *  </pre>
+     */
+    public static class Builder {
+        private long durationMs;
+        private long tickIntervalMs = 1000; // sensible default
+        private Listener listener;
+
+        public Builder duration(long ms) {
+            this.durationMs = ms;
+            return this;
+        }
+
+        public Builder tickInterval(long ms) {
+            this.tickIntervalMs = ms;
+            return this;
+        }
+
+        public Builder listener(Listener l) {
+            this.listener = l;
+            return this;
+        }
+
+        public GameTimer build() {
+            return new GameTimer(this);
+        }
+    }
 }
+
