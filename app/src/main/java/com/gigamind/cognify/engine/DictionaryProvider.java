@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import com.gigamind.cognify.util.ExceptionLogger;
 
 import androidx.annotation.NonNull;
 
@@ -52,7 +53,7 @@ public class DictionaryProvider {
                     }
                 }
             } catch (IOException e) {
-                Log.e("DictionaryProvider", "Error preloading dictionary", e);
+                ExceptionLogger.log("DictionaryProvider", e);
             }
             sDictionary = dict;
             sIsLoading = false;
@@ -80,7 +81,11 @@ public class DictionaryProvider {
                 // Already in progress; spin until loaded
                 new Thread(() -> {
                     while (sIsLoading) {
-                        try { Thread.sleep(50); } catch (InterruptedException ignored) {}
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                            ExceptionLogger.log("DictionaryProvider", e);
+                        }
                     }
                     new Handler(Looper.getMainLooper()).post(() -> callback.onLoaded(sDictionary));
                 }).start();
@@ -103,7 +108,7 @@ public class DictionaryProvider {
                     }
                     reader.close();
                 } catch (IOException e) {
-                    Log.e("DictionaryProvider", "Error loading dictionary", e);
+                    ExceptionLogger.log("DictionaryProvider", e);
                 }
                 // freeze into unmodifiable set
                 sDictionary = Collections.unmodifiableSet(dict);

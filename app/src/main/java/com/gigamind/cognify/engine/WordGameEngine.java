@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import com.gigamind.cognify.exception.GameException;
 
 import com.gigamind.cognify.util.GameConfig;
+import com.gigamind.cognify.util.ExceptionLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -119,6 +120,7 @@ public class WordGameEngine {
             }
             reader.close();
         } catch (IOException e) {
+            ExceptionLogger.log("WordGameEngine", e);
             throw new GameException(
                     GameException.ErrorCode.DICTIONARY_LOAD_ERROR,
                     "Failed to load dictionary",
