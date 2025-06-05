@@ -1,17 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
     app:cardCornerRadius="24dp"
-    app:cardElevation="8dp"
+    app:cardElevation="4dp"
     app:strokeColor="@color/white"
     app:strokeWidth="1dp">
 
     <LinearLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_card_math"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -23,18 +24,15 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:text="Quick \nMath"
             android:textColor="@android:color/white"
             android:textSize="32sp"
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/quickMathPlayButton"
+            android:id="@+id/playButton"
             style="@style/Button.Play"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#B8860B"
-            android:text="PLAY"
-            app:rippleColor="#B8860B" />
+            android:text="PLAY" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

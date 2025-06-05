@@ -176,7 +176,7 @@
 
             <include
                 android:id="@+id/wordGameCard"
-                layout="@layout/word_game_card"
+                layout="@layout/game_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -184,7 +184,7 @@
 
             <include
                 android:id="@+id/mathGameCard"
-                layout="@layout/math_game_card"
+                layout="@layout/game_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

@@ -24,6 +24,8 @@ import com.gigamind.cognify.databinding.FragmentHomeBinding;
 import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
+import android.graphics.Color;
+import android.content.res.ColorStateList;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,7 +87,10 @@ public class HomeFragment extends Fragment {
         // 2) Set up daily challenge text
         setupDailyChallenge();
 
-        // 3) Set up click listeners on UI
+        // 3) Configure game cards
+        setupGameCards();
+
+        // 4) Set up click listeners on UI
         setupClickListeners();
     }
 
@@ -98,8 +103,8 @@ public class HomeFragment extends Fragment {
         playQuickMathButton = binding.mathGameCard.getRoot();
         cardView = binding.welcomeCardView;
         streakCount = binding.streakCount;
-        wordGamePlayButton = binding.wordGameCard.wordDashPlayButton;
-        quickMathPlayButton = binding.mathGameCard.quickMathPlayButton;
+        wordGamePlayButton = binding.wordGameCard.playButton;
+        quickMathPlayButton = binding.mathGameCard.playButton;
     }
 
     /**
@@ -148,6 +153,20 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /** Sets titles, backgrounds and button colors for the game cards. */
+    private void setupGameCards() {
+        // Word Dash card
+        binding.wordGameCard.cardTitle.setText(getString(R.string.word_dash));
+        binding.wordGameCard.container.setBackgroundResource(R.drawable.bg_card_word);
+
+        // Quick Math card overrides default accent color
+        binding.mathGameCard.cardTitle.setText(getString(R.string.quick_math));
+        binding.mathGameCard.container.setBackgroundResource(R.drawable.bg_card_math);
+        int mathColor = Color.parseColor("#B8860B");
+        binding.mathGameCard.playButton.setBackgroundTintList(ColorStateList.valueOf(mathColor));
+        binding.mathGameCard.playButton.setRippleColor(ColorStateList.valueOf(mathColor));
+    }
+
     /**
      * Sets up bounce animation and routing to the appropriate game
      * when the user clicks any of the cards or the daily challenge banner.
@@ -173,7 +192,7 @@ public class HomeFragment extends Fragment {
     private void handleGameLaunch(View v) {
         boolean isDaily = (v.getId() == R.id.welcomeCardView);
         Intent intent;
-        if (v.getId() == R.id.wordGameCard || v.getId() == R.id.wordDashPlayButton || v.getId() == R.id.welcomeCardView) {
+        if (v.getId() == R.id.wordGameCard || v == binding.wordGameCard.playButton || v.getId() == R.id.welcomeCardView) {
             intent = new Intent(getContext(), WordDashActivity.class);
             intent.putExtra("GAME_TYPE", "WORD");
         } else {
