@@ -14,7 +14,7 @@ import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.gigamind.cognify.engine.DictionaryProvider;
 import android.content.SharedPreferences;
@@ -58,7 +58,7 @@ public class CognifyApplication extends Application {
         checkNotificationPermission();
 
         // (2) If user is already signed in, attach a real-time listener
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseService.getInstance().isUserSignedIn()) {
             listenerRegistration = userRepo.attachUserDocumentListener(new UserRepository.OnUserDataChanged() {
                 @Override
                 public void onDataChanged() {
@@ -69,7 +69,7 @@ public class CognifyApplication extends Application {
                     SharedPreferences prefs = getSharedPreferences(Constants.PREF_NOTIFICATION, MODE_PRIVATE);
                     if (prefs.getBoolean(Constants.PREF_NOTIFICATION_ENABLED, true)) {
                         StreakNotificationScheduler.scheduleFromSharedPrefs(
-                                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                FirebaseService.getInstance().getCurrentUserId(),
                                 getApplicationContext()
                         );
                     }

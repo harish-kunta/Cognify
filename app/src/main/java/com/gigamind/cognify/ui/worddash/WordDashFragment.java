@@ -24,7 +24,7 @@ import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -71,7 +71,7 @@ public class WordDashFragment extends Fragment {
         userRepository = new UserRepository(requireContext());
 
         // Check signed-in user
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = FirebaseService.getInstance().getCurrentUser();
 
         // 1) Populate the streak UI
         loadAndDisplayStreak();

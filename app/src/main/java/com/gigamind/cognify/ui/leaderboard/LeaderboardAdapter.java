@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.databinding.ItemLeaderboardBinding;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 
 public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, LeaderboardAdapter.ViewHolder> {
 
@@ -64,8 +64,8 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
             binding.pointsText.setText(String.valueOf(item.getTotalXP()));
 
             // 6) Highlight current user row
-            String currentUid = FirebaseAuth.getInstance().getCurrentUser() != null
-                    ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+            String currentUid = FirebaseService.getInstance().getCurrentUser() != null
+                    ? FirebaseService.getInstance().getCurrentUserId()
                     : "";
             boolean isCurrent = currentUid.equals(item.getUserId());
             binding.getRoot().setSelected(isCurrent);

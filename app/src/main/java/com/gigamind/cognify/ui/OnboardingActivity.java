@@ -28,11 +28,10 @@ import com.gigamind.cognify.util.ExceptionLogger;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuth;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.gigamind.cognify.util.Constants;
 
 import java.util.ArrayList;
@@ -50,8 +49,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private ActivityOnboardingBinding binding;
     private GoogleSignInClient googleSignInClient;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseFirestore firestore;
+    private FirebaseService firebaseService;
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private NotificationPermissionHelper notificationPermissionHelper;
@@ -64,8 +62,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
+        firebaseService = FirebaseService.getInstance();
         userRepository = new UserRepository(this);
 
         // Configure Google Sign In (web client ID stored in strings.xml)
@@ -199,7 +196,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        FirebaseUser currentUser = firebaseService.getCurrentUser();
         if (currentUser != null) {
             // Already signed in
             binding.btnSignIn.setVisibility(View.GONE);
@@ -265,9 +262,9 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(String idToken, GoogleSignInAccount gAccount) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        firebaseAuth.signInWithCredential(credential)
+        firebaseService.getAuth().signInWithCredential(credential)
                 .addOnSuccessListener(authResult -> {
-                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    FirebaseUser user = firebaseService.getCurrentUser();
                     if (user != null) {
                         createOrUpdateUserInFirestore(user, gAccount);
                     } else {
@@ -288,7 +285,7 @@ public class OnboardingActivity extends AppCompatActivity {
         String name = gAccount.getDisplayName();
         String email = gAccount.getEmail();
 
-        DocumentReference userRef = firestore
+        DocumentReference userRef = firebaseService.getFirestore()
                 .collection(FirebaseService.COLLECTION_USERS)
                 .document(uid);
 
