@@ -91,17 +91,31 @@ public class SettingsFragment extends Fragment {
         if (auth.getCurrentUser() != null) {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
-                SharedPreferences prefs = requireActivity().getSharedPreferences("GamePrefs", MODE_PRIVATE);
-                // Only remove streak‐related / XP‐related fields:
-                prefs.edit()
-                        .remove(UserRepository.KEY_LAST_PLAYED_DATE)
-                        .remove(UserRepository.KEY_LAST_PLAYED_TS)
-                        .remove(UserRepository.KEY_CURRENT_STREAK)
-                        .remove(UserRepository.KEY_TOTAL_XP)
-                        .remove(UserRepository.KEY_PERSONAL_BEST_XP)
-                        .apply();
-                auth.signOut();
-                requireActivity().recreate();
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Are you sure?")
+                        .setMessage("If you log out now, your score and streak won’t be saved. Do you really want to sign out?")
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+                            // Just dismiss
+                            dialog.dismiss();
+                        })
+                        .setPositiveButton("Yes, Sign Out", (dialog, which) -> {
+                            // Clear only streak/xp/personal‐best from prefs:
+                            SharedPreferences prefs = requireActivity()
+                                    .getSharedPreferences("GamePrefs", MODE_PRIVATE);
+                            prefs.edit()
+                                    .remove(UserRepository.KEY_LAST_PLAYED_DATE)
+                                    .remove(UserRepository.KEY_LAST_PLAYED_TS)
+                                    .remove(UserRepository.KEY_CURRENT_STREAK)
+                                    .remove(UserRepository.KEY_TOTAL_XP)
+                                    .remove(UserRepository.KEY_PERSONAL_BEST_XP)
+                                    .apply();
+
+                            FirebaseAuth.getInstance().signOut();
+                            Intent i = new Intent(requireActivity(), OnboardingActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+                        })
+                        .show();
             });
         } else {
             binding.btnSignIn.setText(R.string.sign_in);
