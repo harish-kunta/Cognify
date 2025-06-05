@@ -30,6 +30,17 @@ public class WordGameEngine {
         this.currentGrid = generateGrid();
     }
 
+    /**
+     * Convenience constructor used mainly for unit tests. Loads the
+     * dictionary from the given {@link Context}'s assets using the
+     * built‑in "words.txt" file.
+     */
+    public WordGameEngine(Context context) {
+        this.random = new Random();
+        this.dictionary = loadDictionary(context);
+        this.currentGrid = generateGrid();
+    }
+
     public char[] generateGrid() {
         int total = GameConfig.TOTAL_LETTERS;            // e.g. 16
         int maxVowels = total / 2;                       // e.g. 8
