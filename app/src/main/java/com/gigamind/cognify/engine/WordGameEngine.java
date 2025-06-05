@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import com.gigamind.cognify.engine.scoring.DefaultWordScoreStrategy;
+import com.gigamind.cognify.engine.scoring.ScoreStrategy;
+
 public class WordGameEngine {
     private static final String DICTIONARY_FILE = "words.txt";
     private static final String VOWELS = "AEIOU";
@@ -22,10 +25,16 @@ public class WordGameEngine {
     private static final double VOWEL_PROBABILITY = 0.4;
     private final Set<String> dictionary;
     private final Random random;
+    private final ScoreStrategy scoreStrategy;
     private char[] currentGrid;
 
     public WordGameEngine(Set<String> dictionary) {
+        this(dictionary, new DefaultWordScoreStrategy());
+    }
+
+    public WordGameEngine(Set<String> dictionary, ScoreStrategy strategy) {
         this.dictionary = dictionary;
+        this.scoreStrategy = strategy != null ? strategy : new DefaultWordScoreStrategy();
         this.random = new Random();
         this.currentGrid = generateGrid();
     }
@@ -36,9 +45,11 @@ public class WordGameEngine {
      * built‑in "words.txt" file.
      */
     public WordGameEngine(Context context) {
-        this.random = new Random();
-        this.dictionary = loadDictionary(context);
-        this.currentGrid = generateGrid();
+        this(context, new DefaultWordScoreStrategy());
+    }
+
+    public WordGameEngine(Context context, ScoreStrategy strategy) {
+        this(loadDictionary(context), strategy);
     }
 
     public char[] generateGrid() {
@@ -92,7 +103,7 @@ public class WordGameEngine {
         return currentGrid.clone();
     }
 
-    private Set<String> loadDictionary(Context context) {
+    private static Set<String> loadDictionary(Context context) {
         Set<String> words = new HashSet<>();
         try {
             AssetManager assetManager = context.getAssets();
@@ -122,22 +133,7 @@ public class WordGameEngine {
         if (!isValidWord(word)) {
             return 0;
         }
-
-        int score = GameConfig.BASE_SCORE;
-
-        // Length bonus
-        score += (word.length() - GameConfig.MIN_WORD_LENGTH) * GameConfig.LENGTH_BONUS;
-
-        // Complexity bonus for less common letters
-        for (char c : word.toCharArray()) {
-            if ("JQXZ".indexOf(c) >= 0) {
-                score += GameConfig.COMPLEXITY_BONUS;
-            } else if ("KWVY".indexOf(c) >= 0) {
-                score += GameConfig.COMPLEXITY_BONUS / 2;
-            }
-        }
-
-        return score;
+        return scoreStrategy.calculateScore(word.toUpperCase());
     }
 
     public char[] getLetters() {
