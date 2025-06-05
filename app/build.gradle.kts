@@ -70,6 +70,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 
     // -------- Mockito for JUnit Jupiter --------
     testImplementation("org.mockito:mockito-core:5.3.1")
@@ -79,4 +80,8 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("androidx.core:core-ktx:1.9.0")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
