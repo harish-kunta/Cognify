@@ -2,7 +2,6 @@ package com.gigamind.cognify.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -23,6 +22,7 @@ import com.gigamind.cognify.engine.WordGameEngine;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameType;
+import com.gigamind.cognify.util.GameTimer;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -44,7 +44,7 @@ public class WordDashActivity extends AppCompatActivity {
     private FoundWordsAdapter foundWordsAdapter;
 
     private StringBuilder currentWord;
-    private CountDownTimer countDownTimer;
+    private GameTimer gameTimer;
     private List<String> foundWordsList;
     private boolean isDictionaryLoaded = false;
 
@@ -284,20 +284,25 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void startGameTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
+        if (gameTimer != null) {
+            gameTimer.stop();
         }
-        countDownTimer = new CountDownTimer(GameConfig.WORD_DASH_DURATION_MS, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                gameStateManager.updateTimeRemaining(millisUntilFinished);
-            }
+        gameTimer = new GameTimer(
+                GameConfig.WORD_DASH_DURATION_MS,
+                1000,
+                new GameTimer.Listener() {
+                    @Override
+                    public void onTick(long millisRemaining) {
+                        gameStateManager.updateTimeRemaining(millisRemaining);
+                    }
 
-            @Override
-            public void onFinish() {
-                endGame();
-            }
-        }.start();
+                    @Override
+                    public void onFinish() {
+                        endGame();
+                    }
+                }
+        );
+        gameTimer.start();
     }
 
     private void endGame() {
@@ -354,8 +359,8 @@ public class WordDashActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
+        if (gameTimer != null) {
+            gameTimer.stop();
             analytics.logGameEnd(GameType.WORD,
                 gameStateManager.getScore().getValue(),
                 (int)(GameConfig.WORD_DASH_DURATION_MS / 1000),
@@ -366,7 +371,7 @@ public class WordDashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (isDictionaryLoaded && countDownTimer == null) {
+        if (isDictionaryLoaded && gameTimer == null) {
             startGame();
         }
     }
@@ -374,8 +379,8 @@ public class WordDashActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
+        if (gameTimer != null) {
+            gameTimer.stop();
         }
     }
 }
