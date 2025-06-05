@@ -287,10 +287,10 @@ public class WordDashActivity extends AppCompatActivity {
         if (gameTimer != null) {
             gameTimer.stop();
         }
-        gameTimer = new GameTimer(
-                GameConfig.WORD_DASH_DURATION_MS,
-                1000,
-                new GameTimer.Listener() {
+        gameTimer = new GameTimer.Builder()
+                .duration(GameConfig.WORD_DASH_DURATION_MS)
+                .tickInterval(1000)
+                .listener(new GameTimer.Listener() {
                     @Override
                     public void onTick(long millisRemaining) {
                         gameStateManager.updateTimeRemaining(millisRemaining);
@@ -300,8 +300,8 @@ public class WordDashActivity extends AppCompatActivity {
                     public void onFinish() {
                         endGame();
                     }
-                }
-        );
+                })
+                .build();
         gameTimer.start();
     }
 
