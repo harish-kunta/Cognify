@@ -198,7 +198,7 @@
                             android:layout_height="match_parent"
                             android:elevation="16dp"
                             android:gravity="center"
-                            android:text="Words"
+                            android:text="Word Count"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:translationZ="8dp" />

@@ -2,7 +2,7 @@ package com.gigamind.cognify.util;
 
 public final class GameConfig {
     // Game durations
-    public static final long WORD_DASH_DURATION_MS = 1_000; // 60 seconds
+    public static final long WORD_DASH_DURATION_MS = 60_000; // 60 seconds
     public static final long QUICK_MATH_DURATION_MS = 45_000; // 45 seconds
 
     // Word game settings
@@ -18,10 +18,6 @@ public final class GameConfig {
     // Animation durations
     public static final long BUTTON_SCALE_DURATION_MS = 80;
     public static final long SCORE_ANIMATION_DURATION_MS = 100;
-
-    // Grid configuration
-    public static final int GRID_MARGIN = 4;
-    public static final int MIN_BUTTON_SIZE = 48;
 
     private GameConfig() {
         // Prevent instantiation

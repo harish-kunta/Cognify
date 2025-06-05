@@ -7,6 +7,7 @@ import static com.gigamind.cognify.data.repository.UserRepository.KEY_PERSONAL_B
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_TOTAL_XP;
 import static com.gigamind.cognify.util.Constants.BONUS_NEW_PB;
 import static com.gigamind.cognify.util.Constants.BONUS_STREAK_PER_DAY;
+import static com.gigamind.cognify.util.Constants.INTENT_FOUND_WORDS;
 import static com.gigamind.cognify.util.Constants.INTENT_SCORE;
 import static com.gigamind.cognify.util.Constants.INTENT_TYPE;
 
@@ -79,6 +80,7 @@ public class ResultActivity extends AppCompatActivity {
 
         int score = getIntent().getIntExtra(INTENT_SCORE, 0);
         String gameType = getIntent().getStringExtra(INTENT_TYPE);
+        int wordsFound = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
 
         // 1) Compute how much XP was earned (PB + streak bonus)
         int xpEarned = calculateXpEarned(score, gameType);
@@ -135,7 +137,7 @@ public class ResultActivity extends AppCompatActivity {
 
         // 10) Animate everything in sequence:
         animateHeader();
-        animateNumbersSequentially(score, xpEarned, newTotalXp, newStreak, isNewPb, updateTask != null);
+        animateNumbersSequentially(score, xpEarned, newTotalXp, newStreak, isNewPb, updateTask != null, wordsFound);
 
         setupButtons(gameType);
     }
@@ -225,7 +227,8 @@ public class ResultActivity extends AppCompatActivity {
             final int finalTotalXp,
             final int finalStreak,
             final boolean isNewPb,
-            final boolean willSyncRemote) {
+            final boolean willSyncRemote,
+            final int wordsFound) {
 
         // 1) Score count‐up
         ValueAnimator scoreAnim = ValueAnimator.ofInt(0, finalScore);
@@ -244,10 +247,11 @@ public class ResultActivity extends AppCompatActivity {
                 // Play a little “ding” on XP reveal
                 if (xpGained > 0 && dingSound != null) dingSound.start();
 
-                ValueAnimator xpAnim = ValueAnimator.ofInt(0, xpGained);
+                ValueAnimator xpAnim = ValueAnimator.ofInt(0, wordsFound);
                 xpAnim.setDuration(500);
                 xpAnim.addUpdateListener(anim -> {
                     int val = (Integer) anim.getAnimatedValue();
+                    totalWordText.setText(String.valueOf(val));
                 });
                 xpAnim.start();
 

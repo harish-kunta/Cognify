@@ -7,6 +7,7 @@ public class Constants {
     public static final String INTENT_TYPE = "type";
     public static final String TYPE_QUICK_MATH = "quick_math";
     public static final String GAME_TYPE_WORD_DASH = "word_dash";
+    public static final String INTENT_FOUND_WORDS = "found_words";
 
     // XP bonuses
     public static final int BONUS_NEW_PB       = 20; // extra XP if player beats PB

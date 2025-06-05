@@ -282,6 +282,8 @@ public class WordDashActivity extends AppCompatActivity {
                 GameConfig.WORD_DASH_DURATION_MS / 1000);
         intent.putExtra(Constants.INTENT_TYPE,
                 Constants.GAME_TYPE_WORD_DASH);
+        intent.putExtra(Constants.INTENT_FOUND_WORDS,
+                foundWordsList.size());
         startActivity(intent);
         finish();
     }
