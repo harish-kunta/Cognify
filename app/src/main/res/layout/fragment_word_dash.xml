@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="Form words from the given letters"
+                    android:text="@string/word_dash_instructions"
                     android:textColor="#FFEB3B"
                     android:textSize="18sp"
                     android:layout_marginBottom="24dp" />
@@ -99,7 +99,7 @@
                     android:layout_height="234dp"
                     android:layout_marginBottom="32dp"
                     android:adjustViewBounds="true"
-                    android:contentDescription="Word Dash Blocks"
+                    android:contentDescription="@string/word_dash_blocks_desc"
                     android:src="@drawable/ic_abc" />
 
                 <!-- Play Button -->
@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:backgroundTint="#673AB7"
-                    android:text="PLAY"
+                    android:text="@string/play"
                     android:textAllCaps="true"
                     android:textColor="#FFFFFF"
                     android:textSize="48sp"

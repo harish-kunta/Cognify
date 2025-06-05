@@ -91,4 +91,26 @@
     <string name="quick_math_score_placeholder">Score: 0</string>
     <string name="quick_math_question_placeholder">Question 1/10</string>
     <string name="quick_math_equation_placeholder">7 + 5 = ?</string>
+    <!-- Added for static string replacements -->
+    <string name="word_dash_instructions">Form words from the given letters</string>
+    <string name="word_dash_blocks_desc">Word Dash Blocks</string>
+    <string name="play">PLAY</string>
+    <string name="rank">Rank</string>
+    <string name="name">Name</string>
+    <string name="word_dash_score_placeholder">Score : 0</string>
+    <string name="timer_initial">60</string>
+    <string name="submit_word">Submit Word</string>
+    <string name="clear">Clear</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="invite_friends_desc">Tell your friends it's free and easy</string>
+    <string name="invite_friends_button">INVITE FRIENDS</string>
+    <string name="game_over_title">Game Over!</string>
+    <string name="encouragement_amazing">Amazing</string>
+    <string name="word_count">Word Count</string>
+    <string name="streak_placeholder">🔥 0 Day Streak</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="found_word_placeholder">EXAMPLE</string>
+    <string name="day_streak">Day streak</string>
+    <string name="league">League</string>
+    <string name="tile_four">Tile 4</string>
 </resources>

@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="center"
-            android:text="Game Over!"
+            android:text="@string/game_over_title"
             android:textColor="@android:color/white"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -52,7 +52,7 @@
                 android:id="@+id/encouragementText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Amazing"
+                android:text="@string/encouragement_amazing"
                 android:textColor="@android:color/white"
                 android:textSize="48sp"
                 android:textStyle="bold"
@@ -86,7 +86,7 @@
                         android:layout_height="64dp"
                         android:elevation="16dp"
                         android:gravity="center"
-                        android:text="Score"
+                        android:text="@string/score"
                         android:textSize="56sp"
                         android:textStyle="bold"
                         android:translationZ="8dp" />
@@ -143,7 +143,7 @@
                             android:layout_height="match_parent"
                             android:elevation="16dp"
                             android:gravity="center"
-                            android:text="Total XP"
+                            android:text="@string/total_xp"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:translationZ="8dp" />
@@ -198,7 +198,7 @@
                             android:layout_height="match_parent"
                             android:elevation="16dp"
                             android:gravity="center"
-                            android:text="Word Count"
+                            android:text="@string/word_count"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:translationZ="8dp" />
@@ -284,7 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="🔥 0 Day Streak"
+                android:text="@string/streak_placeholder"
                 android:gravity="center"
                 android:textColor="@color/accent"
                 android:textSize="20sp"
@@ -320,7 +320,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Play Again"
+                android:text="@string/play_again"
                 app:icon="@drawable/ic_replay" />
 
             <com.google.android.material.button.MaterialButton
@@ -328,7 +328,7 @@
                 style="@style/Button.Disabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Back to Home" />
+                android:text="@string/back_home" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
