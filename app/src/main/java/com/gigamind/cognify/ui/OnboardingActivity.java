@@ -1,21 +1,16 @@
 package com.gigamind.cognify.ui;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+
+import com.gigamind.cognify.util.NotificationPermissionHelper;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.OnboardingAdapter;
@@ -59,9 +54,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private SharedPreferences prefs;
     private UserRepository userRepository;
-
-    // Launcher for the new Android 13+ notification permission request
-    private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
+    private NotificationPermissionHelper notificationPermissionHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +75,15 @@ public class OnboardingActivity extends AppCompatActivity {
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        // 1) Set up the permission launcher (Android 13+)
-        setupNotificationPermissionLauncher();
+        // 1) Configure notification permission helper (Android 13+)
+        notificationPermissionHelper = new NotificationPermissionHelper(
+                this,
+                prefs,
+                granted -> { /* no-op */ }
+        );
+        notificationPermissionHelper.requestIfNeeded();
 
-        // 2) Immediately check if we should ask for notification permission
-        checkAndAskNotificationPermissionIfNeeded();
-
-        // 3) Proceed with the rest of onboarding
+        // 2) Proceed with the rest of onboarding
         setupOnboarding();
         setupButtons();
     }
