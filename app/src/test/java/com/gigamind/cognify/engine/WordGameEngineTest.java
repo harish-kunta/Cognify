@@ -50,6 +50,14 @@ public class WordGameEngineTest {
     }
 
     @Test
+    void testIsValidWordEdgeCases() {
+        assertFalse(engine.isValidWord(""), "Empty string should be invalid");
+        assertFalse(engine.isValidWord("   "), "Whitespace-only word should be invalid");
+        assertFalse(engine.isValidWord("123"), "Numeric word should be invalid");
+        assertFalse(engine.isValidWord("CAT "), "Word with trailing space should be invalid");
+    }
+
+    @Test
     void testCalculateScore() {
         // Base score 10 plus length bonus (3 letters -> 0) = 10
         assertEquals(10, engine.calculateScore("CAT"));

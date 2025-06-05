@@ -19,4 +19,10 @@ public class ResponseTimeBucketTest {
         assertEquals(ResponseTimeBucket.MEDIUM, ResponseTimeBucket.fromTime(4000));
         assertEquals(ResponseTimeBucket.SLOW, ResponseTimeBucket.fromTime(7000));
     }
+
+    @Test
+    void testFromTimeBoundaries() {
+        assertEquals(ResponseTimeBucket.MEDIUM, ResponseTimeBucket.fromTime(3000));
+        assertEquals(ResponseTimeBucket.SLOW, ResponseTimeBucket.fromTime(6000));
+    }
 }
