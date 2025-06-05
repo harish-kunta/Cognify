@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.FoundWordsAdapter;
+import com.gigamind.cognify.analytics.GameAnalytics;
 import com.gigamind.cognify.engine.DictionaryProvider;
 import com.gigamind.cognify.engine.GameStateManager;
 import com.gigamind.cognify.engine.WordGameEngine;
@@ -46,11 +47,18 @@ public class WordDashActivity extends AppCompatActivity {
     private List<String> foundWordsList;
     private boolean isDictionaryLoaded = false;
 
+    private GameAnalytics analytics;
+    private long wordStartTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_dash);
 
+        analytics = GameAnalytics.getInstance(this);
+        analytics.logScreenView("word_dash_game");
+        analytics.logGameStart("WORD");
+        
         // 1) Bind all views and set up UI scaffolding that does NOT use gameEngine yet
         initializeViews();
         setupButtons();
@@ -179,25 +187,33 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void onLetterClick(char letter) {
+        if (wordStartTime == 0) {
+            wordStartTime = System.currentTimeMillis();
+        }
         currentWord.append(letter);
         currentWordText.setText(currentWord.toString());
+        analytics.logButtonClick("letter_" + letter);
     }
 
     private void submitWord() {
         String word = currentWord.toString();
+        long timeSpent = System.currentTimeMillis() - wordStartTime;
 
         if (word.length() < GameConfig.MIN_WORD_LENGTH) {
             showError(getString(R.string.word_too_short));
+            analytics.logError("word_too_short", word);
             return;
         }
 
         if (!gameEngine.isValidWord(word)) {
             showError(getString(R.string.invalid_word_formation));
+            analytics.logInvalidWord(word);
             return;
         }
 
         if (gameStateManager.isWordUsed(word)) {
             showError(getString(R.string.word_already_used));
+            analytics.logError("word_already_used", word);
             return;
         }
 
@@ -205,12 +221,14 @@ public class WordDashActivity extends AppCompatActivity {
         if (points > 0) {
             gameStateManager.addScore(points);
             gameStateManager.addUsedWord(word);
+            analytics.logWordFound(word, timeSpent);
             animateScoreIncrease();
 
             foundWordsList.add(word);
             foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
         } else {
             showError(getString(R.string.invalid_word));
+            analytics.logInvalidWord(word);
             scoreText.performHapticFeedback(HapticFeedbackConstants.REJECT);
             letterGrid
                     .animate()
@@ -231,6 +249,7 @@ public class WordDashActivity extends AppCompatActivity {
                     ).start();
         }
         clearWord();
+        wordStartTime = 0;
     }
 
     private void animateScoreIncrease() {
@@ -282,7 +301,10 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void endGame() {
         gameStateManager.endGame();
-
+        analytics.logGameEnd("WORD", 
+            gameStateManager.getScore().getValue(),
+            (int)(GameConfig.WORD_DASH_DURATION_MS / 1000),
+            true);
         showResults();
     }
 
@@ -333,6 +355,10 @@ public class WordDashActivity extends AppCompatActivity {
         super.onPause();
         if (countDownTimer != null) {
             countDownTimer.cancel();
+            analytics.logGameEnd("WORD", 
+                gameStateManager.getScore().getValue(),
+                (int)(GameConfig.WORD_DASH_DURATION_MS / 1000),
+                false);
         }
     }
 

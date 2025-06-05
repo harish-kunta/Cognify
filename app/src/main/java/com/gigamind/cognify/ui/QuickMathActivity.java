@@ -10,6 +10,7 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.engine.MathGameEngine;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.material.button.MaterialButton;
+import com.gigamind.cognify.analytics.GameAnalytics;
 
 import java.util.List;
 
@@ -21,11 +22,17 @@ public class QuickMathActivity extends AppCompatActivity {
     private MaterialButton[] answerButtons;
     private int currentScore;
     private int questionCount;
+    private GameAnalytics analytics;
+    private long questionStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_math);
+
+        analytics = GameAnalytics.getInstance(this);
+        analytics.logScreenView("quick_math_game");
+        analytics.logGameStart("MATH");
 
         // Initialize views
         scoreText = findViewById(R.id.scoreText);
@@ -60,6 +67,7 @@ public class QuickMathActivity extends AppCompatActivity {
         }
 
         questionCount++;
+        questionStartTime = System.currentTimeMillis();
         questionCountText.setText(String.format("Question %d/%d", questionCount, Constants.TOTAL_QUESTIONS));
 
         gameEngine.generateQuestion();
@@ -74,10 +82,14 @@ public class QuickMathActivity extends AppCompatActivity {
     private void checkAnswer(int buttonIndex) {
         int selectedAnswer = Integer.parseInt(answerButtons[buttonIndex].getText().toString());
         boolean isCorrect = gameEngine.checkAnswer(selectedAnswer);
+        long timeSpent = System.currentTimeMillis() - questionStartTime;
         
+        analytics.logMathAnswer(isCorrect, timeSpent);
+        analytics.logButtonClick("answer_" + selectedAnswer);
+
         int points = gameEngine.getScore(isCorrect);
         currentScore += points;
-        scoreText.setText(currentScore);
+        scoreText.setText(String.valueOf(currentScore));
 
         // Visual feedback (could be enhanced with animations)
         answerButtons[buttonIndex].setBackgroundTintList(
@@ -94,11 +106,25 @@ public class QuickMathActivity extends AppCompatActivity {
     }
 
     private void endGame() {
+        analytics.logGameEnd("MATH", 
+            currentScore,
+            questionCount,
+            true);
+        
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra(Constants.INTENT_SCORE, currentScore);
         intent.putExtra(Constants.INTENT_TIME, questionCount);
         intent.putExtra(Constants.INTENT_TYPE, Constants.TYPE_QUICK_MATH);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        analytics.logGameEnd("MATH", 
+            currentScore,
+            questionCount,
+            false);
     }
 } 

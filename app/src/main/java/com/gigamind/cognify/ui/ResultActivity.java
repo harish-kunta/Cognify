@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.gigamind.cognify.R;
+import com.gigamind.cognify.analytics.GameAnalytics;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.util.AnimationUtils;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
@@ -60,11 +61,15 @@ public class ResultActivity extends AppCompatActivity {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private MediaPlayer dingSound;
+    private GameAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+
+        analytics = GameAnalytics.getInstance(this);
+        analytics.logScreenView("result_screen");
 
         initializeViews();
 
