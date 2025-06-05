@@ -12,4 +12,18 @@ public class Constants {
     // XP bonuses
     public static final int BONUS_NEW_PB       = 20; // extra XP if player beats PB
     public static final int BONUS_STREAK_PER_DAY = 10;
+
+    // SharedPreferences names & keys
+    public static final String PREFS_NAME = "GamePrefs";
+    public static final String PREF_APP = "AppPrefs";
+    public static final String PREF_IS_FIRST_LAUNCH = "isFirstLaunch";
+    public static final String PREF_ASKED_NOTIFICATIONS = "asked_for_notifications";
+    public static final String PREF_IS_GUEST = "is_guest_mode";
+    public static final String PREF_NOTIFICATION = "notification_preferences";
+    public static final String PREF_NOTIFICATION_ENABLED = "notifications_enabled";
+
+    // Analytics screen names
+    public static final String ANALYTICS_SCREEN_RESULT = "result_screen";
+    public static final String ANALYTICS_SCREEN_WORD_DASH = "word_dash_game";
+    public static final String ANALYTICS_SCREEN_QUICK_MATH = "quick_math_game";
 }

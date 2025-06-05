@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
+import com.gigamind.cognify.util.Constants;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -69,7 +70,7 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
 
         analytics = GameAnalytics.getInstance(this);
-        analytics.logScreenView("result_screen");
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_RESULT);
 
         initializeViews();
 
@@ -78,7 +79,7 @@ public class ResultActivity extends AppCompatActivity {
             dingSound = MediaPlayer.create(this, R.raw.lesson_complete);
         }
 
-        prefs          = getSharedPreferences("GamePrefs", MODE_PRIVATE);
+        prefs          = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         userRepository = new UserRepository(this);
         firebaseUser   = FirebaseAuth.getInstance().getCurrentUser();
 

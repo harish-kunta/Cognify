@@ -23,6 +23,7 @@ import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.FragmentHomeBinding;
 import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
+import com.gigamind.cognify.util.Constants;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,7 +73,7 @@ public class HomeFragment extends Fragment {
         initializeViews();
 
         // Initialize SharedPreferences and UserRepository
-        prefs = requireContext().getSharedPreferences("GamePrefs", MODE_PRIVATE);
+        prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         userRepository = new UserRepository(requireContext());
 
         // Check signed-in user

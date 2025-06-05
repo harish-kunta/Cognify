@@ -17,6 +17,7 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.FragmentSettingsBinding;
 import com.gigamind.cognify.ui.OnboardingActivity;
+import com.gigamind.cognify.util.Constants;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -35,7 +36,7 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        prefs = requireActivity().getSharedPreferences("AppPrefs", 0);
+        prefs = requireActivity().getSharedPreferences(Constants.PREF_APP, 0);
         setupPreferences();
         setupButtons();
     }
@@ -101,7 +102,7 @@ public class SettingsFragment extends Fragment {
                         .setPositiveButton("Yes, Sign Out", (dialog, which) -> {
                             // Clear only streak/xp/personal‐best from prefs:
                             SharedPreferences prefs = requireActivity()
-                                    .getSharedPreferences("GamePrefs", MODE_PRIVATE);
+                                    .getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
                             prefs.edit()
                                     .remove(UserRepository.KEY_LAST_PLAYED_DATE)
                                     .remove(UserRepository.KEY_LAST_PLAYED_TS)

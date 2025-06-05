@@ -57,7 +57,7 @@ public class WordDashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_word_dash);
 
         analytics = GameAnalytics.getInstance(this);
-        analytics.logScreenView("word_dash_game");
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_WORD_DASH);
         analytics.logGameStart(GameType.WORD);
         
         // 1) Bind all views and set up UI scaffolding that does NOT use gameEngine yet

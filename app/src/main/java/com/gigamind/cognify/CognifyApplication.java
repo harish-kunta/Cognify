@@ -31,8 +31,6 @@ public class CognifyApplication extends Application {
     private static final String TAG = "CognifyApplication";
     private UserRepository userRepo;
     private com.google.firebase.firestore.ListenerRegistration listenerRegistration;
-    private static final String NOTIFICATION_PREF = "notification_preferences";
-    private static final String KEY_NOTIFICATION_ENABLED = "notifications_enabled";
 
     @Override
     public void onCreate() {
@@ -58,8 +56,8 @@ public class CognifyApplication extends Application {
                     Log.d(TAG, "Firestore → SharedPrefs listener fired. Scheduling Worker now.");
                     
                     // Only schedule if notifications are enabled
-                    SharedPreferences prefs = getSharedPreferences(NOTIFICATION_PREF, MODE_PRIVATE);
-                    if (prefs.getBoolean(KEY_NOTIFICATION_ENABLED, true)) {
+                    SharedPreferences prefs = getSharedPreferences(Constants.PREF_NOTIFICATION, MODE_PRIVATE);
+                    if (prefs.getBoolean(Constants.PREF_NOTIFICATION_ENABLED, true)) {
                         StreakNotificationScheduler.scheduleFromSharedPrefs(
                                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
                                 getApplicationContext()
@@ -87,24 +85,24 @@ public class CognifyApplication extends Application {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
                 // Permission not granted, save this state
-                getSharedPreferences(NOTIFICATION_PREF, MODE_PRIVATE)
+                getSharedPreferences(Constants.PREF_NOTIFICATION, MODE_PRIVATE)
                     .edit()
-                    .putBoolean(KEY_NOTIFICATION_ENABLED, false)
+                    .putBoolean(Constants.PREF_NOTIFICATION_ENABLED, false)
                     .apply();
                 Log.d(TAG, "Notification permission not granted on Android 13+");
             } else {
                 // Permission granted
-                getSharedPreferences(NOTIFICATION_PREF, MODE_PRIVATE)
+                getSharedPreferences(Constants.PREF_NOTIFICATION, MODE_PRIVATE)
                     .edit()
-                    .putBoolean(KEY_NOTIFICATION_ENABLED, true)
+                    .putBoolean(Constants.PREF_NOTIFICATION_ENABLED, true)
                     .apply();
                 Log.d(TAG, "Notification permission granted on Android 13+");
             }
         } else {
             // For Android 12 and below, notifications are enabled by default
-            getSharedPreferences(NOTIFICATION_PREF, MODE_PRIVATE)
+            getSharedPreferences(Constants.PREF_NOTIFICATION, MODE_PRIVATE)
                 .edit()
-                .putBoolean(KEY_NOTIFICATION_ENABLED, true)
+                .putBoolean(Constants.PREF_NOTIFICATION_ENABLED, true)
                 .apply();
             Log.d(TAG, "Notification enabled by default (Android 12 or below)");
         }
