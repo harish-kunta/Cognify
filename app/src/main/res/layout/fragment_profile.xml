@@ -50,7 +50,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="8"
                 android:gravity="center"
-                android:text="Profile"
+                android:text="@string/profile"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -176,7 +176,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:text="Day streak"
+                            android:text="@string/day_streak"
                             android:textAppearance="?attr/textAppearanceListItem" />
                     </LinearLayout>
                 </LinearLayout>
@@ -227,7 +227,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:text="Total XP"
+                            android:text="@string/total_xp"
                             android:textAppearance="?attr/textAppearanceListItem" />
                     </LinearLayout>
                 </LinearLayout>
@@ -254,7 +254,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="League"
+                        android:text="@string/league"
                         android:textAppearance="?attr/textAppearanceListItem" />
                 </LinearLayout>
 
@@ -280,7 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Tile 4"
+                        android:text="@string/tile_four"
                         android:textAppearance="?attr/textAppearanceListItem" />
                 </LinearLayout>
 
@@ -317,13 +317,13 @@
                         style="@style/ProfilePageUserNameStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Invite friends" />
+                        android:text="@string/invite_friends" />
 
                     <TextView
                         style="@style/ProfilePageSubtitleStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Tell your friends it's free and easy" />
+                        android:text="@string/invite_friends_desc" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -333,7 +333,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_marginTop="8dp"
-                android:text="INVITE FRIENDS" />
+                android:text="@string/invite_friends_button" />
 
         </LinearLayout>
 

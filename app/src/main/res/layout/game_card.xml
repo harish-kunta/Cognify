@@ -33,6 +33,6 @@
             style="@style/Button.Play"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="PLAY" />
+            android:text="@string/play" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

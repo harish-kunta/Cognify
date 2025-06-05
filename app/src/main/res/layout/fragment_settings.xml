@@ -49,7 +49,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="8"
                 android:gravity="center"
-                android:text="Settings"
+                android:text="@string/settings"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -159,7 +159,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
-                        android:text="Sound Effects"
+                        android:text="@string/sound_effects"
                         android:textColor="@color/settings_text" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -192,7 +192,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
-                        android:text="Haptics"
+                        android:text="@string/haptics"
                         android:textColor="@color/settings_text" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -225,7 +225,7 @@
                         style="@style/TextAppearance.Settings"
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
-                        android:text="Animations"
+                        android:text="@string/animations"
                         android:textColor="@color/settings_text"
                         />
 
@@ -258,7 +258,7 @@
                         style="@style/TextAppearance.Settings"
                         android:layout_marginStart="12dp"
                         android:layout_weight="8"
-                        android:text="Dark Mode"
+                        android:text="@string/dark_mode"
                         android:textColor="@color/settings_text"
                         />
 
@@ -293,7 +293,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:text="Replay Tutorial"
+                        android:text="@string/replay_tutorial"
                         />
 
                     <!-- Reset Progress Button -->
@@ -302,7 +302,7 @@
                         style="@style/Button.Disabled"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Reset Progress"
+                        android:text="@string/reset_progress"
                         android:visibility="gone"
                         android:layout_margin="8dp"
                         android:textColor="@color/error"
