@@ -49,8 +49,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_badge" />
+            android:layout_marginEnd="8dp" />
 
         <!-- 5) Points (Total XP) -->
         <TextView

@@ -87,12 +87,5 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
                             binding.getRoot().getContext().getPackageName());
             return resId;
         }
-
-        /**
-         * Return the badge drawable resource ID for a given badgeType ("bronze", "silver", "gold").
-         */
-        private int getBadgeDrawableId(@NonNull String badgeType) {
-            return R.drawable.ic_badge;
-        }
     }
 } 
