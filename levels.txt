@@ -1,0 +1,10 @@
+Rookie	: 0 – 9,999
+Learner	: 10,000 – 19,999
+Thinker	: 20,000 – 29,999
+Solver	: 30,000 – 39,999
+Challenger	: 40,000 – 49,999
+Strategist	: 50,000 – 59,999
+Brainiac : 60,000 – 69,999
+Genius : 70,000 – 79,999
+Mastermind : 80,000 – 89,999
+Legend	≥ 90,000

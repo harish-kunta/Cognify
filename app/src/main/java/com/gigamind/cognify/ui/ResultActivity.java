@@ -1,8 +1,8 @@
 package com.gigamind.cognify.ui;
 
+import static com.gigamind.cognify.data.repository.UserRepository.KEY_CURRENT_STREAK;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_LAST_PLAYED_DATE;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_LAST_PLAYED_TS;
-import static com.gigamind.cognify.data.repository.UserRepository.KEY_CURRENT_STREAK;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_PERSONAL_BEST_XP;
 import static com.gigamind.cognify.data.repository.UserRepository.KEY_TOTAL_XP;
 import static com.gigamind.cognify.util.Constants.BONUS_NEW_PB;
@@ -18,27 +18,25 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
-import com.gigamind.cognify.util.Constants;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.analytics.GameAnalytics;
+import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.util.AnimationUtils;
+import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
@@ -48,16 +46,15 @@ import java.util.Random;
 
 public class ResultActivity extends AppCompatActivity {
 
+    private static final String[] ENCOURAGEMENTS = {
+            "Amazing!", "Unstoppable!", "You nailed it!", "Keep it going!", "🔥 Hot streak!"
+    };
     private TextView headerText;
     private TextView scoreValue, totalXPValue, totalWordText, highScoreText, streakText;
     private TextView newHighScoreText, encouragementText;
     private MaterialButton playAgainButton, homeButton, challengeButton;
     private LinearLayout playContainer;
     private LottieAnimationView confettiView;
-    private static final String[] ENCOURAGEMENTS = {
-            "Amazing!", "Unstoppable!", "You nailed it!", "Keep it going!", "🔥 Hot streak!"
-    };
-
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -81,11 +78,11 @@ public class ResultActivity extends AppCompatActivity {
             dingSound = MediaPlayer.create(this, R.raw.lesson_complete);
         }
 
-        prefs          = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         userRepository = new UserRepository(this);
-        firebaseUser   = FirebaseService.getInstance().getCurrentUser();
+        firebaseUser = FirebaseService.getInstance().getCurrentUser();
 
-        finalScore   = getIntent().getIntExtra(INTENT_SCORE, 0);
+        finalScore = getIntent().getIntExtra(INTENT_SCORE, 0);
         finalGameType = getIntent().getStringExtra(INTENT_TYPE);
         int wordsFound = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
 
@@ -101,13 +98,13 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         // (3) Read "old" streak / XP from prefs (already kept in sync elsewhere)
-        String oldDate    = prefs.getString(KEY_LAST_PLAYED_DATE, "");
-        int    oldStreak  = prefs.getInt(KEY_CURRENT_STREAK, 0);
-        int    oldTotalXp = prefs.getInt(KEY_TOTAL_XP, 0);
+        String oldDate = prefs.getString(KEY_LAST_PLAYED_DATE, "");
+        int oldStreak = prefs.getInt(KEY_CURRENT_STREAK, 0);
+        int oldTotalXp = prefs.getInt(KEY_TOTAL_XP, 0);
 
         // (4) Compute "today" / "yesterday"
         Calendar nowCal = Calendar.getInstance();
-        String todayStr    = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        String todayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
                 .format(nowCal.getTime());
         nowCal.add(Calendar.DAY_OF_YEAR, -1);
         String yesterdayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -152,9 +149,9 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         // (8) Kick off Firestore merge in background
-        boolean isWin = score > 0;
+        boolean isWin = finalScore > 0;
         Task<Void> updateTask = userRepository.updateGameResults(
-                finalGameType, finalScore, xpEarned, newPbValue, isWin
+                finalGameType, finalScore, xpEarned, isWin, newPbValue
         );
 
         // (9) Schedule next streak notification (uses prefs key we just wrote)
@@ -171,19 +168,19 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        headerText       = findViewById(R.id.headerText);
-        scoreValue       = findViewById(R.id.scoreValue);
-        totalXPValue     = findViewById(R.id.totalXPValue);
-        totalWordText    = findViewById(R.id.totalWordText);
-        highScoreText    = findViewById(R.id.highScoreText);
-        streakText       = findViewById(R.id.streakText);
+        headerText = findViewById(R.id.headerText);
+        scoreValue = findViewById(R.id.scoreValue);
+        totalXPValue = findViewById(R.id.totalXPValue);
+        totalWordText = findViewById(R.id.totalWordText);
+        highScoreText = findViewById(R.id.highScoreText);
+        streakText = findViewById(R.id.streakText);
         newHighScoreText = findViewById(R.id.newHighScoreText);
-        encouragementText= findViewById(R.id.encouragementText);
-        playAgainButton  = findViewById(R.id.playAgainButton);
-        homeButton       = findViewById(R.id.homeButton);
-        challengeButton  = findViewById(R.id.challengeButton);
-        playContainer    = (LinearLayout) playAgainButton.getParent();
-        confettiView     = findViewById(R.id.confettiView);
+        encouragementText = findViewById(R.id.encouragementText);
+        playAgainButton = findViewById(R.id.playAgainButton);
+        homeButton = findViewById(R.id.homeButton);
+        challengeButton = findViewById(R.id.challengeButton);
+        playContainer = (LinearLayout) playAgainButton.getParent();
+        confettiView = findViewById(R.id.confettiView);
 
         // Hide everything initially
         headerText.setAlpha(0f);
@@ -222,7 +219,7 @@ public class ResultActivity extends AppCompatActivity {
 
     private boolean updateHighScoreLocal(int score, String gameType) {
         String highScoreKey = KEY_PERSONAL_BEST_XP;
-        int currentHigh     = prefs.getInt(highScoreKey, 0);
+        int currentHigh = prefs.getInt(highScoreKey, 0);
 
         if (score > currentHigh) {
             prefs.edit().putInt(highScoreKey, score).apply();
@@ -402,9 +399,20 @@ public class ResultActivity extends AppCompatActivity {
 
     // A tiny AnimatorListenerAdapter to avoid boilerplate
     private abstract static class AnimatorListenerAdapter implements Animator.AnimatorListener {
-        @Override public void onAnimationStart(Animator animation) {}
-        @Override public void onAnimationCancel(Animator animation) {}
-        @Override public void onAnimationRepeat(Animator animation) {}
-        @Override public void onAnimationEnd(Animator animation) {}
+        @Override
+        public void onAnimationStart(Animator animation) {
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+        }
     }
 }
