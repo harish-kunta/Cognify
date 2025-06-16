@@ -21,6 +21,7 @@ import com.gigamind.cognify.R;
 public class HighlightScrimView extends View {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private RectF holeRect;
+    private final float cornerRadius;
 
     public HighlightScrimView(Context context) {
         this(context, null);
@@ -30,6 +31,7 @@ public class HighlightScrimView extends View {
         super(context, attrs);
         paint.setColor(ContextCompat.getColor(context, R.color.scrim));
         setLayerType(LAYER_TYPE_HARDWARE, null);
+        cornerRadius = 8f * getResources().getDisplayMetrics().density;
     }
 
     public void setHole(RectF rect) {
@@ -45,7 +47,7 @@ public class HighlightScrimView extends View {
         if (holeRect != null) {
             Paint clearPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             clearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-            canvas.drawRoundRect(holeRect, 16f, 16f, clearPaint);
+            canvas.drawRoundRect(holeRect, cornerRadius, cornerRadius, clearPaint);
         }
     }
 }

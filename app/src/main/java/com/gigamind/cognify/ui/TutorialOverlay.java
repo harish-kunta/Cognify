@@ -92,11 +92,14 @@ public class TutorialOverlay {
         popup.setOutsideTouchable(false);
         int[] loc = new int[2];
         step.anchor.getLocationInWindow(loc);
+        int[] rootLoc = new int[2];
+        root.getLocationInWindow(rootLoc);
+
         RectF hole = new RectF(
-                loc[0],
-                loc[1],
-                loc[0] + step.anchor.getWidth(),
-                loc[1] + step.anchor.getHeight());
+                loc[0] - rootLoc[0],
+                loc[1] - rootLoc[1],
+                loc[0] - rootLoc[0] + step.anchor.getWidth(),
+                loc[1] - rootLoc[1] + step.anchor.getHeight());
         scrim.setHole(hole);
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int popupHeight = view.getMeasuredHeight();
