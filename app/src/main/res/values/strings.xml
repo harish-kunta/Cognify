@@ -151,4 +151,10 @@
         Join me on Cognify! Download on Play Store: https://example.com/app
     </string>
     <string name="invite_chooser_title">Invite Friends</string>
+    <string name="daily_quest">Daily Quest</string>
+    <string name="quest_reward">Reward: %1$s</string>
+    <string name="notif_quest_title">Daily Quest Reminder</string>
+    <string name="notif_quest_text">Complete todays quest to earn extra XP!</string>
+    <string name="quest_channel_name">Quest Reminder</string>
+    <string name="quest_channel_desc">Notifies about daily quests</string>
 </resources>
