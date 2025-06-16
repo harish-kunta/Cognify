@@ -20,11 +20,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/questionCountText"
+        android:id="@+id/timerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/quick_math_question_placeholder"
+        android:text="@string/timer_initial"
         android:textColor="@color/text_secondary"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/questionCountText" />
+        app:layout_constraintTop_toBottomOf="@id/timerText" />
 
     <LinearLayout
         android:id="@+id/answersLayout"

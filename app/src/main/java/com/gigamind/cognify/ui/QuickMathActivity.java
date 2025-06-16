@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.gigamind.cognify.util.GameConfig;
+import com.gigamind.cognify.util.GameTimer;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.R;
@@ -18,13 +21,13 @@ import java.util.List;
 public class QuickMathActivity extends AppCompatActivity {
     private MathGameEngine gameEngine;
     private TextView scoreText;
-    private TextView questionCountText;
+    private TextView timerText;
     private TextView equationText;
     private MaterialButton[] answerButtons;
     private int currentScore;
-    private int questionCount;
     private GameAnalytics analytics;
     private long questionStartTime;
+    private GameTimer gameTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,7 @@ public class QuickMathActivity extends AppCompatActivity {
 
         // Initialize views
         scoreText = findViewById(R.id.scoreText);
-        questionCountText = findViewById(R.id.questionCountText);
+        timerText = findViewById(R.id.timerText);
         equationText = findViewById(R.id.equationText);
         
         answerButtons = new MaterialButton[4];
@@ -49,7 +52,6 @@ public class QuickMathActivity extends AppCompatActivity {
         // Initialize game
         gameEngine = new MathGameEngine();
         currentScore = 0;
-        questionCount = 0;
 
         // Set up click listeners for answer buttons
         for (int i = 0; i < answerButtons.length; i++) {
@@ -57,19 +59,13 @@ public class QuickMathActivity extends AppCompatActivity {
             answerButtons[i].setOnClickListener(v -> checkAnswer(index));
         }
 
-        // Start first question
+        // Start timer & first question
+        startGameTimer();
         nextQuestion();
     }
 
     private void nextQuestion() {
-        if (questionCount >= Constants.TOTAL_QUESTIONS) {
-            endGame();
-            return;
-        }
-
-        questionCount++;
         questionStartTime = System.currentTimeMillis();
-        questionCountText.setText(String.format("Question %d/%d", questionCount, Constants.TOTAL_QUESTIONS));
 
         gameEngine.generateQuestion();
         equationText.setText(gameEngine.getCurrentQuestion());
@@ -78,6 +74,26 @@ public class QuickMathActivity extends AppCompatActivity {
         for (int i = 0; i < answerButtons.length; i++) {
             answerButtons[i].setText(String.valueOf(options.get(i)));
         }
+    }
+
+    private void startGameTimer() {
+        gameTimer = new GameTimer.Builder()
+                .duration(GameConfig.QUICK_MATH_DURATION_MS)
+                .tickInterval(1000)
+                .listener(new GameTimer.Listener() {
+                    @Override
+                    public void onTick(long millisRemaining) {
+                        timerText.setText(String.valueOf(millisRemaining / 1000));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        endGame();
+                    }
+                })
+                .build();
+        timerText.setText(String.valueOf(GameConfig.QUICK_MATH_DURATION_MS / 1000));
+        gameTimer.start();
     }
 
     private void checkAnswer(int buttonIndex) {
@@ -107,14 +123,15 @@ public class QuickMathActivity extends AppCompatActivity {
     }
 
     private void endGame() {
+        if (gameTimer != null) gameTimer.stop();
         analytics.logGameEnd(GameType.MATH,
             currentScore,
-            questionCount,
+            (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             true);
         
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra(Constants.INTENT_SCORE, currentScore);
-        intent.putExtra(Constants.INTENT_TIME, questionCount);
+        intent.putExtra(Constants.INTENT_TIME, (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000));
         intent.putExtra(Constants.INTENT_TYPE, Constants.TYPE_QUICK_MATH);
         startActivity(intent);
         finish();
@@ -123,9 +140,10 @@ public class QuickMathActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        if (gameTimer != null) gameTimer.stop();
         analytics.logGameEnd(GameType.MATH,
             currentScore,
-            questionCount,
+            (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             false);
     }
 } 

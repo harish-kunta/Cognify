@@ -4,7 +4,7 @@ public final class GameConfig {
     // Game durations
     // Duration for the Word Dash game in milliseconds (60 seconds)
     public static final long WORD_DASH_DURATION_MS = 60_000;
-    public static final long QUICK_MATH_DURATION_MS = 45_000; // 45 seconds
+    public static final long QUICK_MATH_DURATION_MS = 60_000; // 60 seconds
 
     // Word game settings
     public static final int MIN_WORD_LENGTH = 3;

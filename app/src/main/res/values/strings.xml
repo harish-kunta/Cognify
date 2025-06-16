@@ -96,7 +96,6 @@
     <string name="play_more_games">Play More Games</string>
     <string name="choose_booster">Choose a brain booster today</string>
     <string name="quick_math_score_placeholder">Score: 0</string>
-    <string name="quick_math_question_placeholder">Question 1/10</string>
     <string name="quick_math_equation_placeholder">7 + 5 = ?</string>
 
     <!-- Added for static string replacements -->

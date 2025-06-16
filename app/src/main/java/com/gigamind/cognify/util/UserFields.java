@@ -27,7 +27,26 @@ public final class UserFields {
      * Example: if gameType="WordDash", returns "lastWordDashScore".
      */
     public static String lastGameScoreField(String gameType) {
-        return "last" + gameType + "Score";
+        return "last" + camelCase(gameType) + "Score";
+    }
+
+    /**
+     * Returns the Firestore field name for "total<gameType>Xp".
+     * Example: if gameType="WordDash", returns "totalWordDashXp".
+     */
+    public static String totalGameXpField(String gameType) {
+        return "total" + camelCase(gameType) + "Xp";
+    }
+
+    private static String camelCase(String str) {
+        String[] parts = str.split("_");
+        StringBuilder sb = new StringBuilder();
+        for (String p : parts) {
+            if (p.isEmpty()) continue;
+            sb.append(Character.toUpperCase(p.charAt(0)))
+              .append(p.substring(1));
+        }
+        return sb.toString();
     }
 }
 
