@@ -141,7 +141,7 @@
     </string>
     <string name="logout_confirm_title">Are you sure?</string>
     <string name="logout_confirm_message">
-        If you log out now, your score and streak won’t be saved. Do you really want to sign out?
+        If you log out now, your score and streak wont be saved. Do you really want to sign out?
     </string>
     <string name="logout_confirm_positive">Yes, Sign Out</string>
     <string name="unknown_user">Unknown User</string>
@@ -193,7 +193,7 @@
     <string name="tutorial_start_hint">Tap letters to form a word, then hit Submit.</string>
     <string name="tutorial_complete">Great! Tutorial complete.</string>
     <string name="tutorial_step_letters">Tap letters to form a word.</string>
-    <string name="tutorial_step_submit">Tap Submit when you're done.</string>
+    <string name="tutorial_step_submit">Tap Submit when youre done.</string>
     <string name="tutorial_next">Next</string>
     <string name="tutorial_got_it">Got it!</string>
 
