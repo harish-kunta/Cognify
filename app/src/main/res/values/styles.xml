@@ -144,4 +144,17 @@
         <item name="android:layout_gravity">left</item>
         <item name="android:gravity">left</item>
     </style>
-</resources> 
+
+    <!-- Large text styles used on the result screen -->
+    <style name="TextAppearance.ScoreLabel" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.ScoreValue" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -81,14 +81,12 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/ProfilePageUserNameStyle"
+                        style="@style/TextAppearance.ScoreLabel"
                         android:layout_width="match_parent"
                         android:layout_height="64dp"
                         android:elevation="16dp"
                         android:gravity="center"
                         android:text="@string/score"
-                        android:textSize="56sp"
-                        android:textStyle="bold"
                         android:translationZ="8dp" />
                 </LinearLayout>
 
@@ -100,14 +98,12 @@
 
                     <TextView
                         android:id="@+id/scoreValue"
-                        style="@style/ProfilePageSubtitleStyle"
+                        style="@style/TextAppearance.ScoreValue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:text="@string/number_zero"
-                        android:textSize="80sp"
-                        android:textStyle="bold"
                         android:elevation="16dp"
                         android:translationZ="8dp"/>
                 </LinearLayout>
