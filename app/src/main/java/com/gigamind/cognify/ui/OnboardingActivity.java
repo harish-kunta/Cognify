@@ -88,23 +88,23 @@ public class OnboardingActivity extends AppCompatActivity {
         List<OnboardingItem> items = new ArrayList<>();
         items.add(new OnboardingItem.Builder()
                 .imageResId(R.drawable.brain_train)
-                .title("Train your brain in 60 seconds a day")
-                .description("Quick, fun exercises to keep your mind sharp")
+                .title(getString(R.string.onboarding_slide1_title))
+                .description(getString(R.string.onboarding_slide1_desc))
                 .build());
         items.add(new OnboardingItem.Builder()
                 .imageResId(R.drawable.word_math)
-                .title("Form words. Solve math. Beat the clock!")
-                .description("Challenge yourself with various brain games")
+                .title(getString(R.string.onboarding_slide2_title))
+                .description(getString(R.string.onboarding_slide2_desc))
                 .build());
         items.add(new OnboardingItem.Builder()
                 .imageResId(R.drawable.rewards)
-                .title("Earn streaks, top leaderboards!")
-                .description("Compete and track your progress")
+                .title(getString(R.string.onboarding_slide3_title))
+                .description(getString(R.string.onboarding_slide3_desc))
                 .build());
         items.add(new OnboardingItem.Builder()
                 .imageResId(R.drawable.profile)
-                .title("Sign in to save progress")
-                .description("Or continue as guest to try it out")
+                .title(getString(R.string.onboarding_slide4_title))
+                .description(getString(R.string.onboarding_slide4_desc))
                 .build());
 
         OnboardingAdapter adapter = new OnboardingAdapter(items);
