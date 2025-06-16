@@ -15,6 +15,7 @@ import com.gigamind.cognify.work.QuestNotificationScheduler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.gigamind.cognify.engine.DictionaryProvider;
@@ -49,6 +50,7 @@ public class CognifyApplication extends Application {
 
         // (1) Initialize Firebase
         FirebaseApp.initializeApp(this);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
         // (1b) Preload dictionary (so WordDashActivity doesn't flash an empty grid)
         DictionaryProvider.preloadDictionary(this);
