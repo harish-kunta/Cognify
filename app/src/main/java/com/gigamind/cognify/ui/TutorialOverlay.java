@@ -1,7 +1,7 @@
 package com.gigamind.cognify.ui;
 
 import android.app.Activity;
-import android.graphics.Point;
+import android.graphics.RectF;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.gigamind.cognify.R;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.button.MaterialButton;
+import com.gigamind.cognify.ui.HighlightScrimView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class TutorialOverlay {
     private int index = 0;
     private PopupWindow popup;
     private Runnable onComplete;
-    private View scrim;
+    private HighlightScrimView scrim;
     private Step currentStep;
 
     public TutorialOverlay(Activity activity) {
@@ -66,8 +67,7 @@ public class TutorialOverlay {
 
         ViewGroup root = activity.findViewById(android.R.id.content);
         if (scrim == null) {
-            scrim = new View(activity);
-            scrim.setBackgroundColor(ContextCompat.getColor(activity, R.color.scrim));
+            scrim = new HighlightScrimView(activity);
         }
         if (scrim.getParent() == null) {
             root.addView(scrim, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -92,8 +92,12 @@ public class TutorialOverlay {
         popup.setOutsideTouchable(false);
         int[] loc = new int[2];
         step.anchor.getLocationInWindow(loc);
-        Point size = new Point();
-        activity.getWindowManager().getDefaultDisplay().getSize(size);
+        RectF hole = new RectF(
+                loc[0],
+                loc[1],
+                loc[0] + step.anchor.getWidth(),
+                loc[1] + step.anchor.getHeight());
+        scrim.setHole(hole);
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int popupHeight = view.getMeasuredHeight();
         int y = loc[1] - popupHeight;
@@ -133,6 +137,9 @@ public class TutorialOverlay {
                 currentStep.anchor.setForeground(null);
             }
             currentStep.anchor.setElevation(currentStep.originalElevation);
+        }
+        if (scrim != null) {
+            scrim.setHole(null);
         }
     }
 }
