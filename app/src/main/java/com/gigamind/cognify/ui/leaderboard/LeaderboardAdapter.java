@@ -60,6 +60,13 @@ public class LeaderboardAdapter extends ListAdapter<LeaderboardItem, Leaderboard
             // 3) Display Name
             binding.nameText.setText(item.getName());
 
+            // Badge icon and description
+            int badgeIdx = com.gigamind.cognify.util.BadgeUtils.badgeIndexForXp(item.getTotalXP());
+            binding.badgeIcon.setImageResource(
+                    com.gigamind.cognify.util.BadgeUtils.badgeIconResId(badgeIdx));
+            binding.badgeIcon.setContentDescription(
+                    com.gigamind.cognify.util.BadgeUtils.NAMES[badgeIdx]);
+
             // 5) Points (Total XP)
             binding.pointsText.setText(String.valueOf(item.getTotalXP()));
 

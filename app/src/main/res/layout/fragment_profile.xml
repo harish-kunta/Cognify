@@ -74,6 +74,13 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <ImageView
+                android:id="@+id/avatarImage"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_avatar" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -232,7 +239,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Custom Tile 3 -->
+                <!-- Games Played Tile -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -241,24 +248,25 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/profile_page_block_background"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/icon_flash" />
+                    android:padding="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/gamesPlayedValue"
+                        style="@style/ProfilePageUserNameStyle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/league"
-                        android:textAppearance="?attr/textAppearanceListItem" />
+                        android:gravity="center"
+                        android:text="0" />
+
+                    <TextView
+                        style="@style/ProfilePageSubtitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/games_played" />
                 </LinearLayout>
 
-                <!-- Custom Tile 4 -->
+                <!-- Win Rate Tile -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -267,21 +275,22 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/profile_page_block_background"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/icon_flash" />
+                    android:padding="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/winRateValue"
+                        style="@style/ProfilePageUserNameStyle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/tile_four"
-                        android:textAppearance="?attr/textAppearanceListItem" />
+                        android:gravity="center"
+                        android:text="0%" />
+
+                    <TextView
+                        style="@style/ProfilePageSubtitleStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/win_rate" />
                 </LinearLayout>
 
             </GridLayout>
@@ -334,6 +343,19 @@
                 android:layout_margin="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/invite_friends_button" />
+
+            <Button
+                android:id="@+id/shareStreakButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/share_streak_button" />
+            <Button
+                android:id="@+id/trophyRoomButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/trophy_room" />
 
         </LinearLayout>
 

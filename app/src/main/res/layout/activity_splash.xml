@@ -39,7 +39,7 @@
         android:src="@drawable/app_icon"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@null"
+        android:contentDescription="@string/app_icon_desc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"

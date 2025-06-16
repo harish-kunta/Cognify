@@ -26,8 +26,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.gigamind.cognify.util.ExceptionLogger;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.gigamind.cognify.analytics.GameAnalytics;
 import com.google.firebase.auth.AuthCredential;
-import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
@@ -52,6 +52,8 @@ public class OnboardingActivity extends AppCompatActivity {
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private NotificationPermissionHelper notificationPermissionHelper;
+    private GameAnalytics analytics;
+    private boolean onboardingCompleted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,8 @@ public class OnboardingActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        analytics = GameAnalytics.getInstance(this);
 
         firebaseService = FirebaseService.getInstance();
         userRepository = new UserRepository(this);
@@ -110,6 +114,14 @@ public class OnboardingActivity extends AppCompatActivity {
         OnboardingAdapter adapter = new OnboardingAdapter(items);
         binding.viewPager.setAdapter(adapter);
 
+        analytics.logOnboardingPage(0);
+        binding.viewPager.registerOnPageChangeCallback(new androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                analytics.logOnboardingPage(position);
+            }
+        });
+
         new TabLayoutMediator(
                 binding.tabLayout,
                 binding.viewPager,
@@ -140,6 +152,8 @@ public class OnboardingActivity extends AppCompatActivity {
 
             binding.btnLetsGo.setVisibility(View.VISIBLE);
             binding.btnLetsGo.setOnClickListener(v -> {
+                onboardingCompleted = true;
+                analytics.logOnboardingCompleted();
                 Intent i = new Intent(OnboardingActivity.this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
@@ -171,6 +185,8 @@ public class OnboardingActivity extends AppCompatActivity {
         editor.putLong(UserRepository.KEY_LAST_PLAYED_TS, 0L);
         editor.apply();
 
+        onboardingCompleted = true;
+        analytics.logOnboardingCompleted();
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
@@ -297,7 +313,17 @@ public class OnboardingActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!onboardingCompleted) {
+            analytics.logOnboardingSkipped();
+        }
+    }
+
     private void launchMainActivity() {
+        analytics.logOnboardingCompleted();
+        onboardingCompleted = true;
         Intent intent = new Intent(OnboardingActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

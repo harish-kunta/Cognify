@@ -57,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:focusableInTouchMode="true"
             android:text="@string/sign_in_with_google"
             app:icon="@drawable/ic_google" />
 
@@ -67,6 +68,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp"
+            android:focusableInTouchMode="true"
             android:text="@string/continue_as_guest" />
 
         <com.google.android.material.button.MaterialButton
@@ -76,6 +78,7 @@
             android:layout_height="wrap_content"
             android:text="@string/lets_go"
             android:visibility="gone"
+            android:focusableInTouchMode="true"
             android:layout_marginBottom="16dp" />
     </LinearLayout>
 
