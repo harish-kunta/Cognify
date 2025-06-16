@@ -178,6 +178,21 @@ public class GameAnalytics {
         firebaseAnalytics.logEvent("daily_challenge_completed", bundle);
     }
 
+    // Onboarding Analytics
+    public void logOnboardingPage(int page) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("page", page);
+        firebaseAnalytics.logEvent("onboarding_page", bundle);
+    }
+
+    public void logOnboardingCompleted() {
+        firebaseAnalytics.logEvent("onboarding_completed", null);
+    }
+
+    public void logOnboardingSkipped() {
+        firebaseAnalytics.logEvent("onboarding_skipped", null);
+    }
+
     // Navigation Analytics
     public void logScreenView(String screenName) {
         Bundle bundle = new Bundle();
