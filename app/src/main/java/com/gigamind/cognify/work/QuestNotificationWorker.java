@@ -1,7 +1,5 @@
 package com.gigamind.cognify.work;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +12,7 @@ import androidx.work.WorkerParameters;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.ui.MainActivity;
+import com.gigamind.cognify.util.NotificationUtils;
 
 /** Worker that posts the daily quest reminder notification. */
 public class QuestNotificationWorker extends Worker {
@@ -33,7 +32,13 @@ public class QuestNotificationWorker extends Worker {
     }
 
     private void sendQuestNotification(Context context) {
-        createNotificationChannelIfNeeded(context);
+        NotificationUtils.createNotificationChannel(
+                context,
+                CHANNEL_ID,
+                context.getString(R.string.quest_channel_name),
+                context.getString(R.string.quest_channel_desc),
+                android.app.NotificationManager.IMPORTANCE_HIGH
+        );
 
         Intent toMain = new Intent(context, MainActivity.class);
         toMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -63,18 +68,4 @@ public class QuestNotificationWorker extends Worker {
         }
     }
 
-    private void createNotificationChannelIfNeeded(Context ctx) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = ctx.getString(R.string.quest_channel_name);
-            String description = ctx.getString(R.string.quest_channel_desc);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            NotificationManager nm =
-                    (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (nm != null) nm.createNotificationChannel(channel);
-        }
-    }
 }

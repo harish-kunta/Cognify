@@ -18,11 +18,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.SetOptions;
+import com.gigamind.cognify.util.DateUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ArrayList;
 
@@ -238,10 +236,8 @@ public class UserRepository {
             @Nullable Integer newPersonalBest  // if null, don’t write PB to Firestore
     ) {
         // 1) Compute “today” and “yesterday”
-        Calendar now = Calendar.getInstance();
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(now.getTime());
-        now.add(Calendar.DAY_OF_YEAR, -1);
-        String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(now.getTime());
+        String today = DateUtils.today();
+        String yesterday = DateUtils.yesterday();
 
         // 2) Current timestamp
         long nowMillis = System.currentTimeMillis();
