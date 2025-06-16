@@ -6,6 +6,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -95,4 +96,22 @@ public class FirebaseService {
     public void signOut() {
         auth.signOut();
     }
-} 
+
+    /**
+     * Deletes the current Firebase user account and associated Firestore data.
+     * Caller should ensure the user has recently reauthenticated.
+     */
+    public Task<Void> deleteAccountAndData() {
+        FirebaseUser user = getCurrentUser();
+        if (user == null) {
+            return Tasks.forException(new Exception("No user signed in"));
+        }
+
+        String uid = user.getUid();
+        Task<Void> deleteData = firestore.collection(COLLECTION_USERS)
+                .document(uid)
+                .delete();
+
+        return deleteData.continueWithTask(task -> user.delete());
+    }
+}
