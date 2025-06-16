@@ -151,6 +151,12 @@
         Join me on Cognify! Download on Play Store: https://example.com/app
     </string>
     <string name="invite_chooser_title">Invite Friends</string>
+    <string name="save">Save</string>
+    <string name="customize_avatar">Customize Avatar</string>
+    <string name="frame">Frame</string>
+    <string name="hat">Hat</string>
+    <string name="color">Color</string>
+    <string name="win_rate">Win Rate</string>
 
     <!-- Trophy Room -->
     <string name="trophy_room">Trophy Room</string>
