@@ -47,6 +47,7 @@ public class ProfileFragment extends Fragment {
     private TextView gamesPlayedValue;
     private TextView winRateValue;
     private Button inviteFriendsButton;
+    private Button shareStreakButton;
     private Button trophyRoomButton;
 
     private UserRepository userRepository;
@@ -80,6 +81,7 @@ public class ProfileFragment extends Fragment {
         winRateValue        = view.findViewById(R.id.winRateValue);
         inviteFriendsButton = view.findViewById(R.id.inviteFriendsButton);
         trophyRoomButton        = view.findViewById(R.id.trophyRoomButton);
+        shareStreakButton       = view.findViewById(R.id.shareStreakButton);
 
         // 2) Initialize FirebaseUser & UserRepository
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
@@ -191,6 +193,16 @@ public class ProfileFragment extends Fragment {
             String message = getString(R.string.invite_message) + "\nCode: " + friendCode;
             shareIntent.putExtra(Intent.EXTRA_TEXT, message);
             startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
+        });
+
+
+        shareStreakButton.setOnClickListener(v -> {
+            int streak = userRepository.getCurrentStreak();
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT,
+                    getString(R.string.share_streak_message, streak));
+            startActivity(Intent.createChooser(intent, getString(R.string.invite_chooser_title)));
         });
 
         trophyRoomButton.setOnClickListener(v -> {

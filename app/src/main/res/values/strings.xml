@@ -151,6 +151,11 @@
         Join me on Cognify! Download on Play Store: https://example.com/app
     </string>
     <string name="invite_chooser_title">Invite Friends</string>
+    <string name="share_streak_button">SHARE STREAK</string>
+    <string name="share_streak_message">My Daily Streak: 🔥 %1$d days!</string>
+    <string name="challenge_friend_button">CHALLENGE A FRIEND</string>
+    <string name="challenge_message">Beat my %1$s score of %2$d in Cognify!</string>
+    <string name="challenge_toast">Beat score: %1$d</string>
     <string name="save">Save</string>
     <string name="customize_avatar">Customize Avatar</string>
     <string name="frame">Frame</string>
