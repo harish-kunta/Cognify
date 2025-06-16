@@ -36,9 +36,12 @@ public class TutorialOverlay {
     private static class Step {
         final View anchor;
         final String text;
+        final float originalElevation;
+
         Step(View anchor, String text) {
             this.anchor = anchor;
             this.text = text;
+            this.originalElevation = anchor.getElevation();
         }
     }
 
@@ -69,7 +72,9 @@ public class TutorialOverlay {
         if (scrim.getParent() == null) {
             root.addView(scrim, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
+        scrim.setElevation(1f);
         step.anchor.bringToFront();
+        step.anchor.setElevation(step.originalElevation + 10f);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             step.anchor.setForeground(ContextCompat.getDrawable(activity, R.drawable.tutorial_highlight));
         }
@@ -123,8 +128,11 @@ public class TutorialOverlay {
     }
 
     private void clearHighlight() {
-        if (currentStep != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            currentStep.anchor.setForeground(null);
+        if (currentStep != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                currentStep.anchor.setForeground(null);
+            }
+            currentStep.anchor.setElevation(currentStep.originalElevation);
         }
     }
 }
