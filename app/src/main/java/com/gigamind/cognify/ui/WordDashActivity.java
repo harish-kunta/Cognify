@@ -24,6 +24,7 @@ import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameType;
 import com.gigamind.cognify.util.GameTimer;
 import com.gigamind.cognify.util.TutorialHelper;
+import com.gigamind.cognify.ui.TutorialOverlay;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -53,6 +54,8 @@ public class WordDashActivity extends AppCompatActivity {
     private long wordStartTime;
     private TutorialHelper tutorialHelper;
     private boolean tutorialActive = false;
+    private TutorialOverlay tutorialOverlay;
+    private MaterialButton submitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +97,15 @@ public class WordDashActivity extends AppCompatActivity {
                         isDictionaryLoaded = true;
                         if (!tutorialHelper.isTutorialCompleted()) {
                             tutorialActive = true;
-                            Toast.makeText(this, R.string.tutorial_start_hint, Toast.LENGTH_LONG).show();
+                            tutorialOverlay = new TutorialOverlay(this);
+                            tutorialOverlay.addStep(letterGrid, getString(R.string.tutorial_step_letters));
+                            tutorialOverlay.addStep(submitButton, getString(R.string.tutorial_step_submit));
+                            tutorialOverlay.setOnComplete(() -> {
+                                Toast.makeText(this, R.string.tutorial_complete, Toast.LENGTH_SHORT).show();
+                                tutorialHelper.markTutorialCompleted();
+                                tutorialActive = false;
+                            });
+                            letterGrid.post(tutorialOverlay::start);
                         }
                         startGame();       // Begin the game timer
                     } else {
@@ -115,7 +126,7 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        MaterialButton submitButton = findViewById(R.id.submitButton);
+        submitButton = findViewById(R.id.submitButton);
         MaterialButton clearButton = findViewById(R.id.clearButton);
         MaterialButton backspaceButton = findViewById(R.id.backspaceButton);
 
