@@ -174,11 +174,11 @@
     <string name="challenge_toast">Beat score: %1$d</string>
     <string name="save">Save</string>
     <string name="customize_avatar">Customize Avatar</string>
-    <string name="frame">Frame</string>
-    <string name="hat">Hat</string>
-    <string name="color">Color</string>
+    <string name="skin_color">Skin Color</string>
+    <string name="hair_style">Hair Style</string>
+    <string name="eyes_style">Eyes Style</string>
+    <string name="mouth_style">Mouth Style</string>
     <string name="win_rate">Win Rate</string>
-
     <!-- Trophy Room -->
     <string name="trophy_room">Trophy Room</string>
     <string name="badge_rookie">Rookie</string>

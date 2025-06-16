@@ -40,7 +40,10 @@ public class ProfileFragment extends Fragment {
     private TextView userEmailText;
     private TextView userJoinedText;
     private ImageView settingsIcon;
-    private ImageView avatarImage;
+    private ImageView avatarFace;
+    private ImageView avatarHair;
+    private ImageView avatarEyes;
+    private ImageView avatarMouth;
     private TextView streakValueText;
     private TextView xpValueText;
     private TextView gamesPlayedValue;
@@ -73,7 +76,10 @@ public class ProfileFragment extends Fragment {
         userEmailText       = view.findViewById(R.id.userEmail);
         userJoinedText      = view.findViewById(R.id.userJoined);
         settingsIcon        = view.findViewById(R.id.settingsIcon);
-        avatarImage         = view.findViewById(R.id.avatarImage);
+        avatarFace          = view.findViewById(R.id.avatarFace);
+        avatarHair          = view.findViewById(R.id.avatarHair);
+        avatarEyes          = view.findViewById(R.id.avatarEyes);
+        avatarMouth         = view.findViewById(R.id.avatarMouth);
         streakValueText     = view.findViewById(R.id.streakValue);
         xpValueText         = view.findViewById(R.id.xpValue);
         gamesPlayedValue    = view.findViewById(R.id.gamesPlayedValue);
@@ -178,7 +184,7 @@ public class ProfileFragment extends Fragment {
             bottomNav.setSelectedItemId(R.id.navigation_settings);
         });
 
-        avatarImage.setOnClickListener(v ->
+        avatarFace.setOnClickListener(v ->
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.nav_host_fragment, new AvatarCustomizationFragment())
                         .addToBackStack(null)
@@ -212,22 +218,26 @@ public class ProfileFragment extends Fragment {
 
     private void applyAvatarCustomization() {
         SharedPreferences prefs = requireContext().getSharedPreferences(Constants.PREF_APP, Context.MODE_PRIVATE);
-        String frame = prefs.getString("avatar_frame", "Circle");
-        String color = prefs.getString("avatar_color", "Blue");
+        int skin = prefs.getInt(Constants.AVATAR_SKIN, 0);
+        int hair = prefs.getInt(Constants.AVATAR_HAIR, 0);
+        int eyes = prefs.getInt(Constants.AVATAR_EYES, 0);
+        int mouth = prefs.getInt(Constants.AVATAR_MOUTH, 0);
 
-        if (frame.equals("Square")) {
-            avatarImage.setBackgroundResource(R.drawable.avatar_frame_square);
-        } else {
-            avatarImage.setBackgroundResource(R.drawable.avatar_frame_circle);
+        switch (skin) {
+            case 0:
+                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_light));
+                break;
+            case 1:
+                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_medium));
+                break;
+            case 2:
+                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_dark));
+                break;
         }
 
-        if (color.equals("Green")) {
-            avatarImage.setColorFilter(getResources().getColor(R.color.success));
-        } else if (color.equals("Red")) {
-            avatarImage.setColorFilter(getResources().getColor(R.color.error));
-        } else {
-            avatarImage.setColorFilter(getResources().getColor(R.color.blue));
-        }
+        avatarHair.setImageResource(hair == 0 ? R.drawable.avatar_hair_1 : R.drawable.avatar_hair_2);
+        avatarEyes.setImageResource(eyes == 0 ? R.drawable.avatar_eyes_1 : R.drawable.avatar_eyes_2);
+        avatarMouth.setImageResource(mouth == 0 ? R.drawable.avatar_mouth_1 : R.drawable.avatar_mouth_2);
     }
 
     @Override
