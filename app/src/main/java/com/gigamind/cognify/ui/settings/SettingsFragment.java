@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
@@ -36,10 +37,11 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences prefs;
     private GoogleSignInClient googleSignInClient;
     private static final int RC_REAUTH = 9002;
-    private static final String KEY_SOUND_ENABLED = "sound_enabled";
-    private static final String KEY_HAPTICS_ENABLED = "haptics_enabled";
-    private static final String KEY_ANIMATIONS_ENABLED = "animations_enabled";
-    private static final String KEY_TUTORIAL_COMPLETED = "tutorial_completed";
+    private static final String KEY_SOUND_ENABLED = Constants.PREF_SOUND_ENABLED;
+    private static final String KEY_HAPTICS_ENABLED = Constants.PREF_HAPTICS_ENABLED;
+    private static final String KEY_ANIMATIONS_ENABLED = Constants.PREF_ANIMATIONS_ENABLED;
+    private static final String KEY_DARK_MODE_ENABLED = Constants.PREF_DARK_MODE_ENABLED;
+    private static final String KEY_TUTORIAL_COMPLETED = Constants.PREF_TUTORIAL_COMPLETED;
 
     @Nullable
     @Override
@@ -67,6 +69,13 @@ public class SettingsFragment extends Fragment {
         binding.soundEffectsSwitch.setChecked(prefs.getBoolean(KEY_SOUND_ENABLED, true));
         binding.hapticsSwitch.setChecked(prefs.getBoolean(KEY_HAPTICS_ENABLED, true));
         binding.animationsSwitch.setChecked(prefs.getBoolean(KEY_ANIMATIONS_ENABLED, true));
+        binding.darkModeSwitch.setChecked(prefs.getBoolean(KEY_DARK_MODE_ENABLED, false));
+
+        if (binding.darkModeSwitch.isChecked()) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
 
         // Set up listeners
         binding.soundEffectsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
@@ -77,6 +86,15 @@ public class SettingsFragment extends Fragment {
 
         binding.animationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 prefs.edit().putBoolean(KEY_ANIMATIONS_ENABLED, isChecked).apply());
+
+        binding.darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean(KEY_DARK_MODE_ENABLED, isChecked).apply();
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        });
     }
 
     private void setupButtons() {

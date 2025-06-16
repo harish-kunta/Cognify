@@ -1,6 +1,7 @@
 package com.gigamind.cognify.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -58,6 +59,7 @@ public class WordDashActivity extends AppCompatActivity {
     private MaterialButton submitButton;
     private MaterialButton clearButton;
     private MaterialButton backspaceButton;
+    private boolean hapticsEnabled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,9 @@ public class WordDashActivity extends AppCompatActivity {
         analytics.logGameStart(GameType.WORD);
 
         tutorialHelper = new TutorialHelper(this);
+
+        SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
+        hapticsEnabled = prefs.getBoolean(Constants.PREF_HAPTICS_ENABLED, true);
         
         // 1) Bind all views and set up UI scaffolding that does NOT use gameEngine yet
         initializeViews();
@@ -199,7 +204,9 @@ public class WordDashActivity extends AppCompatActivity {
 
             final int index = i;
             button.setOnClickListener(v -> {
-                v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                if (hapticsEnabled) {
+                    v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+                }
                 animateButtonPress(button);
                 onLetterClick(letters[index]);
             });
@@ -270,7 +277,9 @@ public class WordDashActivity extends AppCompatActivity {
         } else {
             showError(getString(R.string.invalid_word));
             analytics.logInvalidWord(word);
-            scoreText.performHapticFeedback(HapticFeedbackConstants.REJECT);
+            if (hapticsEnabled) {
+                scoreText.performHapticFeedback(HapticFeedbackConstants.REJECT);
+            }
             letterGrid
                     .animate()
                     .translationX(10)
@@ -294,7 +303,9 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void animateScoreIncrease() {
-        scoreText.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        if (hapticsEnabled) {
+            scoreText.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        }
         scoreText.animate()
                 .scaleX(1.3f)
                 .scaleY(1.3f)
@@ -310,7 +321,9 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        letterGrid.performHapticFeedback(HapticFeedbackConstants.REJECT);
+        if (hapticsEnabled) {
+            letterGrid.performHapticFeedback(HapticFeedbackConstants.REJECT);
+        }
     }
 
     private void clearWord() {
@@ -372,7 +385,9 @@ public class WordDashActivity extends AppCompatActivity {
         if (currentWord.length() > 0) {
             currentWord.deleteCharAt(currentWord.length() - 1);
             currentWordText.setText(currentWord.toString());
-            v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+            if (hapticsEnabled) {
+                v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
+            }
         }
     }
 
