@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Button;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,6 +55,20 @@ public class AvatarCustomizationFragment extends Fragment {
         setupSpinners();
         loadSelections();
 
+        // Update preview whenever an option is changed
+        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
+                updatePreview();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        };
+        frameSpinner.setOnItemSelectedListener(listener);
+        hatSpinner.setOnItemSelectedListener(listener);
+        colorSpinner.setOnItemSelectedListener(listener);
+
         saveButton.setOnClickListener(v -> {
             prefs.edit()
                     .putString(KEY_AVATAR_FRAME, frameSpinner.getSelectedItem().toString())
@@ -92,5 +107,25 @@ public class AvatarCustomizationFragment extends Fragment {
         frameSpinner.setSelection(frame.equals("Square") ? 1 : 0);
         hatSpinner.setSelection(hat.equals("Crown") ? 1 : hat.equals("Cap") ? 2 : 0);
         colorSpinner.setSelection(color.equals("Green") ? 1 : color.equals("Red") ? 2 : 0);
+        updatePreview();
+    }
+
+    private void updatePreview() {
+        String frame = frameSpinner.getSelectedItem().toString();
+        String color = colorSpinner.getSelectedItem().toString();
+
+        if (frame.equals("Square")) {
+            avatarPreview.setBackgroundResource(R.drawable.avatar_frame_square);
+        } else {
+            avatarPreview.setBackgroundResource(R.drawable.avatar_frame_circle);
+        }
+
+        if (color.equals("Green")) {
+            avatarPreview.setColorFilter(getResources().getColor(R.color.success));
+        } else if (color.equals("Red")) {
+            avatarPreview.setColorFilter(getResources().getColor(R.color.error));
+        } else {
+            avatarPreview.setColorFilter(getResources().getColor(R.color.blue));
+        }
     }
 }

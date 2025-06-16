@@ -232,6 +232,13 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh avatar in case customization changed while this fragment was paused
+        applyAvatarCustomization();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         // Always remove the Firestore listener to prevent memory leaks
