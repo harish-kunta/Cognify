@@ -156,6 +156,14 @@
     <!-- Accessibility descriptions -->
     <string name="app_icon_desc">Cognify app icon</string>
     <string name="onboarding_image_desc">Onboarding illustration</string>
+    <string name="onboarding_slide1_title">Train your brain in 60 seconds a day</string>
+    <string name="onboarding_slide1_desc">Quick, fun exercises to keep your mind sharp</string>
+    <string name="onboarding_slide2_title">Form words. Solve math. Beat the clock!</string>
+    <string name="onboarding_slide2_desc">Challenge yourself with various brain games</string>
+    <string name="onboarding_slide3_title">Earn streaks, top leaderboards!</string>
+    <string name="onboarding_slide3_desc">Compete and track your progress</string>
+    <string name="onboarding_slide4_title">Sign in to save progress</string>
+    <string name="onboarding_slide4_desc">Or continue as guest to try it out</string>
     <string name="streak_icon_desc">Streak icon</string>
     <string name="profile_avatar_desc">User avatar</string>
 
