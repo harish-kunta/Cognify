@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "157986049607-1kppf240rdmo7i8nqp6jpgpq7esdi00a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gigamind.cognify",
+            "certificate_hash": "f63973c0cf79d0622d1db5fcc7d812254bd1fbc6"
+          }
+        },
+        {
           "client_id": "157986049607-fj224474h5vb71s5m5o15tmqfim0hpm4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
