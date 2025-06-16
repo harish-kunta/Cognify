@@ -1,13 +1,9 @@
 package com.gigamind.cognify.work;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -86,32 +82,15 @@ public class StreakNotificationWorker extends Worker {
                 android.app.NotificationManager.IMPORTANCE_HIGH
         );
 
-        Intent toMain = new Intent(context, MainActivity.class);
-        toMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        PendingIntent pi = PendingIntent.getActivity(
+        NotificationUtils.sendNotification(
                 context,
-                0,
-                toMain,
-                PendingIntent.FLAG_UPDATE_CURRENT
-                        | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-                        ? PendingIntent.FLAG_IMMUTABLE
-                        : 0)
+                CHANNEL_ID,
+                R.drawable.ic_streak,
+                context.getString(R.string.notif_streak_title),
+                context.getString(R.string.notif_streak_text),
+                MainActivity.class,
+                NOTIF_ID
         );
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_streak)
-                .setContentTitle(context.getString(R.string.notif_streak_title))
-                .setContentText(context.getString(R.string.notif_streak_text))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setContentIntent(pi);
-
-        NotificationManager nm =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null) {
-            nm.notify(NOTIF_ID, builder.build());
-        }
     }
 
 }
