@@ -73,7 +73,9 @@ public class TutorialOverlay {
             root.addView(scrim, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
         scrim.setElevation(1f);
-        step.anchor.bringToFront();
+        // Use elevation to show the highlight above the scrim without altering
+        // the child's position within its parent layout. Calling bringToFront()
+        // caused layout reordering which shifted views in LinearLayouts.
         step.anchor.setElevation(step.originalElevation + 10f);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             step.anchor.setForeground(ContextCompat.getDrawable(activity, R.drawable.tutorial_highlight));
