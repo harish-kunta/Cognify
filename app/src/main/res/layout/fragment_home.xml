@@ -29,6 +29,7 @@
                     android:layout_width="32dp"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
+                    android:contentDescription="@string/streak_icon_desc"
                     android:src="@drawable/ic_streak" />
 
                 <TextView
@@ -58,6 +59,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/profile_avatar_desc"
                 android:src="@drawable/ic_avatar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

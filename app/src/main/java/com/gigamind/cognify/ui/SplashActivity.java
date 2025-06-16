@@ -1,10 +1,13 @@
 package com.gigamind.cognify.ui;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +23,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Disable heavy animations on low memory devices
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (am != null && am.isLowRamDevice()) {
+            binding.splashAnimation.cancelAnimation();
+            binding.splashAnimation.setVisibility(View.GONE);
+        }
 
         // Check if first time launch
         SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
