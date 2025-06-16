@@ -176,7 +176,7 @@ public class UserRepository {
      * default values on first creation. Returns a Task that completes once the
      * operation (and any subsequent sync) is finished.
      */
-    public Task<Void> createOrUpdateUser(String uid, String name, String email) {
+    public Task<DocumentSnapshot> createOrUpdateUser(String uid, String name, String email) {
         DocumentReference userRef = firebaseService.getFirestore()
                 .collection(FirebaseService.COLLECTION_USERS)
                 .document(uid);
