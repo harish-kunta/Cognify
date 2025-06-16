@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * UserRepository now keeps a real-time Firestore listener on the user document,
@@ -168,6 +169,55 @@ public class UserRepository {
                     callback.onDataChanged();
                 }
             }
+        });
+    }
+
+    /**
+     * Creates a new user document in Firestore if it doesn't exist, otherwise
+     * updates the existing profile fields. SharedPreferences are updated with
+     * default values on first creation. Returns a Task that completes once the
+     * operation (and any subsequent sync) is finished.
+     */
+    public Task<Void> createOrUpdateUser(String uid, String name, String email) {
+        DocumentReference userRef = firebaseService.getFirestore()
+                .collection(FirebaseService.COLLECTION_USERS)
+                .document(uid);
+
+        return userRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+
+            DocumentSnapshot snapshot = task.getResult();
+            if (snapshot != null && snapshot.exists()) {
+                Map<String, Object> updates = new HashMap<>();
+                updates.put(UserFields.FIELD_NAME, name != null ? name : "");
+                updates.put(UserFields.FIELD_EMAIL, email != null ? email : "");
+                return userRef.set(updates, SetOptions.merge())
+                        .continueWithTask(t -> syncUserDataOnce());
+            }
+
+            Map<String, Object> newUserData = new HashMap<>();
+            newUserData.put(UserFields.FIELD_UID, uid);
+            newUserData.put(UserFields.FIELD_NAME, name != null ? name : "");
+            newUserData.put(UserFields.FIELD_EMAIL, email != null ? email : "");
+            newUserData.put(UserFields.FIELD_CURRENT_STREAK, 0);
+            newUserData.put(UserFields.FIELD_TOTAL_XP, 0);
+            newUserData.put(UserFields.FIELD_LAST_PLAYED_DATE, "");
+            newUserData.put(UserFields.FIELD_LAST_PLAYED_TS, 0L);
+            newUserData.put(UserFields.FIELD_LEADERBOARD_RANK, 0);
+            newUserData.put(UserFields.FIELD_TROPHIES, new ArrayList<>());
+
+            return userRef.set(newUserData, SetOptions.merge())
+                    .continueWith(t -> {
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putInt(KEY_CURRENT_STREAK, 0);
+                        editor.putInt(KEY_TOTAL_XP, 0);
+                        editor.putString(KEY_LAST_PLAYED_DATE, "");
+                        editor.putLong(KEY_LAST_PLAYED_TS, 0L);
+                        editor.apply();
+                        return null;
+                    });
         });
     }
 

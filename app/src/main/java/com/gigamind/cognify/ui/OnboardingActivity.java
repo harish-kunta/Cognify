@@ -17,7 +17,6 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.ActivityOnboardingBinding;
 import com.gigamind.cognify.util.OnboardingItem;
-import com.gigamind.cognify.util.UserFields;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -30,13 +29,10 @@ import com.gigamind.cognify.analytics.GameAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
 import com.gigamind.cognify.util.Constants;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * OnboardingActivity now also asks for notification permission during onboarding.
@@ -218,7 +214,15 @@ public class OnboardingActivity extends AppCompatActivity {
                 .addOnSuccessListener(authResult -> {
                     FirebaseUser user = firebaseService.getCurrentUser();
                     if (user != null) {
-                        createOrUpdateUserInFirestore(user, gAccount);
+                        userRepository.createOrUpdateUser(
+                                user.getUid(),
+                                gAccount.getDisplayName(),
+                                gAccount.getEmail()
+                        ).addOnSuccessListener(v -> launchMainActivity())
+                         .addOnFailureListener(err ->
+                                 Toast.makeText(this,
+                                         "Failed to update profile: " + err.getMessage(),
+                                         Toast.LENGTH_LONG).show());
                     } else {
                         Toast.makeText(this,
                                 "Authentication succeeded but no user found.",
@@ -230,87 +234,6 @@ public class OnboardingActivity extends AppCompatActivity {
                             "Firebase authentication failed: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 });
-    }
-
-    private void createOrUpdateUserInFirestore(FirebaseUser user, GoogleSignInAccount gAccount) {
-        String uid = user.getUid();
-        String name = gAccount.getDisplayName();
-        String email = gAccount.getEmail();
-
-        DocumentReference userRef = firebaseService.getFirestore()
-                .collection(FirebaseService.COLLECTION_USERS)
-                .document(uid);
-
-        // First, fetch the document once to see if it already exists:
-        userRef.get().addOnSuccessListener(snapshot -> {
-            if (snapshot.exists()) {
-                // Document already exists → do not reset currentStreak or totalXP.
-                // We still might want to ensure name/email are up to date:
-                Map<String, Object> updates = new HashMap<>();
-                updates.put(UserFields.FIELD_NAME, (name != null ? name : ""));
-                updates.put(UserFields.FIELD_EMAIL, (email != null ? email : ""));
-                userRef.set(updates, com.google.firebase.firestore.SetOptions.merge())
-                        .addOnSuccessListener(aVoid -> {
-                            // Now pull down the existing streak/XP into SharedPrefs:
-                            userRepository.syncUserDataOnce()
-                                    .addOnSuccessListener(snap -> {
-                                        launchMainActivity();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        // Even if syncing fails, at least go on to MainActivity:
-                                        launchMainActivity();
-                                    });
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(
-                                    OnboardingActivity.this,
-                                    "Failed to update user profile: " + e.getMessage(),
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        });
-            } else {
-                // First time ever: document does not exist. Initialize everything to zero:
-                Map<String, Object> newUserData = new HashMap<>();
-                newUserData.put(UserFields.FIELD_UID, uid);
-                newUserData.put(UserFields.FIELD_NAME, (name != null ? name : ""));
-                newUserData.put(UserFields.FIELD_EMAIL, (email != null ? email : ""));
-                newUserData.put(UserFields.FIELD_CURRENT_STREAK, 0);
-                newUserData.put(UserFields.FIELD_TOTAL_XP, 0);
-                newUserData.put(UserFields.FIELD_LAST_PLAYED_DATE, "");      // or omit if you prefer
-                newUserData.put(UserFields.FIELD_LAST_PLAYED_TS, 0L);       // or omit
-                newUserData.put(UserFields.FIELD_LEADERBOARD_RANK, 0);
-                newUserData.put(UserFields.FIELD_TROPHIES, new ArrayList<>());
-                // (Add any other "first-time" defaults here)
-
-                userRef.set(newUserData, com.google.firebase.firestore.SetOptions.merge())
-                        .addOnSuccessListener(aVoid -> {
-                            // Since we just initialized streak=0 and totalXP=0,
-                            // we can write those four keys into SharedPrefs immediately:
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putInt(UserRepository.KEY_CURRENT_STREAK, 0);
-                            editor.putInt(UserRepository.KEY_TOTAL_XP, 0);
-                            editor.putString(UserRepository.KEY_LAST_PLAYED_DATE, "");
-                            editor.putLong(UserRepository.KEY_LAST_PLAYED_TS, 0L);
-                            editor.apply();
-
-                            // Now launch MainActivity:
-                            launchMainActivity();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(
-                                    OnboardingActivity.this,
-                                    "Failed to create new user in Firestore: " + e.getMessage(),
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        });
-            }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(
-                    OnboardingActivity.this,
-                    "Error checking user document: " + e.getMessage(),
-                    Toast.LENGTH_LONG
-            ).show();
-        });
     }
 
     @Override
