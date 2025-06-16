@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,10 +21,21 @@ import com.gigamind.cognify.ui.OnboardingActivity;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.gigamind.cognify.data.firebase.FirebaseService;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
     private SharedPreferences prefs;
+    private GoogleSignInClient googleSignInClient;
+    private static final int RC_REAUTH = 9002;
     private static final String KEY_SOUND_ENABLED = "sound_enabled";
     private static final String KEY_HAPTICS_ENABLED = "haptics_enabled";
     private static final String KEY_ANIMATIONS_ENABLED = "animations_enabled";
@@ -41,6 +53,11 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         prefs = requireActivity().getSharedPreferences(Constants.PREF_APP, 0);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
         setupPreferences();
         setupButtons();
     }
@@ -91,8 +108,18 @@ public class SettingsFragment extends Fragment {
                     .show();
         });
 
+        binding.deleteAccountButton.setOnClickListener(v -> {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.delete_account)
+                    .setMessage(R.string.delete_account_confirm)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> startDeleteFlow())
+                    .show();
+        });
+
         // Show sign in or sign out button based on auth state
         FirebaseService service = FirebaseService.getInstance();
+        binding.deleteAccountButton.setVisibility(service.isUserSignedIn() ? View.VISIBLE : View.GONE);
         if (service.isUserSignedIn()) {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
@@ -128,6 +155,54 @@ public class SettingsFragment extends Fragment {
                 // Start sign in flow
                 startActivity(new Intent(requireContext(), OnboardingActivity.class));
             });
+        }
+    }
+
+    private void startDeleteFlow() {
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
+        if (account != null && account.getIdToken() != null) {
+            reauthenticateAndDelete(account.getIdToken());
+        } else {
+            Intent intent = googleSignInClient.getSignInIntent();
+            startActivityForResult(intent, RC_REAUTH);
+        }
+    }
+
+    private void reauthenticateAndDelete(String idToken) {
+        FirebaseUser user = FirebaseService.getInstance().getAuth().getCurrentUser();
+        if (user == null) return;
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        user.reauthenticate(credential)
+                .addOnSuccessListener(aVoid -> FirebaseService.getInstance().deleteAccountAndData()
+                        .addOnSuccessListener(v -> {
+                            Toast.makeText(requireContext(), R.string.sign_out, Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(requireActivity(), OnboardingActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(requireContext(),
+                                getString(R.string.delete_account_error, e.getMessage()),
+                                Toast.LENGTH_LONG).show()))
+                .addOnFailureListener(e -> Toast.makeText(requireContext(),
+                        getString(R.string.delete_account_error, e.getMessage()),
+                        Toast.LENGTH_LONG).show());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_REAUTH) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                if (account != null) {
+                    reauthenticateAndDelete(account.getIdToken());
+                }
+            } catch (ApiException e) {
+                Toast.makeText(requireContext(),
+                        getString(R.string.delete_account_error, e.getMessage()),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 

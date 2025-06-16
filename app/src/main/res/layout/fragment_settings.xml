@@ -309,6 +309,18 @@
                         app:strokeColor="@color/error"
                         app:strokeWidth="2dp" />
 
+                    <!-- Delete Account Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/deleteAccountButton"
+                        style="@style/Button.Disabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/delete_account"
+                        android:textColor="@color/error"
+                        app:strokeColor="@color/error"
+                        app:strokeWidth="2dp" />
+
                 </LinearLayout>
 
             </LinearLayout>
