@@ -112,10 +112,12 @@ public class WordDashActivity extends AppCompatActivity {
                                 Toast.makeText(this, R.string.tutorial_complete, Toast.LENGTH_SHORT).show();
                                 tutorialHelper.markTutorialCompleted();
                                 tutorialActive = false;
+                                startGame();
                             });
                             letterGrid.post(tutorialOverlay::start);
+                        } else {
+                            startGame();       // Begin the game timer immediately
                         }
-                        startGame();       // Begin the game timer
                     } else {
                         // Handle dictionary load error
                         Toast.makeText(this, "Error loading game dictionary", Toast.LENGTH_LONG).show();
@@ -409,7 +411,7 @@ public class WordDashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (isDictionaryLoaded && gameTimer == null) {
+        if (isDictionaryLoaded && gameTimer == null && !tutorialActive) {
             startGame();
         }
     }
