@@ -151,4 +151,10 @@
         Join me on Cognify! Download on Play Store: https://example.com/app
     </string>
     <string name="invite_chooser_title">Invite Friends</string>
+
+    <!-- Accessibility descriptions -->
+    <string name="app_icon_desc">Cognify app icon</string>
+    <string name="onboarding_image_desc">Onboarding illustration</string>
+    <string name="streak_icon_desc">Streak icon</string>
+    <string name="profile_avatar_desc">User avatar</string>
 </resources>
