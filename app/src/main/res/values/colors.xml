@@ -57,4 +57,7 @@
 
     <!-- Icon tint color used to ensure visibility in light theme -->
     <color name="icon_tint">#000000</color>
+    <!-- Semi-transparent overlay used during tutorials -->
+    <color name="scrim">#99000000</color>
 </resources>
+
