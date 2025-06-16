@@ -40,6 +40,7 @@ public class ProfileFragment extends Fragment {
     private TextView streakValueText;
     private TextView xpValueText;
     private Button inviteFriendsButton;
+    private Button shareStreakButton;
 
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -68,6 +69,7 @@ public class ProfileFragment extends Fragment {
         streakValueText         = view.findViewById(R.id.streakValue);
         xpValueText             = view.findViewById(R.id.xpValue);
         inviteFriendsButton     = view.findViewById(R.id.inviteFriendsButton);
+        shareStreakButton       = view.findViewById(R.id.shareStreakButton);
 
         // 2) Initialize FirebaseUser & UserRepository
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
@@ -158,6 +160,15 @@ public class ProfileFragment extends Fragment {
                     getString(R.string.invite_message)
             );
             startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
+        });
+
+        shareStreakButton.setOnClickListener(v -> {
+            int streak = userRepository.getCurrentStreak();
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT,
+                    getString(R.string.share_streak_message, streak));
+            startActivity(Intent.createChooser(intent, getString(R.string.invite_chooser_title)));
         });
     }
 
