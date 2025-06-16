@@ -6,13 +6,36 @@ import androidx.annotation.NonNull;
 public final class BadgeUtils {
     private BadgeUtils() {}
 
+    /**
+     * XP thresholds for the different badge tiers. The values map directly
+     * to the levels defined in {@code levels.txt} in the project root.
+     * <p>
+     * Each index corresponds to a badge tier defined in {@link #NAMES} and
+     * {@link #ICONS}.
+     */
     public static final int[] THRESHOLDS = {
-            0, 500, 1000, 1500, 2000, 3000, 4000, 5000, 7000, 9000
+            0, 10000, 20000, 30000, 40000,
+            50000, 60000, 70000, 80000, 90000
     };
 
+    /** Names of the badge tiers displayed to the user. */
     public static final String[] NAMES = {
-            "Rookie", "Apprentice", "Adept", "Expert", "Veteran",
-            "Elite", "Master", "Champion", "Hero", "Legend"
+            "Rookie", "Learner", "Thinker", "Solver", "Challenger",
+            "Strategist", "Brainiac", "Genius", "Mastermind", "Legend"
+    };
+
+    /** Drawable resources for each badge tier. */
+    private static final int[] ICONS = {
+            com.gigamind.cognify.R.drawable.rookie,
+            com.gigamind.cognify.R.drawable.learner,
+            com.gigamind.cognify.R.drawable.thinker,
+            com.gigamind.cognify.R.drawable.solver,
+            com.gigamind.cognify.R.drawable.challenger,
+            com.gigamind.cognify.R.drawable.strategist,
+            com.gigamind.cognify.R.drawable.brainiac,
+            com.gigamind.cognify.R.drawable.genius,
+            com.gigamind.cognify.R.drawable.mastermind,
+            com.gigamind.cognify.R.drawable.legend
     };
 
     /** Returns the badge index (0..9) for the given total XP. */
@@ -34,8 +57,16 @@ public final class BadgeUtils {
         return NAMES[badgeIndexForXp(xp)];
     }
 
-    /** Returns the drawable resource for the given badge index. */
+    /**
+     * Returns the drawable resource for the given badge index. If the index is
+     * out of range, the last badge (Legend) is returned as a fallback.
+     */
     public static int badgeIconResId(int index) {
-        return com.gigamind.cognify.R.drawable.ic_badge; // placeholder
+        if (index < 0) {
+            index = 0;
+        } else if (index >= ICONS.length) {
+            index = ICONS.length - 1;
+        }
+        return ICONS[index];
     }
 }

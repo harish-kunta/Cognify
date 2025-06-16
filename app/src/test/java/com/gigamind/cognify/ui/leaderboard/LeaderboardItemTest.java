@@ -9,15 +9,15 @@ public class LeaderboardItemTest {
     @ParameterizedTest
     @CsvSource({
             "0,Rookie",
-            "500,Apprentice",
-            "1200,Adept",
-            "1600,Expert",
-            "2500,Veteran",
-            "3500,Elite",
-            "4500,Master",
-            "5200,Champion",
-            "7500,Hero",
-            "9500,Legend"
+            "10000,Learner",
+            "20000,Thinker",
+            "30000,Solver",
+            "40000,Challenger",
+            "50000,Strategist",
+            "60000,Brainiac",
+            "70000,Genius",
+            "80000,Mastermind",
+            "90000,Legend"
     })
     void badgeTypeMatchesXpThreshold(int xp, String expected) {
         LeaderboardItem item = new LeaderboardItem("id", "name", xp, "US");
