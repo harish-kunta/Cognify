@@ -57,15 +57,15 @@ public class TutorialOverlay {
         View view = LayoutInflater.from(activity).inflate(R.layout.tutorial_popup, null);
         TextView text = view.findViewById(R.id.tutorialText);
         MaterialButton next = view.findViewById(R.id.tutorialNextButton);
+        MaterialButton skip = view.findViewById(R.id.tutorialSkipButton);
         text.setText(step.text);
         next.setText(index == steps.size() - 1 ? activity.getString(R.string.tutorial_got_it)
                 : activity.getString(R.string.tutorial_next));
         popup = new PopupWindow(view,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                true);
+                false);
         popup.setOutsideTouchable(false);
-        popup.setFocusable(true);
         int[] loc = new int[2];
         step.anchor.getLocationInWindow(loc);
         Point size = new Point();
@@ -82,6 +82,14 @@ public class TutorialOverlay {
             if (index < steps.size()) {
                 showStep();
             } else if (onComplete != null) {
+                onComplete.run();
+            }
+        });
+
+        skip.setOnClickListener(v -> {
+            popup.dismiss();
+            index = steps.size();
+            if (onComplete != null) {
                 onComplete.run();
             }
         });

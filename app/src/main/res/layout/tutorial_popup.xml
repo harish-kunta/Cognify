@@ -30,5 +30,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tutorial_next" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tutorialSkipButton"
+            style="@style/Button.Disabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/tutorial_skip" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
