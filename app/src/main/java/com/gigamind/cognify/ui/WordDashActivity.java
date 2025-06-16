@@ -56,6 +56,8 @@ public class WordDashActivity extends AppCompatActivity {
     private boolean tutorialActive = false;
     private TutorialOverlay tutorialOverlay;
     private MaterialButton submitButton;
+    private MaterialButton clearButton;
+    private MaterialButton backspaceButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +101,13 @@ public class WordDashActivity extends AppCompatActivity {
                             tutorialActive = true;
                             tutorialOverlay = new TutorialOverlay(this);
                             tutorialOverlay.addStep(letterGrid, getString(R.string.tutorial_step_letters));
+                            tutorialOverlay.addStep(currentWordText, getString(R.string.tutorial_step_current));
+                            tutorialOverlay.addStep(backspaceButton, getString(R.string.tutorial_step_back));
+                            tutorialOverlay.addStep(clearButton, getString(R.string.tutorial_step_clear));
                             tutorialOverlay.addStep(submitButton, getString(R.string.tutorial_step_submit));
+                            tutorialOverlay.addStep(foundWordsRecycler, getString(R.string.tutorial_step_history));
+                            tutorialOverlay.addStep(scoreText, getString(R.string.tutorial_step_score));
+                            tutorialOverlay.addStep(timerText, getString(R.string.tutorial_step_timer));
                             tutorialOverlay.setOnComplete(() -> {
                                 Toast.makeText(this, R.string.tutorial_complete, Toast.LENGTH_SHORT).show();
                                 tutorialHelper.markTutorialCompleted();
@@ -127,8 +135,8 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void setupButtons() {
         submitButton = findViewById(R.id.submitButton);
-        MaterialButton clearButton = findViewById(R.id.clearButton);
-        MaterialButton backspaceButton = findViewById(R.id.backspaceButton);
+        clearButton = findViewById(R.id.clearButton);
+        backspaceButton = findViewById(R.id.backspaceButton);
 
         submitButton.setOnClickListener(v -> submitWord());
         clearButton.setOnClickListener(v -> clearWord());

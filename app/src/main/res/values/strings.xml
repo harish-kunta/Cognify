@@ -194,6 +194,12 @@
     <string name="tutorial_complete">Great! Tutorial complete.</string>
     <string name="tutorial_step_letters">Tap letters to form a word.</string>
     <string name="tutorial_step_submit">Tap Submit when youre done.</string>
+    <string name="tutorial_step_current">Watch your word appear here.</string>
+    <string name="tutorial_step_history">Words youve found show up here.</string>
+    <string name="tutorial_step_score">Your score is shown here. Longer words give more points!</string>
+    <string name="tutorial_step_timer">This timer counts down your game.</string>
+    <string name="tutorial_step_back">Use Back to remove the last letter.</string>
+    <string name="tutorial_step_clear">Clear your entire word with this.</string>
     <string name="tutorial_next">Next</string>
     <string name="tutorial_got_it">Got it!</string>
 
