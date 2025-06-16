@@ -51,7 +51,7 @@ public class ResultActivity extends AppCompatActivity {
     private TextView headerText;
     private TextView scoreValue, totalXPValue, totalWordText, highScoreText, streakText;
     private TextView newHighScoreText, encouragementText;
-    private MaterialButton playAgainButton, homeButton;
+    private MaterialButton playAgainButton, homeButton, challengeButton;
     private LinearLayout playContainer;
     private LottieAnimationView confettiView;
     private static final String[] ENCOURAGEMENTS = {
@@ -63,6 +63,8 @@ public class ResultActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private MediaPlayer dingSound;
     private GameAnalytics analytics;
+    private int finalScore;
+    private String finalGameType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,15 +85,15 @@ public class ResultActivity extends AppCompatActivity {
         userRepository = new UserRepository(this);
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
 
-        int score        = getIntent().getIntExtra(INTENT_SCORE, 0);
-        String gameType  = getIntent().getStringExtra(INTENT_TYPE);
-        int wordsFound   = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
+        finalScore   = getIntent().getIntExtra(INTENT_SCORE, 0);
+        finalGameType = getIntent().getStringExtra(INTENT_TYPE);
+        int wordsFound = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
 
         // (1) Compute how much XP was earned (PB + streak bonus)
-        int xpEarned = calculateXpEarned(score, gameType);
+        int xpEarned = calculateXpEarned(finalScore, finalGameType);
 
         // (2) Update local high‐score synchronously
-        boolean isNewPb = updateHighScoreLocal(score, gameType);
+        boolean isNewPb = updateHighScoreLocal(finalScore, finalGameType);
 
         Integer newPbValue = null;
         if (isNewPb) {
@@ -139,9 +141,20 @@ public class ResultActivity extends AppCompatActivity {
 
         editor.apply();
 
+        int oldBadge = com.gigamind.cognify.util.BadgeUtils.badgeIndexForXp(oldTotalXp);
+        int newBadge = com.gigamind.cognify.util.BadgeUtils.badgeIndexForXp(newTotalXp);
+        if (newBadge > oldBadge) {
+            android.widget.Toast.makeText(
+                    this,
+                    getString(R.string.trophy_room) + ": " + com.gigamind.cognify.util.BadgeUtils.NAMES[newBadge],
+                    android.widget.Toast.LENGTH_LONG
+            ).show();
+        }
+
         // (8) Kick off Firestore merge in background
+        boolean isWin = score > 0;
         Task<Void> updateTask = userRepository.updateGameResults(
-                gameType, score, xpEarned, newPbValue
+                finalGameType, finalScore, xpEarned, newPbValue, isWin
         );
 
         // (9) Schedule next streak notification (uses prefs key we just wrote)
@@ -151,10 +164,10 @@ public class ResultActivity extends AppCompatActivity {
         // (10) Animate everything in sequence:
         animateHeader();
         animateNumbersSequentially(
-                score, xpEarned, newTotalXp, newStreak, isNewPb, (updateTask != null), wordsFound
+                finalScore, xpEarned, newTotalXp, newStreak, isNewPb, (updateTask != null), wordsFound
         );
 
-        setupButtons(gameType);
+        setupButtons(finalGameType);
     }
 
     private void initializeViews() {
@@ -168,6 +181,7 @@ public class ResultActivity extends AppCompatActivity {
         encouragementText= findViewById(R.id.encouragementText);
         playAgainButton  = findViewById(R.id.playAgainButton);
         homeButton       = findViewById(R.id.homeButton);
+        challengeButton  = findViewById(R.id.challengeButton);
         playContainer    = (LinearLayout) playAgainButton.getParent();
         confettiView     = findViewById(R.id.confettiView);
 
@@ -337,6 +351,15 @@ public class ResultActivity extends AppCompatActivity {
         return ENCOURAGEMENTS[idx];
     }
 
+    private void shareChallenge() {
+        String message = getString(R.string.challenge_message, finalGameType, finalScore)
+                + " https://example.com/challenge?type=" + finalGameType + "&score=" + finalScore;
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, message);
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
+    }
+
     private void setupButtons(String gameType) {
         playAgainButton.setOnClickListener(v -> {
             Class<?> cls = gameType.equals(Constants.TYPE_QUICK_MATH)
@@ -353,6 +376,8 @@ public class ResultActivity extends AppCompatActivity {
             startActivity(homeIntent);
             finish();
         });
+
+        challengeButton.setOnClickListener(v -> shareChallenge());
     }
 
     @Override

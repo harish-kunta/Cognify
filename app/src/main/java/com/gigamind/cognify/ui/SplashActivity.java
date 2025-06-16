@@ -35,6 +35,31 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
         boolean isFirstLaunch = prefs.getBoolean(Constants.PREF_IS_FIRST_LAUNCH, true);
 
+        // Deep link handling for challenge
+        android.net.Uri data = getIntent().getData();
+        if (data != null && "/challenge".equals(data.getPath())) {
+            String type = data.getQueryParameter("type");
+            String scoreStr = data.getQueryParameter("score");
+            Intent gameIntent = null;
+            if ("word".equals(type)) {
+                gameIntent = new Intent(this, WordDashActivity.class);
+            } else if ("math".equals(type)) {
+                gameIntent = new Intent(this, QuickMathActivity.class);
+            }
+            if (gameIntent != null) {
+                if (scoreStr != null) {
+                    try {
+                        int s = Integer.parseInt(scoreStr);
+                        gameIntent.putExtra(Constants.EXTRA_CHALLENGE_SCORE, s);
+                    } catch (NumberFormatException ignored) {}
+                }
+                gameIntent.putExtra(Constants.EXTRA_CHALLENGE_TYPE, type);
+                startActivity(gameIntent);
+                finish();
+                return;
+            }
+        }
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent intent;
             if (isFirstLaunch) {

@@ -152,9 +152,45 @@
     </string>
     <string name="invite_chooser_title">Invite Friends</string>
 
+
     <!-- Accessibility descriptions -->
     <string name="app_icon_desc">Cognify app icon</string>
     <string name="onboarding_image_desc">Onboarding illustration</string>
     <string name="streak_icon_desc">Streak icon</string>
     <string name="profile_avatar_desc">User avatar</string>
+
+    <string name="share_streak_button">SHARE STREAK</string>
+    <string name="share_streak_message">My Daily Streak: 🔥 %1$d days!</string>
+    <string name="challenge_friend_button">CHALLENGE A FRIEND</string>
+    <string name="challenge_message">Beat my %1$s score of %2$d in Cognify!</string>
+    <string name="challenge_toast">Beat score: %1$d</string>
+    <string name="save">Save</string>
+    <string name="customize_avatar">Customize Avatar</string>
+    <string name="frame">Frame</string>
+    <string name="hat">Hat</string>
+    <string name="color">Color</string>
+    <string name="win_rate">Win Rate</string>
+
+    <!-- Trophy Room -->
+    <string name="trophy_room">Trophy Room</string>
+    <string name="badge_rookie">Rookie</string>
+    <string name="badge_apprentice">Apprentice</string>
+    <string name="badge_adept">Adept</string>
+    <string name="badge_expert">Expert</string>
+    <string name="badge_veteran">Veteran</string>
+    <string name="badge_elite">Elite</string>
+    <string name="badge_master">Master</string>
+    <string name="badge_champion">Champion</string>
+    <string name="badge_hero">Hero</string>
+    <string name="badge_legend">Legend</string>
+    <string name="daily_quest">Daily Quest</string>
+    <string name="quest_reward">Reward: %1$s</string>
+    <string name="notif_quest_title">Daily Quest Reminder</string>
+    <string name="notif_quest_text">Complete todays quest to earn extra XP!</string>
+    <string name="quest_channel_name">Quest Reminder</string>
+    <string name="quest_channel_desc">Notifies about daily quests</string>
+    <string name="play_tip">You\u2019ll see a quick tutorial first.</string>
+    <string name="tutorial_start_hint">Tap letters to form a word, then hit Submit.</string>
+    <string name="tutorial_complete">Great! Tutorial complete.</string>
+
 </resources>

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
+import com.gigamind.cognify.work.QuestNotificationScheduler;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -72,6 +73,7 @@ public class CognifyApplication extends Application {
                                 FirebaseService.getInstance().getCurrentUserId(),
                                 getApplicationContext()
                         );
+                        QuestNotificationScheduler.scheduleDaily(getApplicationContext());
                     }
 
                     // We only need to schedule once on cold start; after that the Worker will
@@ -86,6 +88,7 @@ public class CognifyApplication extends Application {
             // (3) Not signed in → schedule the Worker immediately from whatever prefs we already have
             StreakNotificationScheduler.scheduleFromSharedPrefs(/*firebaseUid=*/ null,
                     getApplicationContext());
+            QuestNotificationScheduler.scheduleDaily(getApplicationContext());
         }
     }
 

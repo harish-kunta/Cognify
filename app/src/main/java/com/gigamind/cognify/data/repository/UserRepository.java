@@ -37,6 +37,10 @@ public class UserRepository {
     public static final String KEY_CURRENT_STREAK = UserFields.FIELD_CURRENT_STREAK;
     public static final String KEY_TOTAL_XP = UserFields.FIELD_TOTAL_XP;
     public static final String KEY_PERSONAL_BEST_XP = UserFields.FIELD_PERSONAL_BEST_XP;
+    // Additional local-only stats
+    public static final String KEY_TOTAL_GAMES = "totalGames";
+    public static final String KEY_WINS = "totalWins";
+    public static final String KEY_LOSSES = "totalLosses";
     private static final String PREFS_NAME = Constants.PREFS_NAME;
     private final SharedPreferences prefs;
     private final FirebaseService firebaseService;
@@ -180,6 +184,7 @@ public class UserRepository {
             String gameType,
             int score,
             int xpEarned,
+            boolean isWin,
             @Nullable Integer newPersonalBest  // if null, don’t write PB to Firestore
     ) {
         // 1) Compute “today” and “yesterday”
@@ -196,7 +201,7 @@ public class UserRepository {
                     .continueWithTask(fetchTask -> {
                         // If fetch failed, do local only
                         if (!fetchTask.isSuccessful() || fetchTask.getResult() == null) {
-                            updateLocalOnly(gameType, score, xpEarned, today, yesterday, nowMillis);
+                            updateLocalOnly(gameType, score, xpEarned, isWin, today, yesterday, nowMillis);
                             return Tasks.forResult(null);
                         }
 
@@ -239,6 +244,12 @@ public class UserRepository {
                         editor.putInt(UserFields.totalGameXpField(gameType),
                                 prefs.getInt(UserFields.totalGameXpField(gameType), 0) + xpEarned);
                         editor.putInt(UserFields.lastGameScoreField(gameType), score);
+                        editor.putInt(KEY_TOTAL_GAMES, prefs.getInt(KEY_TOTAL_GAMES, 0) + 1);
+                        if (isWin) {
+                            editor.putInt(KEY_WINS, prefs.getInt(KEY_WINS, 0) + 1);
+                        } else {
+                            editor.putInt(KEY_LOSSES, prefs.getInt(KEY_LOSSES, 0) + 1);
+                        }
                         editor.apply();
 
                         // 5) Build Firestore update map
@@ -267,7 +278,7 @@ public class UserRepository {
         }
 
         // 6) Not signed in (or offline) → purely local
-        updateLocalOnly(gameType, score, xpEarned, today, yesterday, nowMillis);
+        updateLocalOnly(gameType, score, xpEarned, isWin, today, yesterday, nowMillis);
         // Reschedule notification from the (now-updated) SharedPreferences:
         StreakNotificationScheduler.scheduleFromSharedPrefs(
                 null, context
@@ -282,6 +293,7 @@ public class UserRepository {
             String gameType,
             int score,
             int xpEarned,
+            boolean isWin,
             String today,
             String yesterday,
             long nowMillis) {
@@ -306,6 +318,12 @@ public class UserRepository {
         editor.putInt(UserFields.totalGameXpField(gameType),
                 prefs.getInt(UserFields.totalGameXpField(gameType), 0) + xpEarned);
         editor.putInt(UserFields.lastGameScoreField(gameType), score);
+        editor.putInt(KEY_TOTAL_GAMES, prefs.getInt(KEY_TOTAL_GAMES, 0) + 1);
+        if (isWin) {
+            editor.putInt(KEY_WINS, prefs.getInt(KEY_WINS, 0) + 1);
+        } else {
+            editor.putInt(KEY_LOSSES, prefs.getInt(KEY_LOSSES, 0) + 1);
+        }
         editor.apply();
     }
 
@@ -328,6 +346,18 @@ public class UserRepository {
      */
     public int getTotalGameXp(String gameType) {
         return prefs.getInt(UserFields.totalGameXpField(gameType), 0);
+    }
+
+    public int getTotalGames() {
+        return prefs.getInt(KEY_TOTAL_GAMES, 0);
+    }
+
+    public int getTotalWins() {
+        return prefs.getInt(KEY_WINS, 0);
+    }
+
+    public int getTotalLosses() {
+        return prefs.getInt(KEY_LOSSES, 0);
     }
 
     /**

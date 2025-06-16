@@ -66,19 +66,10 @@ public class LeaderboardItem {
     }
 
     /**
-     * Based on totalXP, return a badge type string:
-     *  - "bronze" if XP < 1000,
-     *  - "silver" if 1000 ≤ XP < 2000,
-     *  - "gold" if XP ≥ 2000.
-     * You can adjust these thresholds as desired.
+     * Returns the badge tier name for this item's total XP.
+     * The mapping of XP ranges to badge names lives in {@link com.gigamind.cognify.util.BadgeUtils}.
      */
     public String getBadgeType() {
-        if (totalXP >= 2000) {
-            return "gold";
-        } else if (totalXP >= 1000) {
-            return "silver";
-        } else {
-            return "bronze";
-        }
+        return com.gigamind.cognify.util.BadgeUtils.badgeNameForXp(totalXP);
     }
 }

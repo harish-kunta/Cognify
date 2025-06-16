@@ -21,6 +21,7 @@ public class Constants {
     public static final String PREF_IS_GUEST = "is_guest_mode";
     public static final String PREF_NOTIFICATION = "notification_preferences";
     public static final String PREF_NOTIFICATION_ENABLED = "notifications_enabled";
+    public static final String PREF_TUTORIAL_COMPLETED = "tutorial_completed";
 
     // Intent extras and other keys
     public static final String INTENT_GAME_TYPE = "GAME_TYPE";
@@ -28,6 +29,8 @@ public class Constants {
     public static final String GAME_TYPE_WORD = "WORD";
     public static final String GAME_TYPE_MATH = "MATH";
     public static final String PREF_DAILY_COMPLETED_PREFIX = "daily_completed_";
+    public static final String EXTRA_CHALLENGE_SCORE = "challenge_score";
+    public static final String EXTRA_CHALLENGE_TYPE = "challenge_type";
 
     // Analytics screen names
     public static final String ANALYTICS_SCREEN_RESULT = "result_screen";
