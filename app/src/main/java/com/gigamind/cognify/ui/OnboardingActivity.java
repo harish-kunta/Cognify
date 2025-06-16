@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -201,9 +201,9 @@ public class OnboardingActivity extends AppCompatActivity {
                 }
             } catch (ApiException e) {
                 ExceptionLogger.log("OnboardingActivity", e);
-                Toast.makeText(this,
-                        "Google sign-in failed: " + e.getMessage(),
-                        Toast.LENGTH_LONG).show();
+                String msg = "Google sign-in failed: " + e.getMessage();
+                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                binding.getRoot().announceForAccessibility(msg);
             }
         }
     }
@@ -219,20 +219,21 @@ public class OnboardingActivity extends AppCompatActivity {
                                 gAccount.getDisplayName(),
                                 gAccount.getEmail()
                         ).addOnSuccessListener(v -> launchMainActivity())
-                         .addOnFailureListener(err ->
-                                 Toast.makeText(this,
-                                         "Failed to update profile: " + err.getMessage(),
-                                         Toast.LENGTH_LONG).show());
+                         .addOnFailureListener(err -> {
+                             String msg = "Failed to update profile: " + err.getMessage();
+                             Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                             binding.getRoot().announceForAccessibility(msg);
+                         });
                     } else {
-                        Toast.makeText(this,
-                                "Authentication succeeded but no user found.",
-                                Toast.LENGTH_LONG).show();
+                        String msg = "Authentication succeeded but no user found.";
+                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                        binding.getRoot().announceForAccessibility(msg);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this,
-                            "Firebase authentication failed: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    String msg = "Firebase authentication failed: " + e.getMessage();
+                    Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                    binding.getRoot().announceForAccessibility(msg);
                 });
     }
 

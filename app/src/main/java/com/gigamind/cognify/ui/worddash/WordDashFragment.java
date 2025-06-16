@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -121,7 +121,9 @@ public class WordDashFragment extends Fragment {
         View.OnClickListener animatedClickListener = v -> {
             v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
             if (!tutorialHelper.isTutorialCompleted()) {
-                Toast.makeText(requireContext(), R.string.play_tip, Toast.LENGTH_SHORT).show();
+                String msg = getString(R.string.play_tip);
+                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
+                binding.getRoot().announceForAccessibility(msg);
             }
             handleGameLaunch(v);
         };

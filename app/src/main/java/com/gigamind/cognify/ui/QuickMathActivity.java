@@ -3,7 +3,8 @@ package com.gigamind.cognify.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.view.View;
+import com.google.android.material.snackbar.Snackbar;
 
 import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameTimer;
@@ -37,7 +38,10 @@ public class QuickMathActivity extends AppCompatActivity {
 
         int challengeScore = getIntent().getIntExtra(Constants.EXTRA_CHALLENGE_SCORE, -1);
         if (challengeScore >= 0) {
-            Toast.makeText(this, getString(R.string.challenge_toast, challengeScore), Toast.LENGTH_LONG).show();
+            String msg = getString(R.string.challenge_toast, challengeScore);
+            View rootView = findViewById(android.R.id.content);
+            Snackbar.make(rootView, msg, Snackbar.LENGTH_LONG).show();
+            rootView.announceForAccessibility(msg);
         }
 
         analytics = GameAnalytics.getInstance(this);

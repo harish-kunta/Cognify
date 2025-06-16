@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -135,11 +136,10 @@ public class ResultActivity extends AppCompatActivity {
         int oldBadge = com.gigamind.cognify.util.BadgeUtils.badgeIndexForXp(oldTotalXp);
         int newBadge = com.gigamind.cognify.util.BadgeUtils.badgeIndexForXp(newTotalXp);
         if (newBadge > oldBadge) {
-            android.widget.Toast.makeText(
-                    this,
-                    getString(R.string.trophy_room) + ": " + com.gigamind.cognify.util.BadgeUtils.NAMES[newBadge],
-                    android.widget.Toast.LENGTH_LONG
-            ).show();
+            String msg = getString(R.string.trophy_room) + ": " + com.gigamind.cognify.util.BadgeUtils.NAMES[newBadge];
+            View root = findViewById(android.R.id.content);
+            Snackbar.make(root, msg, Snackbar.LENGTH_LONG).show();
+            root.announceForAccessibility(msg);
         }
 
         // (8) Kick off Firestore merge in background

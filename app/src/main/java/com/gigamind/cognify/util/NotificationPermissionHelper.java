@@ -5,7 +5,8 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.widget.Toast;
+import android.view.View;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
@@ -43,16 +44,18 @@ public class NotificationPermissionHelper {
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
                     if (isGranted) {
-                        Toast.makeText(activity,
-                                "Notifications enabled. You won't lose your streak!",
-                                Toast.LENGTH_SHORT).show();
+                        String msg = "Notifications enabled. You won't lose your streak!";
+                        View root = activity.findViewById(android.R.id.content);
+                        Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
+                        root.announceForAccessibility(msg);
                     } else {
                         prefs.edit()
                                 .putBoolean(Constants.PREF_ASKED_NOTIFICATIONS, true)
                                 .apply();
-                        Toast.makeText(activity,
-                                "Notifications disabled. You may lose your streak if you don't play.",
-                                Toast.LENGTH_SHORT).show();
+                        String msg = "Notifications disabled. You may lose your streak if you don't play.";
+                        View root = activity.findViewById(android.R.id.content);
+                        Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
+                        root.announceForAccessibility(msg);
                     }
                     callback.onPermissionResult(isGranted);
                 }
