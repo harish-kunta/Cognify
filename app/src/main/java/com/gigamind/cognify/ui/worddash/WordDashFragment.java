@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.gigamind.cognify.databinding.FragmentWordDashBinding;
 import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.TutorialHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.gigamind.cognify.data.firebase.FirebaseService;
@@ -45,6 +47,7 @@ public class WordDashFragment extends Fragment {
     private FirebaseUser firebaseUser;
     private ListenerRegistration homeListener;
     private ImageView userProfileButton;
+    private TutorialHelper tutorialHelper;
 
     @Nullable
     @Override
@@ -66,9 +69,10 @@ public class WordDashFragment extends Fragment {
         // Initialize views
         initializeViews();
 
-        // Initialize SharedPreferences and UserRepository
+        // Initialize SharedPreferences, repositories and helpers
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         userRepository = new UserRepository(requireContext());
+        tutorialHelper = new TutorialHelper(requireContext());
 
         // Check signed-in user
         firebaseUser = FirebaseService.getInstance().getCurrentUser();
@@ -116,6 +120,9 @@ public class WordDashFragment extends Fragment {
     private void setupClickListeners() {
         View.OnClickListener animatedClickListener = v -> {
             v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
+            if (!tutorialHelper.isTutorialCompleted()) {
+                Toast.makeText(requireContext(), R.string.play_tip, Toast.LENGTH_SHORT).show();
+            }
             handleGameLaunch(v);
         };
         wordGamePlayButton.setOnClickListener(animatedClickListener);
