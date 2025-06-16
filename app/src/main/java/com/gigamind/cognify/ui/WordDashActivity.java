@@ -23,6 +23,7 @@ import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameType;
 import com.gigamind.cognify.util.GameTimer;
+import com.gigamind.cognify.util.TutorialHelper;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -50,6 +51,8 @@ public class WordDashActivity extends AppCompatActivity {
 
     private GameAnalytics analytics;
     private long wordStartTime;
+    private TutorialHelper tutorialHelper;
+    private boolean tutorialActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,8 @@ public class WordDashActivity extends AppCompatActivity {
         analytics = GameAnalytics.getInstance(this);
         analytics.logScreenView(Constants.ANALYTICS_SCREEN_WORD_DASH);
         analytics.logGameStart(GameType.WORD);
+
+        tutorialHelper = new TutorialHelper(this);
         
         // 1) Bind all views and set up UI scaffolding that does NOT use gameEngine yet
         initializeViews();
@@ -87,6 +92,10 @@ public class WordDashActivity extends AppCompatActivity {
 
                         enableGameInteractions();
                         isDictionaryLoaded = true;
+                        if (!tutorialHelper.isTutorialCompleted()) {
+                            tutorialActive = true;
+                            Toast.makeText(this, R.string.tutorial_start_hint, Toast.LENGTH_LONG).show();
+                        }
                         startGame();       // Begin the game timer
                     } else {
                         // Handle dictionary load error
@@ -232,6 +241,11 @@ public class WordDashActivity extends AppCompatActivity {
 
             foundWordsList.add(word);
             foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
+            if (tutorialActive) {
+                Toast.makeText(this, R.string.tutorial_complete, Toast.LENGTH_SHORT).show();
+                tutorialHelper.markTutorialCompleted();
+                tutorialActive = false;
+            }
         } else {
             showError(getString(R.string.invalid_word));
             analytics.logInvalidWord(word);

@@ -2,6 +2,8 @@ package com.gigamind.cognify.ui.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import com.gigamind.cognify.ui.profile.AvatarCustomizationFragment;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.data.firebase.FirebaseService;
+import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.UserFields;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,10 +41,14 @@ public class ProfileFragment extends Fragment {
     private TextView userEmailText;
     private TextView userJoinedText;
     private ImageView settingsIcon;
+    private ImageView avatarImage;
     private TextView streakValueText;
     private TextView xpValueText;
+    private TextView gamesPlayedValue;
+    private TextView winRateValue;
     private Button inviteFriendsButton;
     private Button shareStreakButton;
+    private Button trophyRoomButton;
 
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -62,13 +70,17 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // 1) Bind all views
-        userNameText            = view.findViewById(R.id.userName);
-        userEmailText           = view.findViewById(R.id.userEmail);
-        userJoinedText          = view.findViewById(R.id.userJoined);
-        settingsIcon            = view.findViewById(R.id.settingsIcon);
-        streakValueText         = view.findViewById(R.id.streakValue);
-        xpValueText             = view.findViewById(R.id.xpValue);
-        inviteFriendsButton     = view.findViewById(R.id.inviteFriendsButton);
+        userNameText        = view.findViewById(R.id.userName);
+        userEmailText       = view.findViewById(R.id.userEmail);
+        userJoinedText      = view.findViewById(R.id.userJoined);
+        settingsIcon        = view.findViewById(R.id.settingsIcon);
+        avatarImage         = view.findViewById(R.id.avatarImage);
+        streakValueText     = view.findViewById(R.id.streakValue);
+        xpValueText         = view.findViewById(R.id.xpValue);
+        gamesPlayedValue    = view.findViewById(R.id.gamesPlayedValue);
+        winRateValue        = view.findViewById(R.id.winRateValue);
+        inviteFriendsButton = view.findViewById(R.id.inviteFriendsButton);
+        trophyRoomButton        = view.findViewById(R.id.trophyRoomButton);
         shareStreakButton       = view.findViewById(R.id.shareStreakButton);
 
         // 2) Initialize FirebaseUser & UserRepository
@@ -103,8 +115,7 @@ public class ProfileFragment extends Fragment {
             } else {
                 userJoinedText.setText("");
             }
-
-            // TODO: if you store a profile‐picture URL, load it into ‘profileImageView’ here
+            applyAvatarCustomization();
         } else {
             // Guest user
             userNameText.setText(getString(R.string.guest));
@@ -117,6 +128,8 @@ public class ProfileFragment extends Fragment {
         // 1) Start with blank values—so nothing flickers before we get “cache or server” data
         streakValueText.setText("");
         xpValueText.setText("");
+        gamesPlayedValue.setText("");
+        winRateValue.setText("");
 
         if (firebaseUser != null) {
             // 2) Attach the Firestore listener
@@ -126,12 +139,19 @@ public class ProfileFragment extends Fragment {
                     // Firestore just updated SharedPreferences; read from there:
                     final int streak = userRepository.getCurrentStreak();
                     final int totalXp = userRepository.getTotalXP();
+                    final int games = userRepository.getTotalGames();
+                    final int wins = userRepository.getTotalWins();
+                    final int losses = userRepository.getTotalLosses();
 
                     // Always update UI on main thread
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
                             streakValueText.setText(String.valueOf(streak));
                             xpValueText.setText(String.valueOf(totalXp));
+                            gamesPlayedValue.setText(String.valueOf(games));
+                            int total = wins + losses;
+                            String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
+                            winRateValue.setText(rate);
                         });
                     }
                 }
@@ -140,8 +160,15 @@ public class ProfileFragment extends Fragment {
             // 3) If not signed in, simply read local prefs once
             int streak  = userRepository.getCurrentStreak();
             int totalXp = userRepository.getTotalXP();
+            int games   = userRepository.getTotalGames();
+            int wins    = userRepository.getTotalWins();
+            int losses  = userRepository.getTotalLosses();
             streakValueText.setText(String.valueOf(streak));
             xpValueText.setText(String.valueOf(totalXp));
+            gamesPlayedValue.setText(String.valueOf(games));
+            int total = wins + losses;
+            String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
+            winRateValue.setText(rate);
         }
     }
 
@@ -152,15 +179,22 @@ public class ProfileFragment extends Fragment {
             bottomNav.setSelectedItemId(R.id.navigation_settings);
         });
 
+        avatarImage.setOnClickListener(v ->
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.nav_host_fragment, new AvatarCustomizationFragment())
+                        .addToBackStack(null)
+                        .commit()
+        );
+
         inviteFriendsButton.setOnClickListener(v -> {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    getString(R.string.invite_message)
-            );
+            String friendCode = (firebaseUser != null) ? firebaseUser.getUid() : "guest";
+            String message = getString(R.string.invite_message) + "\nCode: " + friendCode;
+            shareIntent.putExtra(Intent.EXTRA_TEXT, message);
             startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
         });
+
 
         shareStreakButton.setOnClickListener(v -> {
             int streak = userRepository.getCurrentStreak();
@@ -170,6 +204,31 @@ public class ProfileFragment extends Fragment {
                     getString(R.string.share_streak_message, streak));
             startActivity(Intent.createChooser(intent, getString(R.string.invite_chooser_title)));
         });
+
+        trophyRoomButton.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.trophy.TrophyRoomActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void applyAvatarCustomization() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(Constants.PREF_APP, Context.MODE_PRIVATE);
+        String frame = prefs.getString("avatar_frame", "Circle");
+        String color = prefs.getString("avatar_color", "Blue");
+
+        if (frame.equals("Square")) {
+            avatarImage.setBackgroundResource(R.drawable.avatar_frame_square);
+        } else {
+            avatarImage.setBackgroundResource(R.drawable.avatar_frame_circle);
+        }
+
+        if (color.equals("Green")) {
+            avatarImage.setColorFilter(getResources().getColor(R.color.success));
+        } else if (color.equals("Red")) {
+            avatarImage.setColorFilter(getResources().getColor(R.color.error));
+        } else {
+            avatarImage.setColorFilter(getResources().getColor(R.color.blue));
+        }
     }
 
     @Override
