@@ -36,4 +36,10 @@ public class Constants {
     public static final String ANALYTICS_SCREEN_RESULT = "result_screen";
     public static final String ANALYTICS_SCREEN_WORD_DASH = "word_dash_game";
     public static final String ANALYTICS_SCREEN_QUICK_MATH = "quick_math_game";
+
+    // Avatar customization keys
+    public static final String AVATAR_SKIN = "avatar_skin";
+    public static final String AVATAR_HAIR = "avatar_hair";
+    public static final String AVATAR_EYES = "avatar_eyes";
+    public static final String AVATAR_MOUTH = "avatar_mouth";
 }

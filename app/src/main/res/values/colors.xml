@@ -55,6 +55,11 @@
     <color name="gold">#FFD700</color>
     <color name="info">#2196F3</color>
 
+    <!-- Avatar skin tones -->
+    <color name="avatar_skin_light">#FFCC99</color>
+    <color name="avatar_skin_medium">#E0A15D</color>
+    <color name="avatar_skin_dark">#8D5524</color>
+
     <!-- Icon tint color used to ensure visibility in light theme -->
     <color name="icon_tint">#000000</color>
     <!-- Semi-transparent overlay used during tutorials -->

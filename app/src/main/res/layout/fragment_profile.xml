@@ -74,13 +74,36 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/avatarImage"
+            <FrameLayout
+                android:id="@+id/avatarContainer"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/profile_avatar_desc"
-                android:src="@drawable/ic_avatar" />
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/avatarFace"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_face" />
+
+                <ImageView
+                    android:id="@+id/avatarHair"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_hair_1" />
+
+                <ImageView
+                    android:id="@+id/avatarEyes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_eyes_1" />
+
+                <ImageView
+                    android:id="@+id/avatarMouth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_mouth_1" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
