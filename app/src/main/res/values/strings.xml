@@ -201,7 +201,7 @@
     <string name="tutorial_step_back">Use Back to remove the last letter.</string>
     <string name="tutorial_step_clear">Clear your entire word with this.</string>
     <string name="tutorial_next">Next</string>
-    <string name="tutorial_got_it">Got it!</string>
+    <string name="tutorial_got_it">Start Game</string>
     <string name="tutorial_skip">Skip Tutorial</string>
 
     <string name="delete_account">Delete Account</string>
