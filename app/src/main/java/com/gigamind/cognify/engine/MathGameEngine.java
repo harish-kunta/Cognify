@@ -22,6 +22,11 @@ public class MathGameEngine {
         int op = random.nextInt(4); // 0:+ 1:- 2:* 3:/
         switch (op) {
             case 1:
+                if (a < b) {
+                    int temp = a;
+                    a = b;
+                    b = temp;
+                }
                 currentAnswer = a - b;
                 currentQuestion = a + " - " + b + " = ?";
                 break;
