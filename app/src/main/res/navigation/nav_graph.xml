@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.gigamind.cognify.ui.worddash.WordDashFragment"
+        android:name="com.gigamind.cognify.ui.home.HomeFragment"
         android:label="@string/home" />
 
     <fragment
