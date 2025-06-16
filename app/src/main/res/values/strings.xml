@@ -151,4 +151,17 @@
         Join me on Cognify! Download on Play Store: https://example.com/app
     </string>
     <string name="invite_chooser_title">Invite Friends</string>
+
+    <!-- Trophy Room -->
+    <string name="trophy_room">Trophy Room</string>
+    <string name="badge_rookie">Rookie</string>
+    <string name="badge_apprentice">Apprentice</string>
+    <string name="badge_adept">Adept</string>
+    <string name="badge_expert">Expert</string>
+    <string name="badge_veteran">Veteran</string>
+    <string name="badge_elite">Elite</string>
+    <string name="badge_master">Master</string>
+    <string name="badge_champion">Champion</string>
+    <string name="badge_hero">Hero</string>
+    <string name="badge_legend">Legend</string>
 </resources>

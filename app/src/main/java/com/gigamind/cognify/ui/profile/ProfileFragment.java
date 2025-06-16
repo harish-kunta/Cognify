@@ -40,6 +40,7 @@ public class ProfileFragment extends Fragment {
     private TextView streakValueText;
     private TextView xpValueText;
     private Button inviteFriendsButton;
+    private Button trophyRoomButton;
 
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -68,6 +69,7 @@ public class ProfileFragment extends Fragment {
         streakValueText         = view.findViewById(R.id.streakValue);
         xpValueText             = view.findViewById(R.id.xpValue);
         inviteFriendsButton     = view.findViewById(R.id.inviteFriendsButton);
+        trophyRoomButton        = view.findViewById(R.id.trophyRoomButton);
 
         // 2) Initialize FirebaseUser & UserRepository
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
@@ -158,6 +160,11 @@ public class ProfileFragment extends Fragment {
                     getString(R.string.invite_message)
             );
             startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
+        });
+
+        trophyRoomButton.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.trophy.TrophyRoomActivity.class);
+            startActivity(intent);
         });
     }
 
