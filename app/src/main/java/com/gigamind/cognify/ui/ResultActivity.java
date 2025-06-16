@@ -339,7 +339,10 @@ public class ResultActivity extends AppCompatActivity {
 
     private void setupButtons(String gameType) {
         playAgainButton.setOnClickListener(v -> {
-            Intent gameIntent = new Intent(this, WordDashActivity.class);
+            Class<?> cls = gameType.equals(Constants.TYPE_QUICK_MATH)
+                    ? QuickMathActivity.class
+                    : WordDashActivity.class;
+            Intent gameIntent = new Intent(this, cls);
             startActivity(gameIntent);
             finish();
         });

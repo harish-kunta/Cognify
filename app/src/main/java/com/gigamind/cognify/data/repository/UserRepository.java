@@ -76,6 +76,19 @@ public class UserRepository {
                         long ts = snapshot.getLong(UserFields.FIELD_LAST_PLAYED_TS);
                         editor.putLong(KEY_LAST_PLAYED_TS, ts);
                     }
+
+                    for (String type : new String[]{Constants.GAME_TYPE_WORD_DASH, Constants.TYPE_QUICK_MATH}) {
+                        String xpField = UserFields.totalGameXpField(type);
+                        if (snapshot.contains(xpField)) {
+                            int xpVal = snapshot.getLong(xpField).intValue();
+                            editor.putInt(xpField, xpVal);
+                        }
+                        String scoreField = UserFields.lastGameScoreField(type);
+                        if (snapshot.contains(scoreField)) {
+                            int sVal = snapshot.getLong(scoreField).intValue();
+                            editor.putInt(scoreField, sVal);
+                        }
+                    }
                     editor.apply();
                 });
     }
@@ -127,6 +140,18 @@ public class UserRepository {
                         editor.putLong(KEY_LAST_PLAYED_TS, ts);
                     }
 
+                    for (String type : new String[]{Constants.GAME_TYPE_WORD_DASH, Constants.TYPE_QUICK_MATH}) {
+                        String xpField = UserFields.totalGameXpField(type);
+                        if (snapshot.contains(xpField)) {
+                            int xpVal = snapshot.getLong(xpField).intValue();
+                            editor.putInt(xpField, xpVal);
+                        }
+                        String scoreField = UserFields.lastGameScoreField(type);
+                        if (snapshot.contains(scoreField)) {
+                            int sVal = snapshot.getLong(scoreField).intValue();
+                            editor.putInt(scoreField, sVal);
+                        }
+                    }
 
                     if (snapshot.contains(KEY_PERSONAL_BEST_XP)) {
                         // Write into SharedPrefs under “pb_<gameType>”
@@ -211,6 +236,9 @@ public class UserRepository {
                         editor.putLong(KEY_LAST_PLAYED_TS, nowMillis);
                         editor.putInt(KEY_CURRENT_STREAK, updatedStreak);
                         editor.putInt(KEY_TOTAL_XP, prefs.getInt(KEY_TOTAL_XP, 0) + xpEarned);
+                        editor.putInt(UserFields.totalGameXpField(gameType),
+                                prefs.getInt(UserFields.totalGameXpField(gameType), 0) + xpEarned);
+                        editor.putInt(UserFields.lastGameScoreField(gameType), score);
                         editor.apply();
 
                         // 5) Build Firestore update map
@@ -219,6 +247,7 @@ public class UserRepository {
                         updates.put(KEY_LAST_PLAYED_TS, nowMillis);
                         updates.put(KEY_CURRENT_STREAK, updatedStreak);
                         updates.put(KEY_TOTAL_XP, FieldValue.increment(xpEarned));
+                        updates.put(UserFields.totalGameXpField(gameType), FieldValue.increment(xpEarned));
                         updates.put(UserFields.lastGameScoreField(gameType), score);
 
                         if (newPersonalBest != null) {
@@ -274,6 +303,9 @@ public class UserRepository {
         editor.putLong(KEY_LAST_PLAYED_TS, nowMillis);
         editor.putInt(KEY_CURRENT_STREAK, updatedStreak);
         editor.putInt(KEY_TOTAL_XP, prefs.getInt(KEY_TOTAL_XP, 0) + xpEarned);
+        editor.putInt(UserFields.totalGameXpField(gameType),
+                prefs.getInt(UserFields.totalGameXpField(gameType), 0) + xpEarned);
+        editor.putInt(UserFields.lastGameScoreField(gameType), score);
         editor.apply();
     }
 
@@ -292,6 +324,13 @@ public class UserRepository {
     }
 
     /**
+     * Returns locally stored total XP for the specified game type.
+     */
+    public int getTotalGameXp(String gameType) {
+        return prefs.getInt(UserFields.totalGameXpField(gameType), 0);
+    }
+
+    /**
      * Returns locally stored “lastPlayedDate” (yyyy-MM-dd).
      */
     public String getLastPlayedDate() {
@@ -303,6 +342,13 @@ public class UserRepository {
      */
     public long getLastPlayedTimestamp() {
         return prefs.getLong(KEY_LAST_PLAYED_TS, -1L);
+    }
+
+    /**
+     * Returns the locally stored score for the given game type.
+     */
+    public int getLastGameScore(String gameType) {
+        return prefs.getInt(UserFields.lastGameScoreField(gameType), 0);
     }
 
     /**

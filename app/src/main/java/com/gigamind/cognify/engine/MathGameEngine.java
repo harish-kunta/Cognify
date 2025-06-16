@@ -19,8 +19,27 @@ public class MathGameEngine {
     public void generateQuestion() {
         int a = random.nextInt(20) + 1;
         int b = random.nextInt(20) + 1;
-        currentAnswer = a + b;
-        currentQuestion = a + " + " + b + " = ?";
+        int op = random.nextInt(4); // 0:+ 1:- 2:* 3:/
+        switch (op) {
+            case 1:
+                currentAnswer = a - b;
+                currentQuestion = a + " - " + b + " = ?";
+                break;
+            case 2:
+                a = random.nextInt(10) + 1;
+                b = random.nextInt(10) + 1;
+                currentAnswer = a * b;
+                currentQuestion = a + " × " + b + " = ?";
+                break;
+            case 3:
+                currentAnswer = a;
+                int prod = a * b;
+                currentQuestion = prod + " ÷ " + b + " = ?";
+                break;
+            default:
+                currentAnswer = a + b;
+                currentQuestion = a + " + " + b + " = ?";
+        }
         generateOptions();
     }
 
@@ -30,10 +49,10 @@ public class MathGameEngine {
         
         // Generate 3 fake options that are close to the real answer
         while (currentOptions.size() < 4) {
-            int fake = currentAnswer + (random.nextInt(7) - 3); // -3 to +3 from real answer
-            if (fake > 0 && !currentOptions.contains(fake)) {
-                currentOptions.add(fake);
-            }
+            int offset = random.nextInt(11) - 5; // -5..5
+            int fake = currentAnswer + offset;
+            if (fake <= 0 || currentOptions.contains(fake)) continue;
+            currentOptions.add(fake);
         }
         
         Collections.shuffle(currentOptions);
