@@ -1,7 +1,5 @@
 package com.gigamind.cognify.work;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -17,11 +15,10 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.ui.MainActivity;
 import com.gigamind.cognify.data.firebase.FirebaseService;
+import com.gigamind.cognify.util.NotificationUtils;
+import com.gigamind.cognify.util.DateUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Now that SharedPreferences is already kept up-to-date by CognifyApplication’s real-time listener,
@@ -54,12 +51,8 @@ public class StreakNotificationWorker extends Worker {
         }
 
         // (2) Compare the date portion only (yyyy-MM-dd)
-        Calendar lastCal  = Calendar.getInstance();
-        lastCal.setTimeInMillis(lastMillis);
-        Calendar todayCal = Calendar.getInstance();
-
-        String lastDateStr  = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(lastCal.getTime());
-        String todayDateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(todayCal.getTime());
+        String lastDateStr  = DateUtils.format(lastMillis);
+        String todayDateStr = DateUtils.today();
 
         if (todayDateStr.equals(lastDateStr)) {
             // User already played today → no notification needed
@@ -85,7 +78,13 @@ public class StreakNotificationWorker extends Worker {
     }
 
     private void sendStreakNotification(Context context) {
-        createNotificationChannelIfNeeded(context);
+        NotificationUtils.createNotificationChannel(
+                context,
+                CHANNEL_ID,
+                context.getString(R.string.streak_channel_name),
+                context.getString(R.string.streak_channel_desc),
+                android.app.NotificationManager.IMPORTANCE_HIGH
+        );
 
         Intent toMain = new Intent(context, MainActivity.class);
         toMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -115,19 +114,4 @@ public class StreakNotificationWorker extends Worker {
         }
     }
 
-    private void createNotificationChannelIfNeeded(Context ctx) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name        = ctx.getString(R.string.streak_channel_name);
-            String description       = ctx.getString(R.string.streak_channel_desc);
-            int importance           = NotificationManager.IMPORTANCE_HIGH;
-
-            NotificationChannel channel =
-                    new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            NotificationManager nm =
-                    (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (nm != null) nm.createNotificationChannel(channel);
-        }
-    }
 }

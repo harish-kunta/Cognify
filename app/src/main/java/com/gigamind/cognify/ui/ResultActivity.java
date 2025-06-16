@@ -39,9 +39,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import com.gigamind.cognify.util.DateUtils;
 import java.util.Random;
 
 public class ResultActivity extends AppCompatActivity {
@@ -103,12 +101,8 @@ public class ResultActivity extends AppCompatActivity {
         int oldTotalXp = prefs.getInt(KEY_TOTAL_XP, 0);
 
         // (4) Compute "today" / "yesterday"
-        Calendar nowCal = Calendar.getInstance();
-        String todayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                .format(nowCal.getTime());
-        nowCal.add(Calendar.DAY_OF_YEAR, -1);
-        String yesterdayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                .format(nowCal.getTime());
+        String todayStr = DateUtils.today();
+        String yesterdayStr = DateUtils.yesterday();
 
         // (5) Compute newStreak locally:
         int newStreak;
@@ -204,12 +198,8 @@ public class ResultActivity extends AppCompatActivity {
         // (2) Streak bonus if lastPlayedDate (in prefs) was yesterday
         String lastDate = prefs.getString(KEY_LAST_PLAYED_DATE, "");
         if (!lastDate.isEmpty()) {
-            Calendar cal = Calendar.getInstance();
-            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                    .format(cal.getTime());
-            cal.add(Calendar.DAY_OF_YEAR, -1);
-            String yesterday = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                    .format(cal.getTime());
+            String today = DateUtils.today();
+            String yesterday = DateUtils.yesterday();
             if (yesterday.equals(lastDate)) {
                 xp += BONUS_STREAK_PER_DAY;
             }
