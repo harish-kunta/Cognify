@@ -79,6 +79,7 @@
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:layout_gravity="center"
+                android:contentDescription="@string/profile_avatar_desc"
                 android:src="@drawable/ic_avatar" />
 
             <LinearLayout
