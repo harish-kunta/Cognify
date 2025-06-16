@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import androidx.appcompat.app.AppCompatDelegate;
 
 /**
  * In onCreate():
@@ -39,6 +40,11 @@ public class CognifyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        SharedPreferences themePrefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
+        boolean darkMode = themePrefs.getBoolean(Constants.PREF_DARK_MODE_ENABLED, false);
+        AppCompatDelegate.setDefaultNightMode(darkMode ?
+                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
         Thread.UncaughtExceptionHandler previousHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {

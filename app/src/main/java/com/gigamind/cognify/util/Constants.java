@@ -22,6 +22,10 @@ public class Constants {
     public static final String PREF_NOTIFICATION = "notification_preferences";
     public static final String PREF_NOTIFICATION_ENABLED = "notifications_enabled";
     public static final String PREF_TUTORIAL_COMPLETED = "tutorial_completed";
+    public static final String PREF_SOUND_ENABLED = "sound_enabled";
+    public static final String PREF_HAPTICS_ENABLED = "haptics_enabled";
+    public static final String PREF_ANIMATIONS_ENABLED = "animations_enabled";
+    public static final String PREF_DARK_MODE_ENABLED = "dark_mode_enabled";
 
     // Intent extras and other keys
     public static final String INTENT_GAME_TYPE = "GAME_TYPE";
