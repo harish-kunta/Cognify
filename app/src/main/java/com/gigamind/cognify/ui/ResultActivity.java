@@ -140,8 +140,9 @@ public class ResultActivity extends AppCompatActivity {
         editor.apply();
 
         // (8) Kick off Firestore merge in background
+        boolean isWin = score > 0;
         Task<Void> updateTask = userRepository.updateGameResults(
-                gameType, score, xpEarned, newPbValue
+                gameType, score, xpEarned, isWin, newPbValue
         );
 
         // (9) Schedule next streak notification (uses prefs key we just wrote)
