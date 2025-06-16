@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Button;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,19 +20,26 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.util.Constants;
 
 /**
- * Simple UI allowing the user to select avatar frame, hat and color.
- * Stores the selections in SharedPreferences under PREF_APP.
+ * Advanced avatar customization allowing selection of skin color,
+ * hair style, eyes and mouth. Values are stored in SharedPreferences
+ * under PREF_APP.
  */
 public class AvatarCustomizationFragment extends Fragment {
-    private ImageView avatarPreview;
-    private Spinner frameSpinner;
-    private Spinner hatSpinner;
-    private Spinner colorSpinner;
+    private ImageView faceView;
+    private ImageView hairView;
+    private ImageView eyesView;
+    private ImageView mouthView;
+
+    private Spinner skinSpinner;
+    private Spinner hairSpinner;
+    private Spinner eyesSpinner;
+    private Spinner mouthSpinner;
     private SharedPreferences prefs;
 
-    private static final String KEY_AVATAR_FRAME = "avatar_frame";
-    private static final String KEY_AVATAR_HAT = "avatar_hat";
-    private static final String KEY_AVATAR_COLOR = "avatar_color";
+    private static final String KEY_SKIN = Constants.AVATAR_SKIN;
+    private static final String KEY_HAIR = Constants.AVATAR_HAIR;
+    private static final String KEY_EYES = Constants.AVATAR_EYES;
+    private static final String KEY_MOUTH = Constants.AVATAR_MOUTH;
 
     @Nullable
     @Override
@@ -46,16 +53,20 @@ public class AvatarCustomizationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         prefs = requireContext().getSharedPreferences(Constants.PREF_APP, Context.MODE_PRIVATE);
 
-        avatarPreview = view.findViewById(R.id.avatarPreview);
-        frameSpinner = view.findViewById(R.id.frameSpinner);
-        hatSpinner = view.findViewById(R.id.hatSpinner);
-        colorSpinner = view.findViewById(R.id.colorSpinner);
+        faceView = view.findViewById(R.id.faceView);
+        hairView = view.findViewById(R.id.hairView);
+        eyesView = view.findViewById(R.id.eyesView);
+        mouthView = view.findViewById(R.id.mouthView);
+
+        skinSpinner = view.findViewById(R.id.skinSpinner);
+        hairSpinner = view.findViewById(R.id.hairSpinner);
+        eyesSpinner = view.findViewById(R.id.eyesSpinner);
+        mouthSpinner = view.findViewById(R.id.mouthSpinner);
         Button saveButton = view.findViewById(R.id.saveAvatarButton);
 
         setupSpinners();
         loadSelections();
 
-        // Update preview whenever an option is changed
         AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
@@ -63,69 +74,81 @@ public class AvatarCustomizationFragment extends Fragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) { }
         };
-        frameSpinner.setOnItemSelectedListener(listener);
-        hatSpinner.setOnItemSelectedListener(listener);
-        colorSpinner.setOnItemSelectedListener(listener);
+        skinSpinner.setOnItemSelectedListener(listener);
+        hairSpinner.setOnItemSelectedListener(listener);
+        eyesSpinner.setOnItemSelectedListener(listener);
+        mouthSpinner.setOnItemSelectedListener(listener);
 
         saveButton.setOnClickListener(v -> {
             prefs.edit()
-                    .putString(KEY_AVATAR_FRAME, frameSpinner.getSelectedItem().toString())
-                    .putString(KEY_AVATAR_HAT, hatSpinner.getSelectedItem().toString())
-                    .putString(KEY_AVATAR_COLOR, colorSpinner.getSelectedItem().toString())
+                    .putInt(KEY_SKIN, skinSpinner.getSelectedItemPosition())
+                    .putInt(KEY_HAIR, hairSpinner.getSelectedItemPosition())
+                    .putInt(KEY_EYES, eyesSpinner.getSelectedItemPosition())
+                    .putInt(KEY_MOUTH, mouthSpinner.getSelectedItemPosition())
                     .apply();
             requireActivity().onBackPressed();
         });
     }
 
     private void setupSpinners() {
-        ArrayAdapter<String> frameAdapter = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> skinAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item,
-                new String[]{"Circle", "Square"});
-        frameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        frameSpinner.setAdapter(frameAdapter);
+                new String[]{"Light", "Medium", "Dark"});
+        skinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        skinSpinner.setAdapter(skinAdapter);
 
-        ArrayAdapter<String> hatAdapter = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> hairAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item,
-                new String[]{"None", "Crown", "Cap"});
-        hatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        hatSpinner.setAdapter(hatAdapter);
+                new String[]{"Style 1", "Style 2"});
+        hairAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        hairSpinner.setAdapter(hairAdapter);
 
-        ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(requireContext(),
+        ArrayAdapter<String> eyesAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item,
-                new String[]{"Blue", "Green", "Red"});
-        colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        colorSpinner.setAdapter(colorAdapter);
+                new String[]{"Eyes 1", "Eyes 2"});
+        eyesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eyesSpinner.setAdapter(eyesAdapter);
+
+        ArrayAdapter<String> mouthAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_item,
+                new String[]{"Mouth 1", "Mouth 2"});
+        mouthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mouthSpinner.setAdapter(mouthAdapter);
     }
 
     private void loadSelections() {
-        String frame = prefs.getString(KEY_AVATAR_FRAME, "Circle");
-        String hat = prefs.getString(KEY_AVATAR_HAT, "None");
-        String color = prefs.getString(KEY_AVATAR_COLOR, "Blue");
+        int skin = prefs.getInt(KEY_SKIN, 0);
+        int hair = prefs.getInt(KEY_HAIR, 0);
+        int eyes = prefs.getInt(KEY_EYES, 0);
+        int mouth = prefs.getInt(KEY_MOUTH, 0);
 
-        frameSpinner.setSelection(frame.equals("Square") ? 1 : 0);
-        hatSpinner.setSelection(hat.equals("Crown") ? 1 : hat.equals("Cap") ? 2 : 0);
-        colorSpinner.setSelection(color.equals("Green") ? 1 : color.equals("Red") ? 2 : 0);
+        skinSpinner.setSelection(skin);
+        hairSpinner.setSelection(hair);
+        eyesSpinner.setSelection(eyes);
+        mouthSpinner.setSelection(mouth);
         updatePreview();
     }
 
     private void updatePreview() {
-        String frame = frameSpinner.getSelectedItem().toString();
-        String color = colorSpinner.getSelectedItem().toString();
-
-        if (frame.equals("Square")) {
-            avatarPreview.setBackgroundResource(R.drawable.avatar_frame_square);
-        } else {
-            avatarPreview.setBackgroundResource(R.drawable.avatar_frame_circle);
+        switch (skinSpinner.getSelectedItemPosition()) {
+            case 0:
+                faceView.setColorFilter(getResources().getColor(R.color.avatar_skin_light));
+                break;
+            case 1:
+                faceView.setColorFilter(getResources().getColor(R.color.avatar_skin_medium));
+                break;
+            case 2:
+                faceView.setColorFilter(getResources().getColor(R.color.avatar_skin_dark));
+                break;
         }
 
-        if (color.equals("Green")) {
-            avatarPreview.setColorFilter(getResources().getColor(R.color.success));
-        } else if (color.equals("Red")) {
-            avatarPreview.setColorFilter(getResources().getColor(R.color.error));
-        } else {
-            avatarPreview.setColorFilter(getResources().getColor(R.color.blue));
-        }
+        hairView.setImageResource(hairSpinner.getSelectedItemPosition() == 0 ?
+                R.drawable.avatar_hair_1 : R.drawable.avatar_hair_2);
+        eyesView.setImageResource(eyesSpinner.getSelectedItemPosition() == 0 ?
+                R.drawable.avatar_eyes_1 : R.drawable.avatar_eyes_2);
+        mouthView.setImageResource(mouthSpinner.getSelectedItemPosition() == 0 ?
+                R.drawable.avatar_mouth_1 : R.drawable.avatar_mouth_2);
     }
 }

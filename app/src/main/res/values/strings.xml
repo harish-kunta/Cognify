@@ -156,6 +156,14 @@
     <!-- Accessibility descriptions -->
     <string name="app_icon_desc">Cognify app icon</string>
     <string name="onboarding_image_desc">Onboarding illustration</string>
+    <string name="onboarding_slide1_title">Train your brain in 60 seconds a day</string>
+    <string name="onboarding_slide1_desc">Quick, fun exercises to keep your mind sharp</string>
+    <string name="onboarding_slide2_title">Form words. Solve math. Beat the clock!</string>
+    <string name="onboarding_slide2_desc">Challenge yourself with various brain games</string>
+    <string name="onboarding_slide3_title">Earn streaks, top leaderboards!</string>
+    <string name="onboarding_slide3_desc">Compete and track your progress</string>
+    <string name="onboarding_slide4_title">Sign in to save progress</string>
+    <string name="onboarding_slide4_desc">Or continue as guest to try it out</string>
     <string name="streak_icon_desc">Streak icon</string>
     <string name="profile_avatar_desc">User avatar</string>
 
@@ -166,11 +174,11 @@
     <string name="challenge_toast">Beat score: %1$d</string>
     <string name="save">Save</string>
     <string name="customize_avatar">Customize Avatar</string>
-    <string name="frame">Frame</string>
-    <string name="hat">Hat</string>
-    <string name="color">Color</string>
+    <string name="skin_color">Skin Color</string>
+    <string name="hair_style">Hair Style</string>
+    <string name="eyes_style">Eyes Style</string>
+    <string name="mouth_style">Mouth Style</string>
     <string name="win_rate">Win Rate</string>
-
     <!-- Trophy Room -->
     <string name="trophy_room">Trophy Room</string>
     <string name="badge_rookie">Rookie</string>

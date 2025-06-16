@@ -9,7 +9,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,7 +68,10 @@ public class WordDashActivity extends AppCompatActivity {
 
         int challengeScore = getIntent().getIntExtra(Constants.EXTRA_CHALLENGE_SCORE, -1);
         if (challengeScore >= 0) {
-            Toast.makeText(this, getString(R.string.challenge_toast, challengeScore), Toast.LENGTH_LONG).show();
+            String msg = getString(R.string.challenge_toast, challengeScore);
+            View root = findViewById(android.R.id.content);
+            Snackbar.make(root, msg, Snackbar.LENGTH_LONG).show();
+            root.announceForAccessibility(msg);
         }
 
         analytics = GameAnalytics.getInstance(this);
@@ -114,7 +117,10 @@ public class WordDashActivity extends AppCompatActivity {
                             tutorialOverlay.addStep(scoreText, getString(R.string.tutorial_step_score));
                             tutorialOverlay.addStep(timerText, getString(R.string.tutorial_step_timer));
                             tutorialOverlay.setOnComplete(() -> {
-                                Toast.makeText(this, R.string.tutorial_complete, Toast.LENGTH_SHORT).show();
+                                String msg = getString(R.string.tutorial_complete);
+                                View root = findViewById(android.R.id.content);
+                                Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
+                                root.announceForAccessibility(msg);
                                 tutorialHelper.markTutorialCompleted();
                                 tutorialActive = false;
                                 startGame();
@@ -125,7 +131,9 @@ public class WordDashActivity extends AppCompatActivity {
                         }
                     } else {
                         // Handle dictionary load error
-                        Toast.makeText(this, "Error loading game dictionary", Toast.LENGTH_LONG).show();
+                        String msg = "Error loading game dictionary";
+                        Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
+                        findViewById(android.R.id.content).announceForAccessibility(msg);
                         finish();
                     }
                 }
@@ -270,7 +278,10 @@ public class WordDashActivity extends AppCompatActivity {
             foundWordsList.add(word);
             foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
             if (tutorialActive) {
-                Toast.makeText(this, R.string.tutorial_complete, Toast.LENGTH_SHORT).show();
+                String msg = getString(R.string.tutorial_complete);
+                View root = findViewById(android.R.id.content);
+                Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
+                root.announceForAccessibility(msg);
                 tutorialHelper.markTutorialCompleted();
                 tutorialActive = false;
             }
@@ -320,7 +331,10 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void showError(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        View root = findViewById(android.R.id.content);
+        Snackbar.make(root, message, Snackbar.LENGTH_SHORT).show();
+        root.announceForAccessibility(message);
+        letterGrid.performHapticFeedback(HapticFeedbackConstants.REJECT);
         if (hapticsEnabled) {
             letterGrid.performHapticFeedback(HapticFeedbackConstants.REJECT);
         }

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -194,16 +194,22 @@ public class SettingsFragment extends Fragment {
         user.reauthenticate(credential)
                 .addOnSuccessListener(aVoid -> FirebaseService.getInstance().deleteAccountAndData()
                         .addOnSuccessListener(v -> {
-                            Toast.makeText(requireContext(), R.string.sign_out, Toast.LENGTH_SHORT).show();
+                            String msg = getString(R.string.sign_out);
+                            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
+                            binding.getRoot().announceForAccessibility(msg);
                             startActivity(new Intent(requireActivity(), OnboardingActivity.class)
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         })
-                        .addOnFailureListener(e -> Toast.makeText(requireContext(),
-                                getString(R.string.delete_account_error, e.getMessage()),
-                                Toast.LENGTH_LONG).show()))
-                .addOnFailureListener(e -> Toast.makeText(requireContext(),
-                        getString(R.string.delete_account_error, e.getMessage()),
-                        Toast.LENGTH_LONG).show());
+                        .addOnFailureListener(e -> {
+                            String msg = getString(R.string.delete_account_error, e.getMessage());
+                            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                            binding.getRoot().announceForAccessibility(msg);
+                        }))
+                .addOnFailureListener(e -> {
+                    String msg = getString(R.string.delete_account_error, e.getMessage());
+                    Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                    binding.getRoot().announceForAccessibility(msg);
+                });
     }
 
     @Override
@@ -217,9 +223,9 @@ public class SettingsFragment extends Fragment {
                     reauthenticateAndDelete(account.getIdToken());
                 }
             } catch (ApiException e) {
-                Toast.makeText(requireContext(),
-                        getString(R.string.delete_account_error, e.getMessage()),
-                        Toast.LENGTH_LONG).show();
+                String msg = getString(R.string.delete_account_error, e.getMessage());
+                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                binding.getRoot().announceForAccessibility(msg);
             }
         }
     }
