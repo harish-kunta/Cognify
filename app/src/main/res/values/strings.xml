@@ -157,4 +157,26 @@
     <string name="hat">Hat</string>
     <string name="color">Color</string>
     <string name="win_rate">Win Rate</string>
+
+    <!-- Trophy Room -->
+    <string name="trophy_room">Trophy Room</string>
+    <string name="badge_rookie">Rookie</string>
+    <string name="badge_apprentice">Apprentice</string>
+    <string name="badge_adept">Adept</string>
+    <string name="badge_expert">Expert</string>
+    <string name="badge_veteran">Veteran</string>
+    <string name="badge_elite">Elite</string>
+    <string name="badge_master">Master</string>
+    <string name="badge_champion">Champion</string>
+    <string name="badge_hero">Hero</string>
+    <string name="badge_legend">Legend</string>
+    <string name="daily_quest">Daily Quest</string>
+    <string name="quest_reward">Reward: %1$s</string>
+    <string name="notif_quest_title">Daily Quest Reminder</string>
+    <string name="notif_quest_text">Complete todays quest to earn extra XP!</string>
+    <string name="quest_channel_name">Quest Reminder</string>
+    <string name="quest_channel_desc">Notifies about daily quests</string>
+    <string name="play_tip">You\u2019ll see a quick tutorial first.</string>
+    <string name="tutorial_start_hint">Tap letters to form a word, then hit Submit.</string>
+    <string name="tutorial_complete">Great! Tutorial complete.</string>
 </resources>

@@ -139,6 +139,16 @@ public class ResultActivity extends AppCompatActivity {
 
         editor.apply();
 
+        int oldBadge = com.gigamind.cognify.util.BadgeUtils.badgeIndexForXp(oldTotalXp);
+        int newBadge = com.gigamind.cognify.util.BadgeUtils.badgeIndexForXp(newTotalXp);
+        if (newBadge > oldBadge) {
+            android.widget.Toast.makeText(
+                    this,
+                    getString(R.string.trophy_room) + ": " + com.gigamind.cognify.util.BadgeUtils.NAMES[newBadge],
+                    android.widget.Toast.LENGTH_LONG
+            ).show();
+        }
+
         // (8) Kick off Firestore merge in background
         boolean isWin = score > 0;
         Task<Void> updateTask = userRepository.updateGameResults(
