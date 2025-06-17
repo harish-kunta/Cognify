@@ -9,6 +9,8 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
+
+import com.gigamind.cognify.util.SoundManager;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -282,6 +284,7 @@ public class WordDashActivity extends AppCompatActivity {
             gameStateManager.addScore(points);
             gameStateManager.addUsedWord(word);
             analytics.logWordFound(word, timeSpent);
+            SoundManager.getInstance(this).playCorrect();
             animateScoreIncrease();
 
             foundWordsList.add(word);
@@ -347,6 +350,7 @@ public class WordDashActivity extends AppCompatActivity {
         if (hapticsEnabled) {
             letterGrid.performHapticFeedback(HapticFeedbackConstants.REJECT);
         }
+        SoundManager.getInstance(this).playIncorrect();
     }
 
     private void clearWord() {

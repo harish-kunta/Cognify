@@ -18,6 +18,8 @@ public class SoundManager {
     private final int buttonSoundId;
     private final int successSoundId;
     private final int welcomeSoundId;
+    private final int correctSoundId;
+    private final int wrongSoundId;
     private final Context context;
 
     // Track when each sound has finished loading
@@ -44,6 +46,12 @@ public class SoundManager {
         welcomeSoundId = soundPool.load(context, R.raw.welcome_tone, 1);
         loadedMap.put(welcomeSoundId, false);
 
+        correctSoundId = soundPool.load(context, R.raw.success_sound, 1);
+        loadedMap.put(correctSoundId, false);
+
+        wrongSoundId = soundPool.load(context, R.raw.wrong_sound, 1);
+        loadedMap.put(wrongSoundId, false);
+
         soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
             if (status == 0) {
                 loadedMap.put(sampleId, true);
@@ -67,6 +75,14 @@ public class SoundManager {
 
     public void playSuccess() {
         playSound(successSoundId);
+    }
+
+    public void playCorrect() {
+        playSound(correctSoundId);
+    }
+
+    public void playIncorrect() {
+        playSound(wrongSoundId);
     }
 
     public void playWelcome() {

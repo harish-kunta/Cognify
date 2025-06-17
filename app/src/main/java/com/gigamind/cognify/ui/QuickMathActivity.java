@@ -19,6 +19,7 @@ import com.gigamind.cognify.util.Constants;
 import com.google.android.material.button.MaterialButton;
 import com.gigamind.cognify.analytics.GameAnalytics;
 import com.gigamind.cognify.util.GameType;
+import com.gigamind.cognify.util.SoundManager;
 
 import java.util.List;
 
@@ -156,6 +157,12 @@ public class QuickMathActivity extends AppCompatActivity {
         
         analytics.logMathAnswer(isCorrect, timeSpent);
         analytics.logButtonClick("answer_" + selectedAnswer);
+
+        if (isCorrect) {
+            SoundManager.getInstance(this).playCorrect();
+        } else {
+            SoundManager.getInstance(this).playIncorrect();
+        }
 
         int points = gameEngine.getScore(isCorrect, timeSpent);
         currentScore += points;
