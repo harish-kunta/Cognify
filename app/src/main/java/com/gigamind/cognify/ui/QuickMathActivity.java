@@ -8,6 +8,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameTimer;
+import com.gigamind.cognify.util.TutorialHelper;
+import com.gigamind.cognify.ui.TutorialOverlay;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,6 +35,9 @@ public class QuickMathActivity extends AppCompatActivity {
     private boolean questionAnswered;
     private long timeRemaining;
     private long pauseTimestamp;
+    private TutorialHelper tutorialHelper;
+    private boolean tutorialActive = false;
+    private TutorialOverlay tutorialOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +78,31 @@ public class QuickMathActivity extends AppCompatActivity {
             answerButtons[i].setOnClickListener(v -> checkAnswer(index));
         }
 
-        // Start timer & first question
-        startGameTimer();
-        nextQuestion();
+        tutorialHelper = new TutorialHelper(this);
+
+        disableGameInteractions();
+        if (!tutorialHelper.isTutorialCompleted()) {
+            tutorialActive = true;
+            View root = findViewById(android.R.id.content);
+            tutorialOverlay = new TutorialOverlay(this);
+            tutorialOverlay.addStep(equationText, getString(R.string.math_tutorial_step_equation));
+            tutorialOverlay.addStep(answerButtons[0], getString(R.string.math_tutorial_step_options));
+            tutorialOverlay.addStep(scoreText, getString(R.string.tutorial_step_score));
+            tutorialOverlay.addStep(timerText, getString(R.string.tutorial_step_timer));
+            tutorialOverlay.setOnComplete(() -> {
+                String msg = getString(R.string.tutorial_complete);
+                Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
+                root.announceForAccessibility(msg);
+                tutorialHelper.markTutorialCompleted();
+                tutorialActive = false;
+                enableGameInteractions();
+                startGame();
+            });
+            equationText.post(tutorialOverlay::start);
+        } else {
+            enableGameInteractions();
+            startGame();
+        }
     }
 
     private void nextQuestion() {
@@ -165,6 +192,11 @@ public class QuickMathActivity extends AppCompatActivity {
         finish();
     }
 
+    private void startGame() {
+        startGameTimer();
+        nextQuestion();
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -182,7 +214,7 @@ public class QuickMathActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (timeRemaining > 0 && gameTimer == null) {
+        if (timeRemaining > 0 && gameTimer == null && !tutorialActive) {
             // Adjust question start time to exclude paused duration
             if (pauseTimestamp > 0) {
                 long pausedFor = System.currentTimeMillis() - pauseTimestamp;
@@ -191,6 +223,14 @@ public class QuickMathActivity extends AppCompatActivity {
             }
             startGameTimer();
         }
+    }
+
+    private void disableGameInteractions() {
+        setButtonsEnabled(false);
+    }
+
+    private void enableGameInteractions() {
+        setButtonsEnabled(true);
     }
 
     private void setButtonsEnabled(boolean enabled) {
