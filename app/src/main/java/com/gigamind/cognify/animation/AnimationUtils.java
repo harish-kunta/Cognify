@@ -2,7 +2,6 @@ package com.gigamind.cognify.animation;
 
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.gigamind.cognify.R;
 
@@ -41,7 +40,7 @@ public final class AnimationUtils {
      * programmatic ones in this utility class.
      */
     public static void bounce(View view) {
-        Animation bounce = AnimationUtils.loadAnimation(
+        Animation bounce = android.view.animation.AnimationUtils.loadAnimation(
                 view.getContext(), R.anim.button_bounce);
         view.startAnimation(bounce);
     }
