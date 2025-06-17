@@ -303,23 +303,7 @@ public class WordDashActivity extends AppCompatActivity {
             if (hapticsEnabled) {
                 scoreText.performHapticFeedback(HapticFeedbackConstants.REJECT);
             }
-            letterGrid
-                    .animate()
-                    .translationX(10)
-                    .setDuration(50)
-                    .withEndAction(() ->
-                            letterGrid
-                                    .animate()
-                                    .translationX(-10)
-                                    .setDuration(50)
-                                    .withEndAction(() ->
-                                            letterGrid
-                                                    .animate()
-                                                    .translationX(0)
-                                                    .setDuration(50)
-                                                    .start()
-                                    ).start()
-                    ).start();
+            com.gigamind.cognify.util.AnimationUtils.shake(letterGrid);
         }
         clearWord();
         wordStartTime = 0;
@@ -471,19 +455,6 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
-        timerText.animate()
-                .translationX(8)
-                .setDuration(50)
-                .withEndAction(() ->
-                        timerText.animate()
-                                .translationX(-8)
-                                .setDuration(50)
-                                .withEndAction(() ->
-                                        timerText.animate()
-                                                .translationX(0)
-                                                .setDuration(50)
-                                                .start()
-                                ).start()
-                ).start();
+        com.gigamind.cognify.util.AnimationUtils.shake(timerText, 8f);
     }
 }
