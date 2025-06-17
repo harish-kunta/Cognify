@@ -1,12 +1,17 @@
 package com.gigamind.cognify.ui.avatar;
 
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.R;
+import com.gigamind.cognify.adapter.AvatarOptionAdapter;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class AvatarMakerActivity extends AppCompatActivity {
     private ImageView hairView;
@@ -17,12 +22,17 @@ public class AvatarMakerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_avatar_maker);
 
         hairView = findViewById(R.id.hairView);
-        Button longHairBtn = findViewById(R.id.longHairButton);
-        Button hairBunBtn = findViewById(R.id.hairBunButton);
-        Button hairCurlyBtn = findViewById(R.id.hairCurlyButton);
+        RecyclerView recyclerView = findViewById(R.id.hairRecyclerView);
 
-        longHairBtn.setOnClickListener(v -> hairView.setImageResource(R.drawable.hair_long));
-        hairBunBtn.setOnClickListener(v -> hairView.setImageResource(R.drawable.hair_bun));
-        hairCurlyBtn.setOnClickListener(v -> hairView.setImageResource(R.drawable.hair_curly));
+        List<Integer> hairOptions = Arrays.asList(
+                R.drawable.hair_long,
+                R.drawable.hair_bun,
+                R.drawable.hair_curly
+        );
+
+        AvatarOptionAdapter adapter = new AvatarOptionAdapter(hairOptions, resId ->
+                hairView.setImageResource(resId));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(adapter);
     }
 }

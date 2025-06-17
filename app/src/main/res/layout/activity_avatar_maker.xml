@@ -40,31 +40,11 @@
             android:scaleType="centerInside" />
     </FrameLayout>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hairRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
-
-        <Button
-            android:id="@+id/longHairButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hair_long" />
-
-        <Button
-            android:id="@+id/hairBunButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/hair_bun" />
-
-        <Button
-            android:id="@+id/hairCurlyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="@string/hair_curly" />
-    </LinearLayout>
+        android:layout_marginTop="16dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
 </LinearLayout>
