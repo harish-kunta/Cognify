@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
+import com.gigamind.cognify.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment {
 
         // Initialize SharedPreferences and UserRepository
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(requireContext());
+        com.gigamind.cognify.animation.AnimatorProvider.updateFromPreferences(requireContext());
         userRepository = new UserRepository(requireContext());
 
         // Check signed-in user
@@ -202,7 +202,7 @@ public class HomeFragment extends Fragment {
     private void setupClickListeners() {
         View.OnClickListener animatedClickListener = v -> {
             if (areAnimationsEnabled()) {
-                v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
+                AnimationUtils.bounce(v);
             }
             handleGameLaunch(v);
         };
@@ -242,7 +242,7 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean areAnimationsEnabled() {
-        return com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled();
+        return com.gigamind.cognify.animation.AnimatorProvider.isAnimationsEnabled();
     }
 
     @Override

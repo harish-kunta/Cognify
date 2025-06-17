@@ -1,7 +1,10 @@
-// file: com/gigamind/cognify/util/AnimationUtils.java
-package com.gigamind.cognify.util;
+package com.gigamind.cognify.animation;
 
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
+import com.gigamind.cognify.R;
 
 public final class AnimationUtils {
     private AnimationUtils() {
@@ -30,5 +33,16 @@ public final class AnimationUtils {
 
     public static void fadeInWithDelay(View view, long delayMs, long duration) {
         AnimatorProvider.get().fadeInWithDelay(view, delayMs, duration);
+    }
+
+    /**
+     * Plays a simple bounce animation on the given view using the bundled
+     * XML animation resource. This keeps XML-based animations alongside the
+     * programmatic ones in this utility class.
+     */
+    public static void bounce(View view) {
+        Animation bounce = AnimationUtils.loadAnimation(
+                view.getContext(), R.anim.button_bounce);
+        view.startAnimation(bounce);
     }
 }

@@ -235,7 +235,7 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void animateButtonPress(MaterialButton button) {
-        com.gigamind.cognify.util.AnimationUtils.pulse(
+        com.gigamind.cognify.animation.AnimationUtils.pulse(
                 button,
                 1.2f,
                 GameConfig.BUTTON_SCALE_DURATION_MS
@@ -297,7 +297,7 @@ public class WordDashActivity extends AppCompatActivity {
             if (hapticsEnabled) {
                 scoreText.performHapticFeedback(HapticFeedbackConstants.REJECT);
             }
-            com.gigamind.cognify.util.AnimationUtils.shake(letterGrid);
+            com.gigamind.cognify.animation.AnimationUtils.shake(letterGrid);
         }
         clearWord();
         wordStartTime = 0;
@@ -307,7 +307,7 @@ public class WordDashActivity extends AppCompatActivity {
         if (hapticsEnabled) {
             scoreText.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
-        com.gigamind.cognify.util.AnimationUtils.pulse(
+        com.gigamind.cognify.animation.AnimationUtils.pulse(
                 scoreText,
                 1.3f,
                 GameConfig.SCORE_ANIMATION_DURATION_MS
@@ -443,6 +443,6 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
-        com.gigamind.cognify.util.AnimationUtils.shake(timerText, 8f);
+        com.gigamind.cognify.animation.AnimationUtils.shake(timerText, 8f);
     }
 }
