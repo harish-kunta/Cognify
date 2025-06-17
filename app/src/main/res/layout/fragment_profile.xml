@@ -103,6 +103,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/avatar_mouth_1" />
+
+                <ImageView
+                    android:id="@+id/avatarBody"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_body_1" />
+
+                <ImageView
+                    android:id="@+id/avatarNose"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_nose_1" />
+
+                <ImageView
+                    android:id="@+id/avatarEars"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_ears_1" />
+
+                <ImageView
+                    android:id="@+id/avatarFacialHair"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_facial_hair_1" />
+
+                <ImageView
+                    android:id="@+id/avatarAccessory"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_accessory_1" />
             </FrameLayout>
 
             <LinearLayout
