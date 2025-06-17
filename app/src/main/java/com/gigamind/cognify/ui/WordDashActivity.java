@@ -60,6 +60,7 @@ public class WordDashActivity extends AppCompatActivity {
     private MaterialButton clearButton;
     private MaterialButton backspaceButton;
     private boolean hapticsEnabled = true;
+    private View loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,10 @@ public class WordDashActivity extends AppCompatActivity {
 
         disableGameInteractions();
 
+        loadingIndicator.setVisibility(View.VISIBLE);
+        View root = findViewById(android.R.id.content);
+        root.announceForAccessibility(getString(R.string.loading_dictionary));
+
         // 2) Kick off dictionary loading. As soon as it's ready, we build gameEngine and letter grid.
         DictionaryProvider.getDictionaryAsync(
                 getApplicationContext(),
@@ -104,6 +109,9 @@ public class WordDashActivity extends AppCompatActivity {
                         setupLetterGrid(); // Now safe—gameEngine is non-null
 
                         enableGameInteractions();
+                        loadingIndicator.setVisibility(View.GONE);
+                        findViewById(android.R.id.content)
+                                .announceForAccessibility(getString(R.string.dictionary_loaded));
                         isDictionaryLoaded = true;
                         if (!tutorialHelper.isTutorialCompleted()) {
                             tutorialActive = true;
@@ -134,6 +142,7 @@ public class WordDashActivity extends AppCompatActivity {
                         String msg = "Error loading game dictionary";
                         Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
                         findViewById(android.R.id.content).announceForAccessibility(msg);
+                        loadingIndicator.setVisibility(View.GONE);
                         finish();
                     }
                 }
@@ -146,6 +155,7 @@ public class WordDashActivity extends AppCompatActivity {
         currentWordText = findViewById(R.id.currentWordText);
         letterGrid = findViewById(R.id.letterGrid);
         foundWordsRecycler = findViewById(R.id.foundWordsRecycler);
+        loadingIndicator = findViewById(R.id.loadingIndicator);
     }
 
     private void setupButtons() {
