@@ -232,5 +232,6 @@
     <string name="hair_bun">Hair Bun</string>
     <string name="hair_curly">Curly Hair</string>
     <string name="delete_account_error">Failed to delete account: %1$s</string>
+    <string name="account_deleted">Account deleted successfully</string>
 </resources>
 
