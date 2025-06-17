@@ -6,6 +6,12 @@ public final class GameConfig {
     public static final long WORD_DASH_DURATION_MS = 60_000;
     public static final long QUICK_MATH_DURATION_MS = 60_000; // 60 seconds
 
+    // Max time considered for full points in Quick Math
+    public static final long MAX_RESPONSE_TIME_MS = 5_000;
+
+    // Scale factor used when normalizing Quick Math scores
+    public static final int SCORE_NORMALIZATION_SCALE = 10;
+
     // Word game settings
     public static final int MIN_WORD_LENGTH = 3;
     public static final int GRID_SIZE = 4;

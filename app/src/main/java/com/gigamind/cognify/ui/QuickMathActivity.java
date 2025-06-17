@@ -29,6 +29,7 @@ public class QuickMathActivity extends AppCompatActivity {
     private TextView equationText;
     private MaterialButton[] answerButtons;
     private int currentScore;
+    private int questionCount;
     private GameAnalytics analytics;
     private long questionStartTime;
     private GameTimer gameTimer;
@@ -70,6 +71,7 @@ public class QuickMathActivity extends AppCompatActivity {
         // Initialize game
         gameEngine = new MathGameEngine();
         currentScore = 0;
+        questionCount = 0;
         timeRemaining = GameConfig.QUICK_MATH_DURATION_MS;
 
         // Set up click listeners for answer buttons
@@ -155,8 +157,9 @@ public class QuickMathActivity extends AppCompatActivity {
         analytics.logMathAnswer(isCorrect, timeSpent);
         analytics.logButtonClick("answer_" + selectedAnswer);
 
-        int points = gameEngine.getScore(isCorrect);
+        int points = gameEngine.getScore(isCorrect, timeSpent);
         currentScore += points;
+        questionCount++;
         scoreText.setText(String.valueOf(currentScore));
 
         // Visual feedback (could be enhanced with animations)
@@ -179,13 +182,17 @@ public class QuickMathActivity extends AppCompatActivity {
             gameTimer = null;
         }
         timeRemaining = 0;
+        int normalized = questionCount > 0
+                ? Math.round((float) currentScore / questionCount
+                        * GameConfig.SCORE_NORMALIZATION_SCALE)
+                : 0;
         analytics.logGameEnd(GameType.MATH,
-            currentScore,
+            normalized,
             (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             true);
         
         Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra(Constants.INTENT_SCORE, currentScore);
+        intent.putExtra(Constants.INTENT_SCORE, normalized);
         intent.putExtra(Constants.INTENT_TIME, (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000));
         intent.putExtra(Constants.INTENT_TYPE, Constants.TYPE_QUICK_MATH);
         startActivity(intent);
@@ -205,8 +212,12 @@ public class QuickMathActivity extends AppCompatActivity {
             gameTimer = null;
         }
         pauseTimestamp = System.currentTimeMillis();
+        int normalized = questionCount > 0
+                ? Math.round((float) currentScore / questionCount
+                        * GameConfig.SCORE_NORMALIZATION_SCALE)
+                : 0;
         analytics.logGameEnd(GameType.MATH,
-            currentScore,
+            normalized,
             (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             false);
     }

@@ -22,7 +22,22 @@ public class MathGameEngine {
     public void generateQuestion() {
         int a = random.nextInt(20) + 1;
         int b = random.nextInt(20) + 1;
-        int op = random.nextInt(4); // 0:+ 1:- 2:* 3:/
+
+        // Weighted random so that each difficulty level contributes
+        // roughly equal expected points. Distribution weights:
+        // addition:3, subtraction:3, multiplication:3, division:2
+        int pick = random.nextInt(11); // 0-10
+        int op;
+        if (pick < 3) {
+            op = 0; // addition
+        } else if (pick < 6) {
+            op = 1; // subtraction
+        } else if (pick < 9) {
+            op = 2; // multiplication
+        } else {
+            op = 3; // division
+        }
+
         switch (op) {
             case 1:
                 if (a < b) {
@@ -82,11 +97,16 @@ public class MathGameEngine {
         return answer == currentAnswer;
     }
 
-    public int getScore(boolean correct) {
+    public int getScore(boolean correct, long timeMs) {
         if (!correct) {
             return -5;
         }
-        return GameConfig.BASE_SCORE * currentDifficulty;
+        int base = GameConfig.BASE_SCORE * currentDifficulty;
+
+        long clamped = Math.min(timeMs, GameConfig.MAX_RESPONSE_TIME_MS);
+        double factor = 1.0 + (double) (GameConfig.MAX_RESPONSE_TIME_MS - clamped)
+                / GameConfig.MAX_RESPONSE_TIME_MS;
+        return (int) Math.round(base * factor);
     }
 
     public int getCurrentDifficulty() {
