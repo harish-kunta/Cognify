@@ -76,6 +76,7 @@ public class WordDashFragment extends Fragment {
 
         // Initialize SharedPreferences, repositories and helpers
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(requireContext());
         userRepository = new UserRepository(requireContext());
         tutorialHelper = new TutorialHelper(requireContext());
 
@@ -183,8 +184,7 @@ public class WordDashFragment extends Fragment {
     }
 
     private boolean areAnimationsEnabled() {
-        return requireContext().getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE)
-                .getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
+        return com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled();
     }
 
     @Override

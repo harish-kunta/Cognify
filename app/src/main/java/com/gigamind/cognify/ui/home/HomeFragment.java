@@ -86,6 +86,7 @@ public class HomeFragment extends Fragment {
 
         // Initialize SharedPreferences and UserRepository
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(requireContext());
         userRepository = new UserRepository(requireContext());
 
         // Check signed-in user
@@ -253,8 +254,7 @@ public class HomeFragment extends Fragment {
     }
 
     private boolean areAnimationsEnabled() {
-        return requireContext().getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE)
-                .getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
+        return com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled();
     }
 
     @Override

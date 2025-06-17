@@ -60,7 +60,6 @@ public class ResultActivity extends AppCompatActivity {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private GameAnalytics analytics;
-    private boolean animationsEnabled;
     private int finalScore;
     private String finalGameType;
 
@@ -75,7 +74,7 @@ public class ResultActivity extends AppCompatActivity {
         initializeViews();
 
         prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        animationsEnabled = prefs.getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
+        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(this);
         userRepository = new UserRepository(this);
         firebaseUser = FirebaseService.getInstance().getCurrentUser();
 
@@ -226,7 +225,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void animateHeader() {
-        if (!animationsEnabled) {
+        if (!com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled()) {
             headerText.setAlpha(1f);
             return;
         }
@@ -242,7 +241,7 @@ public class ResultActivity extends AppCompatActivity {
             final boolean willSyncRemote,
             final int wordsFound
     ) {
-        if (!animationsEnabled) {
+        if (!com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled()) {
             scoreValue.setText(String.valueOf(finalScore));
             totalWordText.setText(String.valueOf(wordsFound));
             totalXPValue.setText(String.valueOf(finalTotalXp));
@@ -322,7 +321,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void animateNewHighScoreBanner() {
-        if (!animationsEnabled) {
+        if (!com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled()) {
             newHighScoreText.setVisibility(View.VISIBLE);
             newHighScoreText.setAlpha(1f);
             return;
@@ -344,7 +343,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void showEncouragement(String message) {
-        if (!animationsEnabled) {
+        if (!com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled()) {
             encouragementText.setText(message.toUpperCase());
             encouragementText.setAlpha(1f);
             return;
