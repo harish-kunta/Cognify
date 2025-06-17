@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="16dp">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/avatarContainer"
         android:layout_width="200dp"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/skinView"
@@ -89,83 +84,140 @@
             android:scaleType="centerInside" />
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/hairRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/avatarContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/eyesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mouthRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+            <TextView
+                android:text="Hair"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/hairRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/skinRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/accessoriesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+            <TextView
+                android:text="Eyes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/eyesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/clothesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+            <TextView
+                android:text="Mouth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mouthRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/eyebrowsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+            <TextView
+                android:text="Skin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/skinRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/facialHairRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+            <TextView
+                android:text="Accessories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/accessoriesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/glassesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
+            <TextView
+                android:text="Clothes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/clothesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tattooRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:scrollbars="horizontal"
-        tools:listitem="@layout/item_avatar_option" />
-</LinearLayout>
-</ScrollView>
+            <TextView
+                android:text="Eyebrows"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/eyebrowsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
+
+            <TextView
+                android:text="Facial Hair"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/facialHairRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
+
+            <TextView
+                android:text="Glasses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/glassesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
+
+            <TextView
+                android:text="Tattoos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tattooRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/item_avatar_option" />
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
