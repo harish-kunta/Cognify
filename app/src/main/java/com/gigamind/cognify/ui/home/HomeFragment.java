@@ -12,10 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.hdodenhof.circleimageview.CircleImageView;
-import android.util.Base64;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +24,7 @@ import com.gigamind.cognify.databinding.FragmentHomeBinding;
 import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.model.Quest;
 import com.gigamind.cognify.util.QuestManager;
 import android.graphics.Color;
@@ -153,16 +150,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        String stored = userRepository.getProfilePicture();
-        if (stored != null && !stored.isEmpty()) {
-            if (stored.startsWith("http")) {
-                Glide.with(this).load(stored).into(currentUserAvatar);
-            } else {
-                byte[] bytes = Base64.decode(stored, Base64.DEFAULT);
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                currentUserAvatar.setImageBitmap(bmp);
-            }
-        }
+        AvatarLoader.load(userRepository, currentUserAvatar);
     }
 
     /**
