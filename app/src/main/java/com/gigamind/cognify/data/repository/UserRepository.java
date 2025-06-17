@@ -45,12 +45,62 @@ public class UserRepository {
     private static final String PREFS_NAME = Constants.PREFS_NAME;
     private final SharedPreferences prefs;
     private final FirebaseService firebaseService;
-    private Context context;
+    private final Context appContext;
 
     public UserRepository(Context context) {
-        this.context = context;
-        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.appContext = context.getApplicationContext();
+        this.prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         this.firebaseService = FirebaseService.getInstance();
+    }
+
+    /**
+     * Writes values from the given Firestore snapshot into SharedPreferences.
+     */
+    private void applySnapshotToPrefs(DocumentSnapshot snapshot) {
+        if (snapshot == null || !snapshot.exists()) return;
+
+        SharedPreferences.Editor editor = prefs.edit();
+
+        if (snapshot.contains(UserFields.FIELD_CURRENT_STREAK)) {
+            int streak = snapshot.getLong(UserFields.FIELD_CURRENT_STREAK).intValue();
+            editor.putInt(KEY_CURRENT_STREAK, streak);
+        }
+        if (snapshot.contains(UserFields.FIELD_TOTAL_XP)) {
+            int xp = snapshot.getLong(UserFields.FIELD_TOTAL_XP).intValue();
+            editor.putInt(KEY_TOTAL_XP, xp);
+        }
+        if (snapshot.contains(UserFields.FIELD_LAST_PLAYED_DATE)) {
+            String dateStr = snapshot.getString(UserFields.FIELD_LAST_PLAYED_DATE);
+            editor.putString(KEY_LAST_PLAYED_DATE, dateStr);
+        }
+        if (snapshot.contains(UserFields.FIELD_LAST_PLAYED_TS)) {
+            long ts = snapshot.getLong(UserFields.FIELD_LAST_PLAYED_TS);
+            editor.putLong(KEY_LAST_PLAYED_TS, ts);
+        }
+        if (snapshot.contains(UserFields.FIELD_PROFILE_PICTURE)) {
+            String pic = snapshot.getString(UserFields.FIELD_PROFILE_PICTURE);
+            editor.putString(KEY_PROFILE_PICTURE, pic != null ? pic : "");
+        }
+
+        for (String type : Constants.SUPPORTED_GAME_TYPES) {
+            String xpField = UserFields.totalGameXpField(type);
+            if (snapshot.contains(xpField)) {
+                int xpVal = snapshot.getLong(xpField).intValue();
+                editor.putInt(xpField, xpVal);
+            }
+            String scoreField = UserFields.lastGameScoreField(type);
+            if (snapshot.contains(scoreField)) {
+                int sVal = snapshot.getLong(scoreField).intValue();
+                editor.putInt(scoreField, sVal);
+            }
+        }
+
+        if (snapshot.contains(KEY_PERSONAL_BEST_XP)) {
+            int pbVal = snapshot.getLong(KEY_PERSONAL_BEST_XP).intValue();
+            editor.putInt(KEY_PERSONAL_BEST_XP, pbVal);
+        }
+
+        editor.apply();
     }
 
     @Nullable
@@ -60,46 +110,7 @@ public class UserRepository {
         }
 
         return firebaseService.getUserDocument().get()
-                .addOnSuccessListener(snapshot -> {
-                    if (!snapshot.exists()) return;
-
-                    SharedPreferences.Editor editor = prefs.edit();
-
-                    if (snapshot.contains(UserFields.FIELD_CURRENT_STREAK)) {
-                        int streak = snapshot.getLong(UserFields.FIELD_CURRENT_STREAK).intValue();
-                        editor.putInt(KEY_CURRENT_STREAK, streak);
-                    }
-                    if (snapshot.contains(UserFields.FIELD_TOTAL_XP)) {
-                        int xp = snapshot.getLong(UserFields.FIELD_TOTAL_XP).intValue();
-                        editor.putInt(KEY_TOTAL_XP, xp);
-                    }
-                    if (snapshot.contains(UserFields.FIELD_LAST_PLAYED_DATE)) {
-                        String dateStr = snapshot.getString(UserFields.FIELD_LAST_PLAYED_DATE);
-                        editor.putString(KEY_LAST_PLAYED_DATE, dateStr);
-                    }
-                    if (snapshot.contains(UserFields.FIELD_LAST_PLAYED_TS)) {
-                        long ts = snapshot.getLong(UserFields.FIELD_LAST_PLAYED_TS);
-                        editor.putLong(KEY_LAST_PLAYED_TS, ts);
-                    }
-                    if (snapshot.contains(UserFields.FIELD_PROFILE_PICTURE)) {
-                        String pic = snapshot.getString(UserFields.FIELD_PROFILE_PICTURE);
-                        editor.putString(KEY_PROFILE_PICTURE, pic != null ? pic : "");
-                    }
-
-                    for (String type : new String[]{Constants.GAME_TYPE_WORD_DASH, Constants.TYPE_QUICK_MATH}) {
-                        String xpField = UserFields.totalGameXpField(type);
-                        if (snapshot.contains(xpField)) {
-                            int xpVal = snapshot.getLong(xpField).intValue();
-                            editor.putInt(xpField, xpVal);
-                        }
-                        String scoreField = UserFields.lastGameScoreField(type);
-                        if (snapshot.contains(scoreField)) {
-                            int sVal = snapshot.getLong(scoreField).intValue();
-                            editor.putInt(scoreField, sVal);
-                        }
-                    }
-                    editor.apply();
-                });
+                .addOnSuccessListener(this::applySnapshotToPrefs);
     }
 
     /**
@@ -127,52 +138,7 @@ public class UserRepository {
                     return;
                 }
                 if (snapshot != null && snapshot.exists()) {
-                    SharedPreferences.Editor editor = prefs.edit();
-
-                    // Update “currentStreak”
-                    if (snapshot.contains(KEY_CURRENT_STREAK)) {
-                        int streak = snapshot.getLong(KEY_CURRENT_STREAK).intValue();
-                        editor.putInt(KEY_CURRENT_STREAK, streak);
-                    }
-                    // Update “totalXP”
-                    if (snapshot.contains(KEY_TOTAL_XP)) {
-                        int xp = snapshot.getLong(KEY_TOTAL_XP).intValue();
-                        editor.putInt(KEY_TOTAL_XP, xp);
-                    }
-                    // Update “lastPlayedDate”
-                    if (snapshot.contains(KEY_LAST_PLAYED_DATE)) {
-                        String dateStr = snapshot.getString(KEY_LAST_PLAYED_DATE);
-                        editor.putString(KEY_LAST_PLAYED_DATE, dateStr);
-                    }
-                    // Update “lastPlayedTimestamp”
-                    if (snapshot.contains(KEY_LAST_PLAYED_TS)) {
-                        long ts = snapshot.getLong(KEY_LAST_PLAYED_TS);
-                        editor.putLong(KEY_LAST_PLAYED_TS, ts);
-                    }
-                    if (snapshot.contains(KEY_PROFILE_PICTURE)) {
-                        String pic = snapshot.getString(KEY_PROFILE_PICTURE);
-                        editor.putString(KEY_PROFILE_PICTURE, pic != null ? pic : "");
-                    }
-
-                    for (String type : new String[]{Constants.GAME_TYPE_WORD_DASH, Constants.TYPE_QUICK_MATH}) {
-                        String xpField = UserFields.totalGameXpField(type);
-                        if (snapshot.contains(xpField)) {
-                            int xpVal = snapshot.getLong(xpField).intValue();
-                            editor.putInt(xpField, xpVal);
-                        }
-                        String scoreField = UserFields.lastGameScoreField(type);
-                        if (snapshot.contains(scoreField)) {
-                            int sVal = snapshot.getLong(scoreField).intValue();
-                            editor.putInt(scoreField, sVal);
-                        }
-                    }
-
-                    if (snapshot.contains(KEY_PERSONAL_BEST_XP)) {
-                        // Write into SharedPrefs under “pb_<gameType>”
-                        int pbVal = snapshot.getLong(KEY_PERSONAL_BEST_XP).intValue();
-                        editor.putInt(KEY_PERSONAL_BEST_XP, pbVal);
-                    }
-                    editor.apply();
+                    applySnapshotToPrefs(snapshot);
 
                     // Notify the UI (on the main thread) to read from SharedPreferences
                     callback.onDataChanged();
@@ -344,7 +310,7 @@ public class UserRepository {
         updateLocalOnly(gameType, score, xpEarned, isWin, today, yesterday, nowMillis);
         // Reschedule notification from the (now-updated) SharedPreferences:
         StreakNotificationScheduler.scheduleFromSharedPrefs(
-                null, context
+                null, appContext
         );
         return null;
     }

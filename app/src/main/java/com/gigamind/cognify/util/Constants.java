@@ -7,6 +7,11 @@ public class Constants {
     public static final String INTENT_TYPE = "type";
     public static final String TYPE_QUICK_MATH = "quick_math";
     public static final String GAME_TYPE_WORD_DASH = "word_dash";
+    /** Array of all supported game types used throughout the app. */
+    public static final String[] SUPPORTED_GAME_TYPES = {
+            GAME_TYPE_WORD_DASH,
+            TYPE_QUICK_MATH
+    };
     public static final String INTENT_FOUND_WORDS = "found_words";
 
     // XP bonuses
