@@ -19,6 +19,10 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.gigamind.cognify.engine.DictionaryProvider;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
+import com.gigamind.cognify.BuildConfig;
 import android.content.SharedPreferences;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -56,6 +60,14 @@ public class CognifyApplication extends Application {
 
         // (1) Initialize Firebase
         FirebaseApp.initializeApp(this);
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        if (BuildConfig.DEBUG) {
+            firebaseAppCheck.installAppCheckProviderFactory(
+                    DebugAppCheckProviderFactory.getInstance());
+        } else {
+            firebaseAppCheck.installAppCheckProviderFactory(
+                    PlayIntegrityAppCheckProviderFactory.getInstance());
+        }
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
         // (1b) Preload dictionary (so WordDashActivity doesn't flash an empty grid)
