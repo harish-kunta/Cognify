@@ -59,5 +59,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/hair_bun" />
+
+        <Button
+            android:id="@+id/hairCurlyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/hair_curly" />
     </LinearLayout>
 </LinearLayout>
