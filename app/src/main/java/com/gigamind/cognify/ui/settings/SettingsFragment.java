@@ -194,7 +194,7 @@ public class SettingsFragment extends Fragment {
         user.reauthenticate(credential)
                 .addOnSuccessListener(aVoid -> FirebaseService.getInstance().deleteAccountAndData()
                         .addOnSuccessListener(v -> {
-                            String msg = getString(R.string.sign_out);
+                            String msg = getString(R.string.account_deleted);
                             Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
                             binding.getRoot().announceForAccessibility(msg);
                             startActivity(new Intent(requireActivity(), OnboardingActivity.class)

@@ -119,6 +119,11 @@ public class FirebaseService {
                 .document(uid)
                 .delete();
 
-        return deleteData.continueWithTask(task -> user.delete());
+        return deleteData.continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                return Tasks.forException(task.getException());
+            }
+            return user.delete();
+        }).addOnCompleteListener(t -> signOut());
     }
 }
