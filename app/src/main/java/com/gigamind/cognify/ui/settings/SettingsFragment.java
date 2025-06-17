@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
@@ -187,18 +188,24 @@ public class SettingsFragment extends Fragment {
             return;
         }
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
-        if (account != null && account.getIdToken() != null) {
-            reauthenticateAndDelete(account.getIdToken());
-        } else {
-            try {
-                Intent intent = googleSignInClient.getSignInIntent();
-                startActivityForResult(intent, RC_REAUTH);
-            } catch (Exception e) {
-                String msg = getString(R.string.google_sign_in_failed);
-                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                binding.getRoot().announceForAccessibility(msg);
+        googleSignInClient.silentSignIn().addOnCompleteListener(task -> {
+            GoogleSignInAccount account = task.isSuccessful() ? task.getResult() : null;
+            if (account != null && account.getIdToken() != null) {
+                reauthenticateAndDelete(account.getIdToken());
+            } else {
+                launchSignInIntent();
             }
+        });
+    }
+
+    private void launchSignInIntent() {
+        try {
+            Intent intent = googleSignInClient.getSignInIntent();
+            startActivityForResult(intent, RC_REAUTH);
+        } catch (Exception e) {
+            String msg = getString(R.string.google_sign_in_failed);
+            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+            binding.getRoot().announceForAccessibility(msg);
         }
     }
 
@@ -222,9 +229,13 @@ public class SettingsFragment extends Fragment {
                             binding.getRoot().announceForAccessibility(msg);
                         }))
                 .addOnFailureListener(e -> {
-                    String msg = getString(R.string.delete_account_error, e.getMessage());
-                    Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                    binding.getRoot().announceForAccessibility(msg);
+                    if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                        launchSignInIntent();
+                    } else {
+                        String msg = getString(R.string.delete_account_error, e.getMessage());
+                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                        binding.getRoot().announceForAccessibility(msg);
+                    }
                 });
     }
 
