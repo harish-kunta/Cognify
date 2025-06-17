@@ -4,6 +4,9 @@ import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +24,7 @@ public class SoundManager {
     private final int correctSoundId;
     private final int wrongSoundId;
     private final Context context;
+    private final Vibrator vibrator;
 
     // Track when each sound has finished loading
     private final Map<Integer, Boolean> loadedMap = new HashMap<>();
@@ -28,6 +32,7 @@ public class SoundManager {
 
     private SoundManager(Context context) {
         this.context = context.getApplicationContext();
+        vibrator = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
         AudioAttributes attrs = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -57,6 +62,7 @@ public class SoundManager {
                 loadedMap.put(sampleId, true);
                 if (pendingSounds.remove(sampleId)) {
                     sp.play(sampleId, 1f, 1f, 0, 0, 1f);
+                    triggerHaptic();
                 }
             }
         });
@@ -94,6 +100,7 @@ public class SoundManager {
         Boolean isLoaded = loadedMap.get(soundId);
         if (isLoaded != null && isLoaded) {
             soundPool.play(soundId, 1f, 1f, 0, 0, 1f);
+            triggerHaptic();
         } else {
             pendingSounds.add(soundId);
         }
@@ -103,6 +110,23 @@ public class SoundManager {
         SharedPreferences prefs = context.getSharedPreferences(
                 Constants.PREF_APP, Context.MODE_PRIVATE);
         return prefs.getBoolean(Constants.PREF_SOUND_ENABLED, true);
+    }
+
+    private boolean isHapticsEnabled() {
+        SharedPreferences prefs = context.getSharedPreferences(
+                Constants.PREF_APP, Context.MODE_PRIVATE);
+        return prefs.getBoolean(Constants.PREF_HAPTICS_ENABLED, true);
+    }
+
+    private void triggerHaptic() {
+        if (vibrator == null || !vibrator.hasVibrator()) return;
+        if (!isHapticsEnabled()) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(40,
+                    VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(40);
+        }
     }
 
     public void release() {
