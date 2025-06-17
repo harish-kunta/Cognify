@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import de.hdodenhof.circleimageview.CircleImageView;
 import android.widget.TextView;
 import android.util.Base64;
 import android.graphics.Bitmap;
@@ -49,7 +50,7 @@ public class ProfileFragment extends Fragment {
     private Button inviteFriendsButton;
     private Button shareStreakButton;
     private Button trophyRoomButton;
-    private ImageView profileAvatar;
+    private CircleImageView profileAvatar;
 
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;

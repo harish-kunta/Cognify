@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import de.hdodenhof.circleimageview.CircleImageView;
 import android.widget.TextView;
 import android.util.Base64;
 import android.graphics.Bitmap;
@@ -50,7 +51,7 @@ public class WordDashFragment extends Fragment {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private ListenerRegistration homeListener;
-    private ImageView userProfileButton;
+    private CircleImageView userProfileButton;
     private TutorialHelper tutorialHelper;
 
     @Nullable

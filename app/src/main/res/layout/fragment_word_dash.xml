@@ -52,15 +52,14 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/currentUserAvatar"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_avatar"
-                android:layout_weight="1"
-                 />
+                android:layout_weight="1" />
         </LinearLayout>
 
             <LinearLayout
