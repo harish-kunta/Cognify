@@ -58,6 +58,7 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         prefs = requireActivity().getSharedPreferences(Constants.PREF_APP, 0);
+        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(requireContext());
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -93,6 +94,7 @@ public class SettingsFragment extends Fragment {
 
         binding.animationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean(KEY_ANIMATIONS_ENABLED, isChecked).apply();
+                com.gigamind.cognify.util.AnimatorProvider.setAnimationsEnabled(isChecked);
                 SoundManager.getInstance(requireContext()).playToggle();
         });
 

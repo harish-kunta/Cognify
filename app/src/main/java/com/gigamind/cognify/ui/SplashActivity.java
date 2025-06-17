@@ -32,7 +32,8 @@ public class SplashActivity extends AppCompatActivity {
         // Disable heavy animations on low memory devices
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
-        boolean animationsEnabled = prefs.getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
+        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(this);
+        boolean animationsEnabled = com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled();
         if (!animationsEnabled || (am != null && am.isLowRamDevice())) {
             binding.splashAnimation.cancelAnimation();
             binding.splashAnimation.setVisibility(View.GONE);

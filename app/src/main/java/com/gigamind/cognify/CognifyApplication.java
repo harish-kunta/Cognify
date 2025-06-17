@@ -43,6 +43,7 @@ public class CognifyApplication extends Application {
         boolean darkMode = themePrefs.getBoolean(Constants.PREF_DARK_MODE_ENABLED, false);
         AppCompatDelegate.setDefaultNightMode(darkMode ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(this);
 
         Thread.UncaughtExceptionHandler previousHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
