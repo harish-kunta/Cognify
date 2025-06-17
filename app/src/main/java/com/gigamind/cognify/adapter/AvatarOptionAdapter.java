@@ -18,10 +18,20 @@ public class AvatarOptionAdapter extends RecyclerView.Adapter<AvatarOptionAdapte
         void onOptionClicked(int resId);
     }
 
-    private final List<Integer> items;
+    public static class AvatarOption {
+        public final int iconResId;
+        public final int applyResId;
+
+        public AvatarOption(int iconResId, int applyResId) {
+            this.iconResId = iconResId;
+            this.applyResId = applyResId;
+        }
+    }
+
+    private final List<AvatarOption> items;
     private final OnOptionClickListener listener;
 
-    public AvatarOptionAdapter(List<Integer> items, OnOptionClickListener listener) {
+    public AvatarOptionAdapter(List<AvatarOption> items, OnOptionClickListener listener) {
         this.items = items;
         this.listener = listener;
     }
@@ -36,11 +46,11 @@ public class AvatarOptionAdapter extends RecyclerView.Adapter<AvatarOptionAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int resId = items.get(position);
-        holder.imageView.setImageResource(resId);
+        AvatarOption option = items.get(position);
+        holder.imageView.setImageResource(option.iconResId);
         holder.imageView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onOptionClicked(resId);
+                listener.onOptionClicked(option.applyResId);
             }
         });
     }

@@ -32,14 +32,12 @@
             android:id="@+id/accessoriesView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/acc_earphones"
             android:scaleType="centerInside" />
 
         <ImageView
             android:id="@+id/facialHairView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/facialhair_magnum"
             android:scaleType="centerInside" />
 
         <ImageView
@@ -67,7 +65,6 @@
             android:id="@+id/glassesView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/glasses_rambo"
             android:scaleType="centerInside" />
 
         <ImageView
@@ -81,7 +78,6 @@
             android:id="@+id/tattooView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/tattoo_harry"
             android:scaleType="centerInside" />
     </FrameLayout>
 
