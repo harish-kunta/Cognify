@@ -9,13 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import android.widget.TextView;
-import android.util.Base64;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
@@ -28,6 +23,7 @@ import com.gigamind.cognify.databinding.FragmentWordDashBinding;
 import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.util.TutorialHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
@@ -121,16 +117,7 @@ public class WordDashFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        String stored = userRepository.getProfilePicture();
-        if (stored != null && !stored.isEmpty()) {
-            if (stored.startsWith("http")) {
-                Glide.with(this).load(stored).into(userProfileButton);
-            } else {
-                byte[] bytes = Base64.decode(stored, Base64.DEFAULT);
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                userProfileButton.setImageBitmap(bmp);
-            }
-        }
+        AvatarLoader.load(userRepository, userProfileButton);
     }
 
     /**

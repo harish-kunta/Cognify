@@ -11,10 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import android.widget.TextView;
-import android.util.Base64;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +20,7 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.util.UserFields;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -158,13 +155,7 @@ public class ProfileFragment extends Fragment {
                             String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
                             winRateValue.setText(rate);
                             if (encodedPic != null && !encodedPic.isEmpty()) {
-                                if (encodedPic.startsWith("http")) {
-                                    Glide.with(ProfileFragment.this).load(encodedPic).into(profileAvatar);
-                                } else {
-                                    byte[] bytes = Base64.decode(encodedPic, Base64.DEFAULT);
-                                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                    profileAvatar.setImageBitmap(bmp);
-                                }
+                                AvatarLoader.load(userRepository, profileAvatar);
                             }
                         });
                     }
@@ -230,16 +221,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        String stored = userRepository.getProfilePicture();
-        if (stored != null && !stored.isEmpty()) {
-            if (stored.startsWith("http")) {
-                Glide.with(this).load(stored).into(profileAvatar);
-            } else {
-                byte[] bytes = Base64.decode(stored, Base64.DEFAULT);
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                profileAvatar.setImageBitmap(bmp);
-            }
-        }
+        AvatarLoader.load(userRepository, profileAvatar);
     }
 
     @Override
