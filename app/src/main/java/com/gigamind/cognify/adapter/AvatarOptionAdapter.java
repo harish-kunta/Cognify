@@ -1,12 +1,16 @@
 package com.gigamind.cognify.adapter;
 
+import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.card.MaterialCardView;
 
 import com.gigamind.cognify.R;
 
@@ -30,6 +34,7 @@ public class AvatarOptionAdapter extends RecyclerView.Adapter<AvatarOptionAdapte
 
     private final List<AvatarOption> items;
     private final OnOptionClickListener listener;
+    private int selectedPosition = RecyclerView.NO_POSITION;
 
     public AvatarOptionAdapter(List<AvatarOption> items, OnOptionClickListener listener) {
         this.items = items;
@@ -48,10 +53,25 @@ public class AvatarOptionAdapter extends RecyclerView.Adapter<AvatarOptionAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AvatarOption option = items.get(position);
         holder.imageView.setImageResource(option.iconResId);
+
+        MaterialCardView card = (MaterialCardView) holder.itemView;
+        if (position == selectedPosition) {
+            card.setStrokeColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.accent));
+            card.setStrokeWidth((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
+                    holder.itemView.getResources().getDisplayMetrics()));
+        } else {
+            card.setStrokeColor(Color.TRANSPARENT);
+            card.setStrokeWidth(0);
+        }
+
         holder.imageView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onOptionClicked(option.applyResId);
             }
+            int previous = selectedPosition;
+            selectedPosition = holder.getAdapterPosition();
+            notifyItemChanged(previous);
+            notifyItemChanged(selectedPosition);
         });
     }
 
