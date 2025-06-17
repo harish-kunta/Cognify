@@ -56,6 +56,6 @@ public class MathGameEngineTest {
         assertFalse(engine.checkAnswer(correct + 1));
 
         assertEquals(10, engine.getScore(true));
-        assertEquals(0, engine.getScore(false));
+        assertEquals(-5, engine.getScore(false));
     }
 }
