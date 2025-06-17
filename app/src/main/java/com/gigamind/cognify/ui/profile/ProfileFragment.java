@@ -225,19 +225,66 @@ public class ProfileFragment extends Fragment {
 
         switch (skin) {
             case 0:
-                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_light));
+                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_very_light));
                 break;
             case 1:
-                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_medium));
+                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_light));
                 break;
             case 2:
+                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_medium));
+                break;
+            case 3:
                 avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_dark));
+                break;
+            case 4:
+                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_very_dark));
                 break;
         }
 
-        avatarHair.setImageResource(hair == 0 ? R.drawable.avatar_hair_1 : R.drawable.avatar_hair_2);
-        avatarEyes.setImageResource(eyes == 0 ? R.drawable.avatar_eyes_1 : R.drawable.avatar_eyes_2);
-        avatarMouth.setImageResource(mouth == 0 ? R.drawable.avatar_mouth_1 : R.drawable.avatar_mouth_2);
+        switch (hair) {
+            case 0:
+                avatarHair.setImageResource(R.drawable.avatar_hair_1);
+                break;
+            case 1:
+                avatarHair.setImageResource(R.drawable.avatar_hair_2);
+                break;
+            case 2:
+                avatarHair.setImageResource(R.drawable.avatar_hair_3);
+                break;
+            case 3:
+                avatarHair.setImageResource(R.drawable.avatar_hair_4);
+                break;
+        }
+
+        switch (eyes) {
+            case 0:
+                avatarEyes.setImageResource(R.drawable.avatar_eyes_1);
+                break;
+            case 1:
+                avatarEyes.setImageResource(R.drawable.avatar_eyes_2);
+                break;
+            case 2:
+                avatarEyes.setImageResource(R.drawable.avatar_eyes_3);
+                break;
+            case 3:
+                avatarEyes.setImageResource(R.drawable.avatar_eyes_4);
+                break;
+        }
+
+        switch (mouth) {
+            case 0:
+                avatarMouth.setImageResource(R.drawable.avatar_mouth_1);
+                break;
+            case 1:
+                avatarMouth.setImageResource(R.drawable.avatar_mouth_2);
+                break;
+            case 2:
+                avatarMouth.setImageResource(R.drawable.avatar_mouth_3);
+                break;
+            case 3:
+                avatarMouth.setImageResource(R.drawable.avatar_mouth_4);
+                break;
+        }
     }
 
     @Override
