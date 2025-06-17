@@ -50,9 +50,7 @@
                 android:layout_weight="8"
                 android:gravity="center"
                 android:text="@string/settings"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                style="@style/TextAppearance.Title" />
 
             <ImageView
                 android:id="@+id/settingsIcon"

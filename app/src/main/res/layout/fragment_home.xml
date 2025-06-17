@@ -50,9 +50,7 @@
                 android:layout_weight="8"
                 android:gravity="center"
                 android:text="@string/home"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                style="@style/TextAppearance.Title" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/currentUserAvatar"

@@ -23,9 +23,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/leaderboards"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            style="@style/TextAppearance.Title" />
 
     </LinearLayout>
 
