@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ImageView;
+import de.hdodenhof.circleimageview.CircleImageView;
 import android.util.Base64;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
     private TextView questTitle;
     private TextView questDescription;
     private TextView questReward;
-    private ImageView currentUserAvatar;
+    private CircleImageView currentUserAvatar;
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;

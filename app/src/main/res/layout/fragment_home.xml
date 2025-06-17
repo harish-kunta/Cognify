@@ -54,7 +54,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/currentUserAvatar"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
