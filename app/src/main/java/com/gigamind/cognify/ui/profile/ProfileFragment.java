@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.util.Base64;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,7 +48,7 @@ public class ProfileFragment extends Fragment {
     private Button inviteFriendsButton;
     private Button shareStreakButton;
     private Button trophyRoomButton;
-    private Button avatarButton;
+    private ImageView profileAvatar;
 
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -79,7 +81,7 @@ public class ProfileFragment extends Fragment {
         inviteFriendsButton = view.findViewById(R.id.inviteFriendsButton);
         trophyRoomButton        = view.findViewById(R.id.trophyRoomButton);
         shareStreakButton       = view.findViewById(R.id.shareStreakButton);
-        avatarButton = view.findViewById(R.id.avatarButton);
+        profileAvatar           = view.findViewById(R.id.profileAvatar);
 
         // 2) Initialize FirebaseUser & UserRepository
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
@@ -87,6 +89,9 @@ public class ProfileFragment extends Fragment {
 
         // 3) Populate static profile info (name, email, joined date)
         populateUserInfo();
+
+        // Load avatar initially
+        loadAvatar();
 
         // 4) Set up “overview” tiles (streak & XP) via real-time listener
         attachRealtimeOverviewListener();
@@ -139,6 +144,7 @@ public class ProfileFragment extends Fragment {
                     final int games = userRepository.getTotalGames();
                     final int wins = userRepository.getTotalWins();
                     final int losses = userRepository.getTotalLosses();
+                    final String encodedPic = userRepository.getProfilePicture();
 
                     // Always update UI on main thread
                     if (getActivity() != null) {
@@ -149,6 +155,11 @@ public class ProfileFragment extends Fragment {
                             int total = wins + losses;
                             String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
                             winRateValue.setText(rate);
+                            if (encodedPic != null && !encodedPic.isEmpty()) {
+                                byte[] bytes = Base64.decode(encodedPic, Base64.DEFAULT);
+                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                profileAvatar.setImageBitmap(bmp);
+                            }
                         });
                     }
                 }
@@ -166,6 +177,7 @@ public class ProfileFragment extends Fragment {
             int total = wins + losses;
             String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
             winRateValue.setText(rate);
+            loadAvatar();
         }
     }
 
@@ -199,7 +211,7 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.trophy.TrophyRoomActivity.class);
             startActivity(intent);
         });
-        avatarButton.setOnClickListener(v -> {
+        profileAvatar.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.avatar.AvatarMakerActivity.class);
             startActivity(intent);
         });
@@ -208,6 +220,16 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        loadAvatar();
+    }
+
+    private void loadAvatar() {
+        String encoded = userRepository.getProfilePicture();
+        if (encoded != null && !encoded.isEmpty()) {
+            byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            profileAvatar.setImageBitmap(bmp);
+        }
     }
 
     @Override
