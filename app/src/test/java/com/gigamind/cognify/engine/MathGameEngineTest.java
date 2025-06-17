@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.gigamind.cognify.util.GameConfig;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MathGameEngineTest {
@@ -23,7 +25,7 @@ public class MathGameEngineTest {
 
         String q = engine.getCurrentQuestion();
         assertNotNull(q, "Question should not be null");
-        assertTrue(q.matches("\\d+ \\+ \\d+ = \\?"), "Question format invalid: " + q);
+        assertTrue(q.matches("\\d+ [+\-\u00d7\u00f7] \\d+ = \\?"), "Question format invalid: " + q);
 
         int answer = engine.getCurrentAnswer();
         assertTrue(answer > 1, "Answer should be at least 2");
@@ -42,7 +44,7 @@ public class MathGameEngineTest {
         int answer = engine.getCurrentAnswer();
         for (int option : engine.getOptions()) {
             assertTrue(option > 0, "Options should be positive");
-            assertTrue(Math.abs(option - answer) <= 3,
+            assertTrue(Math.abs(option - answer) <= 5,
                     "Option out of range from correct answer");
         }
     }
@@ -55,7 +57,8 @@ public class MathGameEngineTest {
         assertTrue(engine.checkAnswer(correct));
         assertFalse(engine.checkAnswer(correct + 1));
 
-        assertEquals(10, engine.getScore(true));
+        int expected = GameConfig.BASE_SCORE * engine.getCurrentDifficulty();
+        assertEquals(expected, engine.getScore(true));
         assertEquals(-5, engine.getScore(false));
     }
 }

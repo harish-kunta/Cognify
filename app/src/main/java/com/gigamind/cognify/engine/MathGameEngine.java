@@ -5,11 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import com.gigamind.cognify.util.GameConfig;
+
 public class MathGameEngine {
     private final Random random;
     private int currentAnswer;
     private String currentQuestion;
     private List<Integer> currentOptions;
+    private int currentDifficulty;
 
     public MathGameEngine() {
         random = new Random();
@@ -29,21 +32,25 @@ public class MathGameEngine {
                 }
                 currentAnswer = a - b;
                 currentQuestion = a + " - " + b + " = ?";
+                currentDifficulty = 1; // subtraction
                 break;
             case 2:
                 a = random.nextInt(10) + 1;
                 b = random.nextInt(10) + 1;
                 currentAnswer = a * b;
                 currentQuestion = a + " × " + b + " = ?";
+                currentDifficulty = 2; // multiplication
                 break;
             case 3:
                 currentAnswer = a;
                 int prod = a * b;
                 currentQuestion = prod + " ÷ " + b + " = ?";
+                currentDifficulty = 3; // division
                 break;
             default:
                 currentAnswer = a + b;
                 currentQuestion = a + " + " + b + " = ?";
+                currentDifficulty = 1; // addition
         }
         generateOptions();
     }
@@ -76,7 +83,14 @@ public class MathGameEngine {
     }
 
     public int getScore(boolean correct) {
-        return correct ? 10 : -5;
+        if (!correct) {
+            return -5;
+        }
+        return GameConfig.BASE_SCORE * currentDifficulty;
+    }
+
+    public int getCurrentDifficulty() {
+        return currentDifficulty;
     }
 
     public int getCurrentAnswer() {
