@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.util.Base64;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
@@ -118,11 +119,15 @@ public class WordDashFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        String encoded = userRepository.getProfilePicture();
-        if (encoded != null && !encoded.isEmpty()) {
-            byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            userProfileButton.setImageBitmap(bmp);
+        String stored = userRepository.getProfilePicture();
+        if (stored != null && !stored.isEmpty()) {
+            if (stored.startsWith("http")) {
+                Glide.with(this).load(stored).into(userProfileButton);
+            } else {
+                byte[] bytes = Base64.decode(stored, Base64.DEFAULT);
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                userProfileButton.setImageBitmap(bmp);
+            }
         }
     }
 

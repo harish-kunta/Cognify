@@ -415,13 +415,37 @@ public class UserRepository {
         return prefs.getInt(KEY_LOSSES, 0);
     }
 
-    public void saveProfilePicture(String base64Image) {
-        prefs.edit().putString(KEY_PROFILE_PICTURE, base64Image).apply();
+    public com.google.android.gms.tasks.Task<Void> saveProfilePicture(android.graphics.Bitmap bitmap) {
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
 
         if (firebaseService.isUserSignedIn()) {
-            Map<String, Object> data = new HashMap<>();
-            data.put(UserFields.FIELD_PROFILE_PICTURE, base64Image);
-            firebaseService.updateUserData(data);
+            String uid = firebaseService.getCurrentUserId();
+            if (uid == null) return com.google.android.gms.tasks.Tasks.forResult(null);
+
+            com.google.firebase.storage.StorageReference ref = firebaseService.getStorage()
+                    .getReference()
+                    .child("profilePictures")
+                    .child(uid + ".png");
+
+            return ref.putBytes(data)
+                    .continueWithTask(task -> {
+                        if (!task.isSuccessful()) throw task.getException();
+                        return ref.getDownloadUrl();
+                    })
+                    .continueWithTask(urlTask -> {
+                        if (!urlTask.isSuccessful()) throw urlTask.getException();
+                        String url = urlTask.getResult().toString();
+                        prefs.edit().putString(KEY_PROFILE_PICTURE, url).apply();
+                        Map<String, Object> map = new HashMap<>();
+                        map.put(UserFields.FIELD_PROFILE_PICTURE, url);
+                        return firebaseService.updateUserData(map);
+                    });
+        } else {
+            String encoded = android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT);
+            prefs.edit().putString(KEY_PROFILE_PICTURE, encoded).apply();
+            return com.google.android.gms.tasks.Tasks.forResult(null);
         }
     }
 

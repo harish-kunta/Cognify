@@ -48,6 +48,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-crashlytics")
+    implementation(libs.firebase.storage)
     
     // Lottie for animations
     implementation("com.airbnb.android:lottie:6.4.0")
@@ -68,6 +69,7 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.firebase.ai)
     implementation(libs.circleimageview)
+    implementation(libs.glide)
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
     testImplementation(libs.junit)
