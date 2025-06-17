@@ -17,8 +17,7 @@ public class TutorialHelper {
      * Returns true if the user already completed the tutorial.
      */
     public boolean isTutorialCompleted() {
-        return false;
-        //return prefs.getBoolean(Constants.PREF_TUTORIAL_COMPLETED, false);
+        return prefs.getBoolean(Constants.PREF_TUTORIAL_COMPLETED, false);
     }
 
     /**
