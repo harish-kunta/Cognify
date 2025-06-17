@@ -1,6 +1,8 @@
 // file: com/gigamind/cognify/util/AnimationUtils.java
 package com.gigamind.cognify.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
@@ -15,6 +17,7 @@ public final class AnimationUtils {
      * Scale a view up to `scale` then back down to 1f, all in `duration` ms.
      */
     public static void pulse(View view, float scale, long duration) {
+        if (!isAnimationsEnabled(view.getContext())) return;
         view.animate()
                 .scaleX(scale)
                 .scaleY(scale)
@@ -36,6 +39,7 @@ public final class AnimationUtils {
      * @param distancePx How far (in pixels) to translate the view.
      */
     public static void shake(View view, float distancePx) {
+        if (!isAnimationsEnabled(view.getContext())) return;
         view.animate()
                 .translationX(distancePx)
                 .setDuration(50)
@@ -64,6 +68,11 @@ public final class AnimationUtils {
      * Fade a view in over `duration` ms. Makes the view visible.
      */
     public static void fadeIn(View view, long duration) {
+        if (!isAnimationsEnabled(view.getContext())) {
+            view.setAlpha(1f);
+            view.setVisibility(View.VISIBLE);
+            return;
+        }
         view.setAlpha(0f);
         view.setVisibility(View.VISIBLE);
         view.animate()
@@ -77,6 +86,11 @@ public final class AnimationUtils {
      * Fade a view out over `duration` ms, then set GONE.
      */
     public static void fadeOut(View view, long duration) {
+        if (!isAnimationsEnabled(view.getContext())) {
+            view.setAlpha(0f);
+            view.setVisibility(View.GONE);
+            return;
+        }
         view.animate()
                 .alpha(0f)
                 .setDuration(duration)
@@ -90,6 +104,11 @@ public final class AnimationUtils {
      * (Useful if you want to chain animations in sequence.)
      */
     public static void fadeInWithDelay(View view, long delayMs, long duration) {
+        if (!isAnimationsEnabled(view.getContext())) {
+            view.setAlpha(1f);
+            view.setVisibility(View.VISIBLE);
+            return;
+        }
         view.setAlpha(0f);
         view.setVisibility(View.VISIBLE);
         view.animate()
@@ -98,5 +117,11 @@ public final class AnimationUtils {
                 .setDuration(duration)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .start();
+    }
+
+    private static boolean isAnimationsEnabled(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(
+                Constants.PREF_APP, Context.MODE_PRIVATE);
+        return prefs.getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
     }
 }
