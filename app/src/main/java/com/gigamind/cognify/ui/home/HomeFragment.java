@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.util.Base64;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +57,7 @@ public class HomeFragment extends Fragment {
     private TextView questTitle;
     private TextView questDescription;
     private TextView questReward;
+    private ImageView currentUserAvatar;
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -87,6 +92,7 @@ public class HomeFragment extends Fragment {
 
         // 1) Populate the streak UI
         loadAndDisplayStreak();
+        loadAvatar();
 
         // 2) Set up daily challenge text
         setupDailyChallenge();
@@ -113,6 +119,7 @@ public class HomeFragment extends Fragment {
         questTitle = binding.questTitle;
         questDescription = binding.questDescription;
         questReward = binding.questReward;
+        currentUserAvatar = binding.currentUserAvatar;
         wordGamePlayButton = binding.wordGameCard.playButton;
         quickMathPlayButton = binding.mathGameCard.playButton;
     }
@@ -141,6 +148,15 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void loadAvatar() {
+        String encoded = userRepository.getProfilePicture();
+        if (encoded != null && !encoded.isEmpty()) {
+            byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            currentUserAvatar.setImageBitmap(bmp);
+        }
     }
 
     /**

@@ -36,6 +36,7 @@ public class UserRepository {
     public static final String KEY_CURRENT_STREAK = UserFields.FIELD_CURRENT_STREAK;
     public static final String KEY_TOTAL_XP = UserFields.FIELD_TOTAL_XP;
     public static final String KEY_PERSONAL_BEST_XP = UserFields.FIELD_PERSONAL_BEST_XP;
+    public static final String KEY_PROFILE_PICTURE = UserFields.FIELD_PROFILE_PICTURE;
     // Additional local-only stats
     public static final String KEY_TOTAL_GAMES = "totalGames";
     public static final String KEY_WINS = "totalWins";
@@ -404,6 +405,20 @@ public class UserRepository {
 
     public int getTotalLosses() {
         return prefs.getInt(KEY_LOSSES, 0);
+    }
+
+    public void saveProfilePicture(String base64Image) {
+        prefs.edit().putString(KEY_PROFILE_PICTURE, base64Image).apply();
+
+        if (firebaseService.isUserSignedIn()) {
+            Map<String, Object> data = new HashMap<>();
+            data.put(UserFields.FIELD_PROFILE_PICTURE, base64Image);
+            firebaseService.updateUserData(data);
+        }
+    }
+
+    public String getProfilePicture() {
+        return prefs.getString(KEY_PROFILE_PICTURE, null);
     }
 
     /**

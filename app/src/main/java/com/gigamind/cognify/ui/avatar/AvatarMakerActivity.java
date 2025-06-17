@@ -1,7 +1,13 @@
 package com.gigamind.cognify.ui.avatar;
 
 import android.os.Bundle;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.util.Base64;
 import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import java.io.ByteArrayOutputStream;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.AvatarOptionAdapter;
+import com.gigamind.cognify.data.repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +31,9 @@ public class AvatarMakerActivity extends AppCompatActivity {
     private ImageView facialHairView;
     private ImageView glassesView;
     private ImageView tattooView;
+    private FrameLayout avatarContainer;
+    private Button saveAvatarButton;
+    private UserRepository userRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,9 @@ public class AvatarMakerActivity extends AppCompatActivity {
         facialHairView = findViewById(R.id.facialHairView);
         glassesView = findViewById(R.id.glassesView);
         tattooView = findViewById(R.id.tattooView);
+        avatarContainer = findViewById(R.id.avatarContainer);
+        saveAvatarButton = findViewById(R.id.saveAvatarButton);
+        userRepository = new UserRepository(this);
 
         RecyclerView hairRecycler = findViewById(R.id.hairRecyclerView);
         RecyclerView eyesRecycler = findViewById(R.id.eyesRecyclerView);
@@ -58,6 +71,7 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 R.drawable.hair_curly,
                 R.drawable.hair_longbob,
                 R.drawable.hair_nottoolong,
+                R.drawable.hair_longhairstraight,
                 R.drawable.hair_longhairstraight2,
                 R.drawable.hair_longhaircurvy
         );
@@ -86,7 +100,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 R.drawable.mouth_twinkle,
                 R.drawable.mouth_tongue,
                 R.drawable.mouth_serious,
-                R.drawable.mouth_grimace
+                R.drawable.mouth_grimace,
+                R.drawable.mouth_scream
         );
         AvatarOptionAdapter mouthAdapter = new AvatarOptionAdapter(mouthOptions, resId ->
                 mouthView.setImageResource(resId));
@@ -136,7 +151,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
         List<Integer> glassesOptions = Arrays.asList(
                 R.drawable.glasses_rambo,
                 R.drawable.glasses_nerd,
-                R.drawable.glasses_fancy
+                R.drawable.glasses_fancy,
+                R.drawable.glasses_old
         );
         AvatarOptionAdapter glassesAdapter = new AvatarOptionAdapter(glassesOptions, resId ->
                 glassesView.setImageResource(resId));
@@ -161,5 +177,17 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 skinView.setImageResource(resId));
         skinRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         skinRecycler.setAdapter(skinAdapter);
+
+        saveAvatarButton.setOnClickListener(v -> {
+            Bitmap bitmap = Bitmap.createBitmap(avatarContainer.getWidth(), avatarContainer.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            avatarContainer.draw(canvas);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            String encoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+
+            userRepository.saveProfilePicture(encoded);
+            finish();
+        });
     }
 }

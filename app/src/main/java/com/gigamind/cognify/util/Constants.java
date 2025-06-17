@@ -52,4 +52,5 @@ public class Constants {
     public static final String AVATAR_FACIAL_HAIR = "avatar_facial_hair";
     public static final String AVATAR_ACCESSORY = "avatar_accessory";
     public static final String AVATAR_FACE_SHAPE = "avatar_face_shape";
+    public static final String USER_PROFILE_PIC = "profile_picture";
 }
