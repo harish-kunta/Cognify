@@ -288,6 +288,9 @@ public class ProfileFragment extends Fragment {
             case 5:
                 avatarHair.setImageResource(R.drawable.avatar_hair_6);
                 break;
+            case 6:
+                avatarHair.setImageResource(R.drawable.avatar_hair_7);
+                break;
         }
 
         switch (eyes) {

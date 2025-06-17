@@ -151,7 +151,8 @@ public class AvatarCustomizationFragment extends Fragment {
                 R.drawable.avatar_hair_3,
                 R.drawable.avatar_hair_4,
                 R.drawable.avatar_hair_5,
-                R.drawable.avatar_hair_6
+                R.drawable.avatar_hair_6,
+                R.drawable.avatar_hair_7
         };
         hairAdapter = new AvatarOptionAdapter(hairOptions, pos -> updatePreview());
         hairRecycler.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -304,6 +305,9 @@ public class AvatarCustomizationFragment extends Fragment {
                 break;
             case 5:
                 hairView.setImageResource(R.drawable.avatar_hair_6);
+                break;
+            case 6:
+                hairView.setImageResource(R.drawable.avatar_hair_7);
                 break;
         }
 
