@@ -179,8 +179,25 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void signIn() {
-        Intent signInIntent = googleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        int status = com.google.android.gms.common.GoogleApiAvailability
+                .getInstance()
+                .isGooglePlayServicesAvailable(this);
+        if (status != com.google.android.gms.common.ConnectionResult.SUCCESS) {
+            String msg = getString(R.string.play_services_required);
+            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+            binding.getRoot().announceForAccessibility(msg);
+            return;
+        }
+
+        try {
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
+        } catch (Exception e) {
+            ExceptionLogger.log("OnboardingActivity", e);
+            String msg = getString(R.string.google_sign_in_failed);
+            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+            binding.getRoot().announceForAccessibility(msg);
+        }
     }
 
     private void continueAsGuest() {

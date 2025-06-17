@@ -177,12 +177,28 @@ public class SettingsFragment extends Fragment {
     }
 
     private void startDeleteFlow() {
+        int status = com.google.android.gms.common.GoogleApiAvailability
+                .getInstance()
+                .isGooglePlayServicesAvailable(requireContext());
+        if (status != com.google.android.gms.common.ConnectionResult.SUCCESS) {
+            String msg = getString(R.string.play_services_required);
+            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+            binding.getRoot().announceForAccessibility(msg);
+            return;
+        }
+
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
         if (account != null && account.getIdToken() != null) {
             reauthenticateAndDelete(account.getIdToken());
         } else {
-            Intent intent = googleSignInClient.getSignInIntent();
-            startActivityForResult(intent, RC_REAUTH);
+            try {
+                Intent intent = googleSignInClient.getSignInIntent();
+                startActivityForResult(intent, RC_REAUTH);
+            } catch (Exception e) {
+                String msg = getString(R.string.google_sign_in_failed);
+                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                binding.getRoot().announceForAccessibility(msg);
+            }
         }
     }
 
