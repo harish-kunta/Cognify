@@ -6,17 +6,25 @@ import java.util.List;
 import java.util.Random;
 
 import com.gigamind.cognify.util.GameConfig;
+import com.gigamind.cognify.engine.scoring.DefaultMathScoreStrategy;
+import com.gigamind.cognify.engine.scoring.MathScoreStrategy;
 
 public class MathGameEngine {
     private final Random random;
+    private final MathScoreStrategy scoreStrategy;
     private int currentAnswer;
     private String currentQuestion;
     private List<Integer> currentOptions;
     private int currentDifficulty;
 
     public MathGameEngine() {
+        this(new DefaultMathScoreStrategy());
+    }
+
+    public MathGameEngine(MathScoreStrategy strategy) {
         random = new Random();
         currentOptions = new ArrayList<>();
+        scoreStrategy = strategy != null ? strategy : new DefaultMathScoreStrategy();
     }
 
     public void generateQuestion() {
@@ -98,15 +106,7 @@ public class MathGameEngine {
     }
 
     public int getScore(boolean correct, long timeMs) {
-        if (!correct) {
-            return -5;
-        }
-        int base = GameConfig.BASE_SCORE * currentDifficulty;
-
-        long clamped = Math.min(timeMs, GameConfig.MAX_RESPONSE_TIME_MS);
-        double factor = 1.0 + (double) (GameConfig.MAX_RESPONSE_TIME_MS - clamped)
-                / GameConfig.MAX_RESPONSE_TIME_MS;
-        return (int) Math.round(base * factor);
+        return scoreStrategy.calculateScore(correct, timeMs, currentDifficulty);
     }
 
     public int getCurrentDifficulty() {
