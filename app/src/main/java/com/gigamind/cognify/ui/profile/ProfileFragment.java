@@ -46,6 +46,7 @@ public class ProfileFragment extends Fragment {
     private Button inviteFriendsButton;
     private Button shareStreakButton;
     private Button trophyRoomButton;
+    private Button avatarButton;
 
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -78,6 +79,7 @@ public class ProfileFragment extends Fragment {
         inviteFriendsButton = view.findViewById(R.id.inviteFriendsButton);
         trophyRoomButton        = view.findViewById(R.id.trophyRoomButton);
         shareStreakButton       = view.findViewById(R.id.shareStreakButton);
+        avatarButton = view.findViewById(R.id.avatarButton);
 
         // 2) Initialize FirebaseUser & UserRepository
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
@@ -195,6 +197,10 @@ public class ProfileFragment extends Fragment {
 
         trophyRoomButton.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.trophy.TrophyRoomActivity.class);
+            startActivity(intent);
+        });
+        avatarButton.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.avatar.AvatarMakerActivity.class);
             startActivity(intent);
         });
     }

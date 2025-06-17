@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp">
+
+    <FrameLayout
+        android:id="@+id/avatarContainer"
+        android:layout_width="200dp"
+        android:layout_height="200dp">
+
+        <ImageView
+            android:id="@+id/skinView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/skin_white"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/eyesView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/eyes_default"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/mouthView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/mouth_smile"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/hairView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/hair_long"
+            android:scaleType="centerInside" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/longHairButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hair_long" />
+
+        <Button
+            android:id="@+id/hairBunButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/hair_bun" />
+    </LinearLayout>
+</LinearLayout>

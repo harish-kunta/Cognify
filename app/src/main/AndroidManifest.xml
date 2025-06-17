@@ -56,6 +56,9 @@
         <activity
             android:name="com.gigamind.cognify.ui.trophy.TrophyRoomActivity"
             android:exported="false" />
+        <activity
+            android:name="com.gigamind.cognify.ui.avatar.AvatarMakerActivity"
+            android:exported="false" />
 
     </application>
 

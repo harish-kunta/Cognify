@@ -349,6 +349,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="@string/trophy_room" />
+            <Button
+                android:id="@+id/avatarButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/customize_avatar" />
 
         </LinearLayout>
 
