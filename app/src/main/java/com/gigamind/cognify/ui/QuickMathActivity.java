@@ -30,6 +30,7 @@ public class QuickMathActivity extends AppCompatActivity {
     private GameAnalytics analytics;
     private long questionStartTime;
     private GameTimer gameTimer;
+    private boolean questionAnswered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,8 @@ public class QuickMathActivity extends AppCompatActivity {
 
     private void nextQuestion() {
         questionStartTime = System.currentTimeMillis();
+        questionAnswered = false;
+        setButtonsEnabled(true);
 
         gameEngine.generateQuestion();
         equationText.setText(gameEngine.getCurrentQuestion());
@@ -107,6 +110,12 @@ public class QuickMathActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(int buttonIndex) {
+        if (questionAnswered) {
+            return;
+        }
+        questionAnswered = true;
+        setButtonsEnabled(false);
+
         int selectedAnswer = Integer.parseInt(answerButtons[buttonIndex].getText().toString());
         boolean isCorrect = gameEngine.checkAnswer(selectedAnswer);
         long timeSpent = System.currentTimeMillis() - questionStartTime;
@@ -156,4 +165,10 @@ public class QuickMathActivity extends AppCompatActivity {
             (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             false);
     }
-} 
+
+    private void setButtonsEnabled(boolean enabled) {
+        for (MaterialButton btn : answerButtons) {
+            btn.setEnabled(enabled);
+        }
+    }
+}
