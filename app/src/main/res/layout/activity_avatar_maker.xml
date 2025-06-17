@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:padding="16dp">
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
 
     <FrameLayout
         android:id="@+id/avatarContainer"
@@ -20,10 +26,24 @@
             android:scaleType="centerInside" />
 
         <ImageView
-            android:id="@+id/eyesView"
+            android:id="@+id/clothesView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/eyes_default"
+            android:src="@drawable/clothes_blazer"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/accessoriesView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/acc_earphones"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/facialHairView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/facialhair_magnum"
             android:scaleType="centerInside" />
 
         <ImageView
@@ -34,10 +54,38 @@
             android:scaleType="centerInside" />
 
         <ImageView
+            android:id="@+id/eyesView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/eyes_default"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/eyebrowsView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/eyebrows_default"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/glassesView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/glasses_rambo"
+            android:scaleType="centerInside" />
+
+        <ImageView
             android:id="@+id/hairView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/hair_long"
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/tattooView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/tattoo_harry"
             android:scaleType="centerInside" />
     </FrameLayout>
 
@@ -72,4 +120,52 @@
         android:layout_marginTop="8dp"
         android:scrollbars="horizontal"
         tools:listitem="@layout/item_avatar_option" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/accessoriesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/clothesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/eyebrowsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/facialHairRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/glassesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tattooRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
 </LinearLayout>
+</ScrollView>
