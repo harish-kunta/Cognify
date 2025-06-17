@@ -237,6 +237,7 @@ public class ProfileFragment extends Fragment {
         int ears = prefs.getInt(Constants.AVATAR_EARS, 0);
         int facial = prefs.getInt(Constants.AVATAR_FACIAL_HAIR, 0);
         int accessory = prefs.getInt(Constants.AVATAR_ACCESSORY, 0);
+        int faceShape = prefs.getInt(Constants.AVATAR_FACE_SHAPE, 0);
 
         switch (skin) {
             case 0:
@@ -253,6 +254,18 @@ public class ProfileFragment extends Fragment {
                 break;
             case 4:
                 avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_very_dark));
+                break;
+        }
+
+        switch (faceShape) {
+            case 0:
+                avatarFace.setImageResource(R.drawable.avatar_face);
+                break;
+            case 1:
+                avatarFace.setImageResource(R.drawable.avatar_face_square);
+                break;
+            case 2:
+                avatarFace.setImageResource(R.drawable.avatar_face_oval);
                 break;
         }
 

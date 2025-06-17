@@ -20,6 +20,13 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/avatar_body_1" />
 
+            <!-- Place ears behind the face so they appear attached -->
+            <ImageView
+                android:id="@+id/earsView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/avatar_ears_1" />
+
             <ImageView
                 android:id="@+id/faceView"
                 android:layout_width="match_parent"
@@ -51,12 +58,6 @@
                 android:src="@drawable/avatar_nose_1" />
 
             <ImageView
-                android:id="@+id/earsView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/avatar_ears_1" />
-
-            <ImageView
                 android:id="@+id/facialHairView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -79,6 +80,22 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/skinRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/face_shape"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/faceShapeRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

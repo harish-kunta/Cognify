@@ -80,6 +80,13 @@
                 android:layout_height="72dp"
                 android:layout_gravity="center">
 
+                <!-- Ears should appear behind the face -->
+                <ImageView
+                    android:id="@+id/avatarEars"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/avatar_ears_1" />
+
                 <ImageView
                     android:id="@+id/avatarFace"
                     android:layout_width="match_parent"
@@ -115,12 +122,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/avatar_nose_1" />
-
-                <ImageView
-                    android:id="@+id/avatarEars"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/avatar_ears_1" />
 
                 <ImageView
                     android:id="@+id/avatarFacialHair"

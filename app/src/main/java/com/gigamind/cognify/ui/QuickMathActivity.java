@@ -31,6 +31,8 @@ public class QuickMathActivity extends AppCompatActivity {
     private long questionStartTime;
     private GameTimer gameTimer;
     private boolean questionAnswered;
+    private long timeRemaining;
+    private long pauseTimestamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class QuickMathActivity extends AppCompatActivity {
         // Initialize game
         gameEngine = new MathGameEngine();
         currentScore = 0;
+        timeRemaining = GameConfig.QUICK_MATH_DURATION_MS;
 
         // Set up click listeners for answer buttons
         for (int i = 0; i < answerButtons.length; i++) {
@@ -91,21 +94,23 @@ public class QuickMathActivity extends AppCompatActivity {
 
     private void startGameTimer() {
         gameTimer = new GameTimer.Builder()
-                .duration(GameConfig.QUICK_MATH_DURATION_MS)
+                .duration(timeRemaining)
                 .tickInterval(1000)
                 .listener(new GameTimer.Listener() {
                     @Override
                     public void onTick(long millisRemaining) {
+                        timeRemaining = millisRemaining;
                         timerText.setText(String.valueOf(millisRemaining / 1000));
                     }
 
                     @Override
                     public void onFinish() {
+                        timeRemaining = 0;
                         endGame();
                     }
                 })
                 .build();
-        timerText.setText(String.valueOf(GameConfig.QUICK_MATH_DURATION_MS / 1000));
+        timerText.setText(String.valueOf(timeRemaining / 1000));
         gameTimer.start();
     }
 
@@ -142,7 +147,11 @@ public class QuickMathActivity extends AppCompatActivity {
     }
 
     private void endGame() {
-        if (gameTimer != null) gameTimer.stop();
+        if (gameTimer != null) {
+            gameTimer.stop();
+            gameTimer = null;
+        }
+        timeRemaining = 0;
         analytics.logGameEnd(GameType.MATH,
             currentScore,
             (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
@@ -159,11 +168,29 @@ public class QuickMathActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (gameTimer != null) gameTimer.stop();
+        if (gameTimer != null) {
+            gameTimer.stop();
+            gameTimer = null;
+        }
+        pauseTimestamp = System.currentTimeMillis();
         analytics.logGameEnd(GameType.MATH,
             currentScore,
             (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (timeRemaining > 0 && gameTimer == null) {
+            // Adjust question start time to exclude paused duration
+            if (pauseTimestamp > 0) {
+                long pausedFor = System.currentTimeMillis() - pauseTimestamp;
+                questionStartTime += pausedFor;
+                pauseTimestamp = 0;
+            }
+            startGameTimer();
+        }
     }
 
     private void setButtonsEnabled(boolean enabled) {
