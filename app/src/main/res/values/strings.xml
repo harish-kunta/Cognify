@@ -219,6 +219,10 @@
     <string name="tutorial_got_it">Start Game</string>
     <string name="tutorial_skip">Skip Tutorial</string>
 
+    <!-- Quick Math tutorial strings -->
+    <string name="math_tutorial_step_equation">Solve the equation shown here.</string>
+    <string name="math_tutorial_step_options">Tap an option to answer.</string>
+
     <string name="loading_dictionary">Loading words...</string>
     <string name="dictionary_loaded">Words ready</string>
 
