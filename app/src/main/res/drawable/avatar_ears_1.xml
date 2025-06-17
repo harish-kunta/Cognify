@@ -3,6 +3,7 @@
     android:height="100dp"
     android:viewportWidth="100"
     android:viewportHeight="100">
-    <path android:fillColor="#FFC107" android:pathData="M20,40 a5,8 0 1 0 0.1,0"/>
-    <path android:fillColor="#FFC107" android:pathData="M80,40 a5,8 0 1 0 0.1,0"/>
+    <!-- Move ears closer to the edge of the head -->
+    <path android:fillColor="#FFC107" android:pathData="M5,40 a5,8 0 1 0 0.1,0"/>
+    <path android:fillColor="#FFC107" android:pathData="M95,40 a5,8 0 1 0 0.1,0"/>
 </vector>
