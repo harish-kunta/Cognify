@@ -101,19 +101,19 @@ public class AvatarCustomizationFragment extends Fragment {
 
         ArrayAdapter<String> hairAdapter = new ArrayAdapter<>(requireContext(),
                 R.layout.spinner_item_white,
-                new String[]{"Style 1", "Style 2", "Style 3", "Style 4"});
+                new String[]{"Style 1", "Style 2", "Style 3", "Style 4", "Style 5", "Style 6"});
         hairAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_white);
         hairSpinner.setAdapter(hairAdapter);
 
         ArrayAdapter<String> eyesAdapter = new ArrayAdapter<>(requireContext(),
                 R.layout.spinner_item_white,
-                new String[]{"Eyes 1", "Eyes 2", "Eyes 3", "Eyes 4"});
+                new String[]{"Eyes 1", "Eyes 2", "Eyes 3", "Eyes 4", "Eyes 5", "Eyes 6"});
         eyesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_white);
         eyesSpinner.setAdapter(eyesAdapter);
 
         ArrayAdapter<String> mouthAdapter = new ArrayAdapter<>(requireContext(),
                 R.layout.spinner_item_white,
-                new String[]{"Mouth 1", "Mouth 2", "Mouth 3", "Mouth 4"});
+                new String[]{"Mouth 1", "Mouth 2", "Mouth 3", "Mouth 4", "Mouth 5", "Mouth 6"});
         mouthAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_white);
         mouthSpinner.setAdapter(mouthAdapter);
     }
@@ -163,6 +163,12 @@ public class AvatarCustomizationFragment extends Fragment {
             case 3:
                 hairView.setImageResource(R.drawable.avatar_hair_4);
                 break;
+            case 4:
+                hairView.setImageResource(R.drawable.avatar_hair_5);
+                break;
+            case 5:
+                hairView.setImageResource(R.drawable.avatar_hair_6);
+                break;
         }
 
         switch (eyesSpinner.getSelectedItemPosition()) {
@@ -178,6 +184,12 @@ public class AvatarCustomizationFragment extends Fragment {
             case 3:
                 eyesView.setImageResource(R.drawable.avatar_eyes_4);
                 break;
+            case 4:
+                eyesView.setImageResource(R.drawable.avatar_eyes_5);
+                break;
+            case 5:
+                eyesView.setImageResource(R.drawable.avatar_eyes_6);
+                break;
         }
 
         switch (mouthSpinner.getSelectedItemPosition()) {
@@ -192,6 +204,12 @@ public class AvatarCustomizationFragment extends Fragment {
                 break;
             case 3:
                 mouthView.setImageResource(R.drawable.avatar_mouth_4);
+                break;
+            case 4:
+                mouthView.setImageResource(R.drawable.avatar_mouth_5);
+                break;
+            case 5:
+                mouthView.setImageResource(R.drawable.avatar_mouth_6);
                 break;
         }
     }

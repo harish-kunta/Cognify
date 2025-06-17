@@ -254,6 +254,12 @@ public class ProfileFragment extends Fragment {
             case 3:
                 avatarHair.setImageResource(R.drawable.avatar_hair_4);
                 break;
+            case 4:
+                avatarHair.setImageResource(R.drawable.avatar_hair_5);
+                break;
+            case 5:
+                avatarHair.setImageResource(R.drawable.avatar_hair_6);
+                break;
         }
 
         switch (eyes) {
@@ -269,6 +275,12 @@ public class ProfileFragment extends Fragment {
             case 3:
                 avatarEyes.setImageResource(R.drawable.avatar_eyes_4);
                 break;
+            case 4:
+                avatarEyes.setImageResource(R.drawable.avatar_eyes_5);
+                break;
+            case 5:
+                avatarEyes.setImageResource(R.drawable.avatar_eyes_6);
+                break;
         }
 
         switch (mouth) {
@@ -283,6 +295,12 @@ public class ProfileFragment extends Fragment {
                 break;
             case 3:
                 avatarMouth.setImageResource(R.drawable.avatar_mouth_4);
+                break;
+            case 4:
+                avatarMouth.setImageResource(R.drawable.avatar_mouth_5);
+                break;
+            case 5:
+                avatarMouth.setImageResource(R.drawable.avatar_mouth_6);
                 break;
         }
     }
