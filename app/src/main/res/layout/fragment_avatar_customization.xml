@@ -89,6 +89,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="@string/face_shape"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/faceShapeRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/hair_style"
             android:textColor="@color/text_primary"
             android:textStyle="bold" />

@@ -36,6 +36,7 @@ public class AvatarCustomizationFragment extends Fragment {
     private ImageView facialHairView;
     private ImageView accessoryView;
 
+    private RecyclerView faceShapeRecycler;
     private RecyclerView skinRecycler;
     private RecyclerView hairRecycler;
     private RecyclerView eyesRecycler;
@@ -55,6 +56,7 @@ public class AvatarCustomizationFragment extends Fragment {
     private AvatarOptionAdapter earsAdapter;
     private AvatarOptionAdapter facialHairAdapter;
     private AvatarOptionAdapter accessoryAdapter;
+    private AvatarOptionAdapter faceShapeAdapter;
     private SharedPreferences prefs;
 
     private static final String KEY_SKIN = Constants.AVATAR_SKIN;
@@ -66,6 +68,7 @@ public class AvatarCustomizationFragment extends Fragment {
     private static final String KEY_EARS = Constants.AVATAR_EARS;
     private static final String KEY_FACIAL_HAIR = Constants.AVATAR_FACIAL_HAIR;
     private static final String KEY_ACCESSORY = Constants.AVATAR_ACCESSORY;
+    private static final String KEY_FACE_SHAPE = Constants.AVATAR_FACE_SHAPE;
 
     @Nullable
     @Override
@@ -88,6 +91,7 @@ public class AvatarCustomizationFragment extends Fragment {
         earsView = view.findViewById(R.id.earsView);
         facialHairView = view.findViewById(R.id.facialHairView);
         accessoryView = view.findViewById(R.id.accessoryView);
+        faceShapeRecycler = view.findViewById(R.id.faceShapeRecycler);
 
         skinRecycler = view.findViewById(R.id.skinRecycler);
         hairRecycler = view.findViewById(R.id.hairRecycler);
@@ -114,6 +118,7 @@ public class AvatarCustomizationFragment extends Fragment {
                     .putInt(KEY_EARS, earsAdapter.getSelectedIndex())
                     .putInt(KEY_FACIAL_HAIR, facialHairAdapter.getSelectedIndex())
                     .putInt(KEY_ACCESSORY, accessoryAdapter.getSelectedIndex())
+                    .putInt(KEY_FACE_SHAPE, faceShapeAdapter.getSelectedIndex())
                     .apply();
             requireActivity().onBackPressed();
         });
@@ -130,6 +135,15 @@ public class AvatarCustomizationFragment extends Fragment {
         skinAdapter = new AvatarOptionAdapter(skinOptions, pos -> updatePreview());
         skinRecycler.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         skinRecycler.setAdapter(skinAdapter);
+
+        int[] faceShapeOptions = {
+                R.drawable.avatar_face,
+                R.drawable.avatar_face_square,
+                R.drawable.avatar_face_oval
+        };
+        faceShapeAdapter = new AvatarOptionAdapter(faceShapeOptions, pos -> updatePreview());
+        faceShapeRecycler.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        faceShapeRecycler.setAdapter(faceShapeAdapter);
 
         int[] hairOptions = {
                 R.drawable.avatar_hair_1,
@@ -223,6 +237,7 @@ public class AvatarCustomizationFragment extends Fragment {
         int ears = prefs.getInt(KEY_EARS, 0);
         int facial = prefs.getInt(KEY_FACIAL_HAIR, 0);
         int accessory = prefs.getInt(KEY_ACCESSORY, 0);
+        int faceShape = prefs.getInt(KEY_FACE_SHAPE, 0);
 
         skinAdapter.setSelectedIndex(skin);
         hairAdapter.setSelectedIndex(hair);
@@ -233,6 +248,7 @@ public class AvatarCustomizationFragment extends Fragment {
         earsAdapter.setSelectedIndex(ears);
         facialHairAdapter.setSelectedIndex(facial);
         accessoryAdapter.setSelectedIndex(accessory);
+        faceShapeAdapter.setSelectedIndex(faceShape);
         updatePreview();
     }
 
@@ -253,6 +269,19 @@ public class AvatarCustomizationFragment extends Fragment {
                 break;
             case 4:
                 faceView.setColorFilter(getResources().getColor(R.color.avatar_skin_very_dark));
+                break;
+        }
+
+        int faceShapePos = faceShapeAdapter != null ? faceShapeAdapter.getSelectedIndex() : 0;
+        switch (faceShapePos) {
+            case 0:
+                faceView.setImageResource(R.drawable.avatar_face);
+                break;
+            case 1:
+                faceView.setImageResource(R.drawable.avatar_face_square);
+                break;
+            case 2:
+                faceView.setImageResource(R.drawable.avatar_face_oval);
                 break;
         }
 
