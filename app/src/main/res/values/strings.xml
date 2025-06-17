@@ -178,6 +178,11 @@
     <string name="hair_style">Hair Style</string>
     <string name="eyes_style">Eyes Style</string>
     <string name="mouth_style">Mouth Style</string>
+    <string name="body_style">Clothing</string>
+    <string name="nose_style">Nose</string>
+    <string name="ears_style">Ears</string>
+    <string name="facial_hair_style">Facial Hair</string>
+    <string name="accessory_style">Accessory</string>
     <string name="avatar_option_desc">Avatar option</string>
     <string name="win_rate">Win Rate</string>
     <!-- Trophy Room -->

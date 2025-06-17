@@ -44,6 +44,11 @@ public class ProfileFragment extends Fragment {
     private ImageView avatarHair;
     private ImageView avatarEyes;
     private ImageView avatarMouth;
+    private ImageView avatarBody;
+    private ImageView avatarNose;
+    private ImageView avatarEars;
+    private ImageView avatarFacialHair;
+    private ImageView avatarAccessory;
     private TextView streakValueText;
     private TextView xpValueText;
     private TextView gamesPlayedValue;
@@ -80,6 +85,11 @@ public class ProfileFragment extends Fragment {
         avatarHair          = view.findViewById(R.id.avatarHair);
         avatarEyes          = view.findViewById(R.id.avatarEyes);
         avatarMouth         = view.findViewById(R.id.avatarMouth);
+        avatarBody          = view.findViewById(R.id.avatarBody);
+        avatarNose          = view.findViewById(R.id.avatarNose);
+        avatarEars          = view.findViewById(R.id.avatarEars);
+        avatarFacialHair    = view.findViewById(R.id.avatarFacialHair);
+        avatarAccessory     = view.findViewById(R.id.avatarAccessory);
         streakValueText     = view.findViewById(R.id.streakValue);
         xpValueText         = view.findViewById(R.id.xpValue);
         gamesPlayedValue    = view.findViewById(R.id.gamesPlayedValue);
@@ -222,6 +232,11 @@ public class ProfileFragment extends Fragment {
         int hair = prefs.getInt(Constants.AVATAR_HAIR, 0);
         int eyes = prefs.getInt(Constants.AVATAR_EYES, 0);
         int mouth = prefs.getInt(Constants.AVATAR_MOUTH, 0);
+        int body = prefs.getInt(Constants.AVATAR_BODY, 0);
+        int nose = prefs.getInt(Constants.AVATAR_NOSE, 0);
+        int ears = prefs.getInt(Constants.AVATAR_EARS, 0);
+        int facial = prefs.getInt(Constants.AVATAR_FACIAL_HAIR, 0);
+        int accessory = prefs.getInt(Constants.AVATAR_ACCESSORY, 0);
 
         switch (skin) {
             case 0:
@@ -301,6 +316,66 @@ public class ProfileFragment extends Fragment {
                 break;
             case 5:
                 avatarMouth.setImageResource(R.drawable.avatar_mouth_6);
+                break;
+        }
+
+        switch (body) {
+            case 0:
+                avatarBody.setImageResource(R.drawable.avatar_body_1);
+                break;
+            case 1:
+                avatarBody.setImageResource(R.drawable.avatar_body_2);
+                break;
+            case 2:
+                avatarBody.setImageResource(R.drawable.avatar_body_3);
+                break;
+        }
+
+        switch (nose) {
+            case 0:
+                avatarNose.setImageResource(R.drawable.avatar_nose_1);
+                break;
+            case 1:
+                avatarNose.setImageResource(R.drawable.avatar_nose_2);
+                break;
+            case 2:
+                avatarNose.setImageResource(R.drawable.avatar_nose_3);
+                break;
+        }
+
+        switch (ears) {
+            case 0:
+                avatarEars.setImageResource(R.drawable.avatar_ears_1);
+                break;
+            case 1:
+                avatarEars.setImageResource(R.drawable.avatar_ears_2);
+                break;
+            case 2:
+                avatarEars.setImageResource(R.drawable.avatar_ears_3);
+                break;
+        }
+
+        switch (facial) {
+            case 0:
+                avatarFacialHair.setImageResource(R.drawable.avatar_facial_hair_1);
+                break;
+            case 1:
+                avatarFacialHair.setImageResource(R.drawable.avatar_facial_hair_2);
+                break;
+            case 2:
+                avatarFacialHair.setImageResource(R.drawable.avatar_facial_hair_3);
+                break;
+        }
+
+        switch (accessory) {
+            case 0:
+                avatarAccessory.setImageResource(R.drawable.avatar_accessory_1);
+                break;
+            case 1:
+                avatarAccessory.setImageResource(R.drawable.avatar_accessory_2);
+                break;
+            case 2:
+                avatarAccessory.setImageResource(R.drawable.avatar_accessory_3);
                 break;
         }
     }
