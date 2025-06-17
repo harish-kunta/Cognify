@@ -235,17 +235,11 @@ public class WordDashActivity extends AppCompatActivity {
     }
 
     private void animateButtonPress(MaterialButton button) {
-        button.animate()
-                .scaleX(1.2f)
-                .scaleY(1.2f)
-                .setDuration(GameConfig.BUTTON_SCALE_DURATION_MS)
-                .withEndAction(() ->
-                        button.animate()
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .setDuration(GameConfig.BUTTON_SCALE_DURATION_MS)
-                                .start()
-                ).start();
+        com.gigamind.cognify.util.AnimationUtils.pulse(
+                button,
+                1.2f,
+                GameConfig.BUTTON_SCALE_DURATION_MS
+        );
     }
 
     private void onLetterClick(char letter) {
