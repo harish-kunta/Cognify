@@ -313,17 +313,11 @@ public class WordDashActivity extends AppCompatActivity {
         if (hapticsEnabled) {
             scoreText.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
-        scoreText.animate()
-                .scaleX(1.3f)
-                .scaleY(1.3f)
-                .setDuration(GameConfig.SCORE_ANIMATION_DURATION_MS)
-                .withEndAction(() ->
-                        scoreText.animate()
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .setDuration(GameConfig.SCORE_ANIMATION_DURATION_MS)
-                                .start()
-                ).start();
+        com.gigamind.cognify.util.AnimationUtils.pulse(
+                scoreText,
+                1.3f,
+                GameConfig.SCORE_ANIMATION_DURATION_MS
+        );
     }
 
     private void showError(String message) {
