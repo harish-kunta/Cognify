@@ -6,6 +6,9 @@ public final class GameConfig {
     public static final long WORD_DASH_DURATION_MS = 60_000;
     public static final long QUICK_MATH_DURATION_MS = 60_000; // 60 seconds
 
+    // When less than this time remains, trigger final countdown effects
+    public static final long FINAL_COUNTDOWN_MS = 10_000;
+
     // Max time considered for full points in Quick Math
     public static final long MAX_RESPONSE_TIME_MS = 5_000;
 

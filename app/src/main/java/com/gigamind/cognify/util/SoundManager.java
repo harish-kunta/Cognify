@@ -23,6 +23,7 @@ public class SoundManager {
     private final int welcomeSoundId;
     private final int correctSoundId;
     private final int wrongSoundId;
+    private final int heartbeatSoundId;
     private final Context context;
     private final Vibrator vibrator;
 
@@ -56,6 +57,9 @@ public class SoundManager {
 
         wrongSoundId = soundPool.load(context, R.raw.wrong_sound, 1);
         loadedMap.put(wrongSoundId, false);
+
+        heartbeatSoundId = soundPool.load(context, R.raw.heartbeat, 1);
+        loadedMap.put(heartbeatSoundId, false);
 
         soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
             if (status == 0) {
@@ -92,6 +96,10 @@ public class SoundManager {
 
     public void playWelcome() {
         playSound(welcomeSoundId);
+    }
+
+    public void playHeartbeat() {
+        playSound(heartbeatSoundId);
     }
 
     private void playSound(int soundId) {

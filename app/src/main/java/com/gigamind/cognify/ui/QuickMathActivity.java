@@ -131,6 +131,9 @@ public class QuickMathActivity extends AppCompatActivity {
                     public void onTick(long millisRemaining) {
                         timeRemaining = millisRemaining;
                         timerText.setText(String.valueOf(millisRemaining / 1000));
+                        if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS) {
+                            triggerFinalCountdown();
+                        }
                     }
 
                     @Override
@@ -255,5 +258,23 @@ public class QuickMathActivity extends AppCompatActivity {
         for (MaterialButton btn : answerButtons) {
             btn.setEnabled(enabled);
         }
+    }
+
+    private void triggerFinalCountdown() {
+        SoundManager.getInstance(this).playHeartbeat();
+        timerText.animate()
+                .translationX(8)
+                .setDuration(50)
+                .withEndAction(() ->
+                        timerText.animate()
+                                .translationX(-8)
+                                .setDuration(50)
+                                .withEndAction(() ->
+                                        timerText.animate()
+                                                .translationX(0)
+                                                .setDuration(50)
+                                                .start()
+                                ).start()
+                ).start();
     }
 }

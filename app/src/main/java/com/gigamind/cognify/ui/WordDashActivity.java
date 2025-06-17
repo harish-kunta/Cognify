@@ -374,6 +374,9 @@ public class WordDashActivity extends AppCompatActivity {
                     @Override
                     public void onTick(long millisRemaining) {
                         gameStateManager.updateTimeRemaining(millisRemaining);
+                        if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS) {
+                            triggerFinalCountdown();
+                        }
                     }
 
                     @Override
@@ -464,5 +467,23 @@ public class WordDashActivity extends AppCompatActivity {
         if (gameTimer != null) {
             gameTimer.stop();
         }
+    }
+
+    private void triggerFinalCountdown() {
+        SoundManager.getInstance(this).playHeartbeat();
+        timerText.animate()
+                .translationX(8)
+                .setDuration(50)
+                .withEndAction(() ->
+                        timerText.animate()
+                                .translationX(-8)
+                                .setDuration(50)
+                                .withEndAction(() ->
+                                        timerText.animate()
+                                                .translationX(0)
+                                                .setDuration(50)
+                                                .start()
+                                ).start()
+                ).start();
     }
 }
