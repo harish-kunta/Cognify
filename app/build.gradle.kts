@@ -49,6 +49,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-crashlytics")
     implementation(libs.firebase.storage)
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
+    debugImplementation("com.google.firebase:firebase-appcheck-debug")
     
     // Lottie for animations
     implementation("com.airbnb.android:lottie:6.4.0")
