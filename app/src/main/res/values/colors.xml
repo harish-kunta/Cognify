@@ -59,6 +59,8 @@
     <color name="avatar_skin_light">#FFCC99</color>
     <color name="avatar_skin_medium">#E0A15D</color>
     <color name="avatar_skin_dark">#8D5524</color>
+    <color name="avatar_skin_very_light">#FFE8D3</color>
+    <color name="avatar_skin_very_dark">#5A3820</color>
 
     <!-- Icon tint color used to ensure visibility in light theme -->
     <color name="icon_tint">#000000</color>
