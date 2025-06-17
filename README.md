@@ -5,6 +5,7 @@
 ## Features
 
 - 🎉 **Animated Onboarding** – A splash screen and onboarding carousel introduce the game in seconds.
+- 🔊 **Welcome Sound** – Hear a quick audio cue when you open the app.
 - 🔥 **Daily Challenges** – Play "Word Dash" and "Quick Math" to keep your streak alive.
 - 👑 **Leaderboards** – Compete globally when you sign in with Google.
 - 🔔 **Notifications** – Never miss a session thanks to scheduled reminders.

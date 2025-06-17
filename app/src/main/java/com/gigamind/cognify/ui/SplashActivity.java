@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.databinding.ActivitySplashBinding;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.SoundManager;
 
 public class SplashActivity extends AppCompatActivity {
     private ActivitySplashBinding binding;
@@ -23,6 +24,9 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Play a welcoming sound effect on app launch
+        SoundManager.getInstance(this).playWelcome();
 
         // Disable heavy animations on low memory devices
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -79,6 +83,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        SoundManager.getInstance(this).release();
         binding = null;
     }
-} 
+}
