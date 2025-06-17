@@ -58,7 +58,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 R.drawable.hair_curly,
                 R.drawable.hair_longbob,
                 R.drawable.hair_nottoolong,
-                R.drawable.hair_longhairstraight2
+                R.drawable.hair_longhairstraight2,
+                R.drawable.hair_longhaircurvy
         );
 
         AvatarOptionAdapter hairAdapter = new AvatarOptionAdapter(hairOptions, resId ->
@@ -71,7 +72,9 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 R.drawable.eyes_happy,
                 R.drawable.eyes_hearts,
                 R.drawable.eyes_dizzy,
-                R.drawable.eyes_wink
+                R.drawable.eyes_wink,
+                R.drawable.eyes_surprised,
+                R.drawable.eyes_winkwacky
         );
         AvatarOptionAdapter eyesAdapter = new AvatarOptionAdapter(eyesOptions, resId ->
                 eyesView.setImageResource(resId));
@@ -82,7 +85,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 R.drawable.mouth_smile,
                 R.drawable.mouth_twinkle,
                 R.drawable.mouth_tongue,
-                R.drawable.mouth_serious
+                R.drawable.mouth_serious,
+                R.drawable.mouth_grimace
         );
         AvatarOptionAdapter mouthAdapter = new AvatarOptionAdapter(mouthOptions, resId ->
                 mouthView.setImageResource(resId));
@@ -91,7 +95,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
 
         List<Integer> accessoriesOptions = Arrays.asList(
                 R.drawable.acc_earphones,
-                R.drawable.acc_earring1
+                R.drawable.acc_earring1,
+                R.drawable.acc_earring2
         );
         AvatarOptionAdapter accessoriesAdapter = new AvatarOptionAdapter(accessoriesOptions, resId ->
                 accessoriesView.setImageResource(resId));
@@ -100,7 +105,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
 
         List<Integer> clothesOptions = Arrays.asList(
                 R.drawable.clothes_blazer,
-                R.drawable.clothes_overall
+                R.drawable.clothes_overall,
+                R.drawable.clothes_hoodie
         );
         AvatarOptionAdapter clothesAdapter = new AvatarOptionAdapter(clothesOptions, resId ->
                 clothesView.setImageResource(resId));
@@ -109,7 +115,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
 
         List<Integer> eyebrowsOptions = Arrays.asList(
                 R.drawable.eyebrows_default,
-                R.drawable.eyebrows_angry
+                R.drawable.eyebrows_angry,
+                R.drawable.eyebrows_raised
         );
         AvatarOptionAdapter eyebrowsAdapter = new AvatarOptionAdapter(eyebrowsOptions, resId ->
                 eyebrowsView.setImageResource(resId));
@@ -118,7 +125,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
 
         List<Integer> facialHairOptions = Arrays.asList(
                 R.drawable.facialhair_magnum,
-                R.drawable.facialhair_fancy
+                R.drawable.facialhair_fancy,
+                R.drawable.facialhair_light
         );
         AvatarOptionAdapter facialHairAdapter = new AvatarOptionAdapter(facialHairOptions, resId ->
                 facialHairView.setImageResource(resId));
@@ -127,7 +135,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
 
         List<Integer> glassesOptions = Arrays.asList(
                 R.drawable.glasses_rambo,
-                R.drawable.glasses_nerd
+                R.drawable.glasses_nerd,
+                R.drawable.glasses_fancy
         );
         AvatarOptionAdapter glassesAdapter = new AvatarOptionAdapter(glassesOptions, resId ->
                 glassesView.setImageResource(resId));
@@ -136,7 +145,8 @@ public class AvatarMakerActivity extends AppCompatActivity {
 
         List<Integer> tattooOptions = Arrays.asList(
                 R.drawable.tattoo_harry,
-                R.drawable.tattoo_tribal
+                R.drawable.tattoo_tribal,
+                R.drawable.tattoo_airbender
         );
         AvatarOptionAdapter tattooAdapter = new AvatarOptionAdapter(tattooOptions, resId ->
                 tattooView.setImageResource(resId));
