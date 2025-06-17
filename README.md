@@ -10,6 +10,7 @@
 - 👑 **Leaderboards** – Compete globally when you sign in with Google.
 - 🔔 **Notifications** – Never miss a session thanks to scheduled reminders.
 - 💖 **Guest Mode** – Try the game instantly; sync progress later via Firebase.
+- 🔒 **Firebase App Check** – Ensures only genuine app installs can access the backend.
 
 <p align="center">
   <img src="app/src/main/res/drawable/brain_train.png" alt="Brain Train" width="100"/>
@@ -21,7 +22,8 @@
 
 1. Clone this repository.
 2. Place your `google-services.json` file in the `app/` directory for Firebase.
-3. Build and run in Android Studio or execute:
+3. Firebase App Check is enabled automatically. Debug builds use the Debug provider.
+4. Build and run in Android Studio or execute:
    ```bash
    ./gradlew assembleDebug
    ```
