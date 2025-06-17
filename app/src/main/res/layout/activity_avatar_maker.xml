@@ -47,4 +47,28 @@
         android:layout_marginTop="16dp"
         android:scrollbars="horizontal"
         tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/eyesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mouthRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/skinRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="horizontal"
+        tools:listitem="@layout/item_avatar_option" />
 </LinearLayout>
