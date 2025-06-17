@@ -1,0 +1,8 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+    <circle android:fillColor="gold" android:cx="21" android:cy="60" android:r="9" />
+    <circle android:fillColor="gold" android:cx="89" android:cy="60" android:r="9" />
+</vector>
