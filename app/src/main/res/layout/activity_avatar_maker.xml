@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_elliptical_layer"
     xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
@@ -101,12 +102,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hairRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="horizontal"
+                android:layout_height="456dp"
                 android:layout_marginBottom="8dp"
+                android:scrollbars="horizontal"
                 tools:listitem="@layout/item_avatar_option" />
 
             <TextView
@@ -228,13 +230,16 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/saveAvatarButton"
-        android:layout_width="wrap_content"
+        style="@style/Button.Enabled"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusableInTouchMode="true"
+        android:layout_margin="32dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
