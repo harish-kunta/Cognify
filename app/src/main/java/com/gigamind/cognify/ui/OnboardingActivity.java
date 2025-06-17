@@ -30,6 +30,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.SoundManager;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,8 @@ public class OnboardingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOnboardingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        SoundManager.getInstance(this).playWelcome();
 
         prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
@@ -148,6 +152,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
             binding.btnLetsGo.setVisibility(View.VISIBLE);
             binding.btnLetsGo.setOnClickListener(v -> {
+                SoundManager.getInstance(this).playButton();
                 onboardingCompleted = true;
                 analytics.logOnboardingCompleted();
                 Intent i = new Intent(OnboardingActivity.this, MainActivity.class);
@@ -160,10 +165,16 @@ public class OnboardingActivity extends AppCompatActivity {
             binding.btnLetsGo.setVisibility(View.GONE);
 
             binding.btnSignIn.setVisibility(View.VISIBLE);
-            binding.btnSignIn.setOnClickListener(v -> signIn());
+            binding.btnSignIn.setOnClickListener(v -> {
+                SoundManager.getInstance(this).playButton();
+                signIn();
+            });
 
             binding.btnContinueAsGuest.setVisibility(View.VISIBLE);
-            binding.btnContinueAsGuest.setOnClickListener(v -> continueAsGuest());
+            binding.btnContinueAsGuest.setOnClickListener(v -> {
+                SoundManager.getInstance(this).playButton();
+                continueAsGuest();
+            });
         }
     }
 
@@ -243,6 +254,7 @@ public class OnboardingActivity extends AppCompatActivity {
         if (!onboardingCompleted) {
             analytics.logOnboardingSkipped();
         }
+        SoundManager.getInstance(this).release();
     }
 
     private void launchMainActivity() {

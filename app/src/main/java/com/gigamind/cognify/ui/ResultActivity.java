@@ -40,6 +40,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.gigamind.cognify.util.SoundManager;
+
 import com.gigamind.cognify.util.DateUtils;
 import java.util.Random;
 
@@ -57,7 +59,6 @@ public class ResultActivity extends AppCompatActivity {
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
-    private MediaPlayer dingSound;
     private GameAnalytics analytics;
     private int finalScore;
     private String finalGameType;
@@ -71,11 +72,6 @@ public class ResultActivity extends AppCompatActivity {
         analytics.logScreenView(Constants.ANALYTICS_SCREEN_RESULT);
 
         initializeViews();
-
-        // Initialize MediaPlayer only if it hasn't been created yet
-        if (dingSound == null) {
-            dingSound = MediaPlayer.create(this, R.raw.lesson_complete);
-        }
 
         prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         userRepository = new UserRepository(this);
@@ -251,7 +247,7 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 // Ding sound on XP reveal:
-                if (xpGained > 0 && dingSound != null) dingSound.start();
+                if (xpGained > 0) SoundManager.getInstance(ResultActivity.this).playSuccess();
                 AnimationUtils.fadeIn(totalWordText, 300);
                 ValueAnimator wordsAnim = ValueAnimator.ofInt(0, wordsFound);
                 wordsAnim.setDuration(500);
@@ -370,21 +366,13 @@ public class ResultActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        // Release MediaPlayer in onStop to handle configuration changes
-        if (dingSound != null) {
-            dingSound.release();
-            dingSound = null;
-        }
+        SoundManager.getInstance(this).release();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Ensure MediaPlayer is released
-        if (dingSound != null) {
-            dingSound.release();
-            dingSound = null;
-        }
+        SoundManager.getInstance(this).release();
     }
 
     // A tiny AnimatorListenerAdapter to avoid boilerplate

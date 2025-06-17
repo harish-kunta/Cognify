@@ -11,6 +11,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.gigamind.cognify.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gigamind.cognify.analytics.GameAnalytics;
+import com.gigamind.cognify.util.SoundManager;
 
 public class MainActivity extends AppCompatActivity {
     private MediaPlayer buttonSound;
@@ -45,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
         if (navController != null) {
             NavigationUI.setupWithNavController(bottomNavigation, navController);
         }
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            SoundManager.getInstance(this).playButton();
+            return NavigationUI.onNavDestinationSelected(item, navController);
+        });
     }
 
     @Override
@@ -55,10 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (buttonSound != null) {
-            buttonSound.release();
-            buttonSound = null;
-        }
+        SoundManager.getInstance(this).release();
         analytics.endSession();
     }
 }
