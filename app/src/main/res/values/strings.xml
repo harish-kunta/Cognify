@@ -212,6 +212,9 @@
     <string name="tutorial_got_it">Start Game</string>
     <string name="tutorial_skip">Skip Tutorial</string>
 
+    <string name="loading_dictionary">Loading words...</string>
+    <string name="dictionary_loaded">Words ready</string>
+
     <string name="delete_account">Delete Account</string>
     <string name="delete_account_confirm">This will permanently delete your account and all data. Continue?</string>
     <string name="delete_account_error">Failed to delete account: %1$s</string>
