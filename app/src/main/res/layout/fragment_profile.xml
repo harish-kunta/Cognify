@@ -57,12 +57,13 @@
 
             <ImageView
                 android:id="@+id/settingsIcon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_settings"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
         </LinearLayout>
 
         <LinearLayout
@@ -241,58 +242,112 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Games Played Tile -->
+
+                <!-- Custom Tile 1 -->
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="4dp"
                     android:background="@drawable/profile_page_block_background"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:weightSum="2">
 
-                    <TextView
-                        android:id="@+id/gamesPlayedValue"
-                        style="@style/ProfilePageUserNameStyle"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        style="@style/ProfilePageSubtitleStyle"
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_streak" />
+
+                        <TextView
+                            android:id="@+id/gamesPlayedValue"
+                            style="@style/ProfilePageUserNameStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text=""
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/games_played" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            style="@style/ProfilePageSubtitleStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:text="@string/games_played"
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!-- Win Rate Tile -->
+                <!-- Custom Tile 2 -->
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="4dp"
                     android:background="@drawable/profile_page_block_background"
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/winRateValue"
-                        style="@style/ProfilePageUserNameStyle"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0%" />
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        style="@style/ProfilePageSubtitleStyle"
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/icon_flash" />
+
+                        <TextView
+                            android:id="@+id/winRateValue"
+                            style="@style/ProfilePageUserNameStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text=""
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/win_rate" />
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            style="@style/ProfilePageSubtitleStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:text="@string/win_rate"
+                            android:textAppearance="?attr/textAppearanceListItem" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </GridLayout>
