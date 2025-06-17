@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.util.Base64;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
@@ -79,6 +82,7 @@ public class WordDashFragment extends Fragment {
 
         // 1) Populate the streak UI
         loadAndDisplayStreak();
+        loadAvatar();
 
         // 3) Set up click listeners on UI
         setupClickListeners();
@@ -110,6 +114,15 @@ public class WordDashFragment extends Fragment {
             // Not signed in: read local-only streak from prefs
             int localStreak = userRepository.getCurrentStreak();
             streakCount.setText(String.valueOf(localStreak));
+        }
+    }
+
+    private void loadAvatar() {
+        String encoded = userRepository.getProfilePicture();
+        if (encoded != null && !encoded.isEmpty()) {
+            byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            userProfileButton.setImageBitmap(bmp);
         }
     }
 

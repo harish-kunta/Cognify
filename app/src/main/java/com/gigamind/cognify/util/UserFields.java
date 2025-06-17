@@ -11,6 +11,7 @@ public final class UserFields {
     public static final String FIELD_UID               = "uid";
     public static final String FIELD_NAME              = "name";
     public static final String FIELD_EMAIL             = "email";
+    public static final String FIELD_PROFILE_PICTURE   = "profilePicture";
 
     // Game progress & streak
     public static final String FIELD_SCORE             = "score";
