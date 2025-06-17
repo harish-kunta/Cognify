@@ -226,6 +226,7 @@ public class SettingsFragment extends Fragment {
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         })
                         .addOnFailureListener(e -> {
+                            ExceptionLogger.log("SettingsFragment", e);
                             String msg = getString(R.string.delete_account_error, e.getMessage());
                             Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                             binding.getRoot().announceForAccessibility(msg);
@@ -234,6 +235,7 @@ public class SettingsFragment extends Fragment {
                     if (e instanceof FirebaseAuthInvalidCredentialsException) {
                         launchSignInIntent();
                     } else {
+                        ExceptionLogger.log("SettingsFragment", e);
                         String msg = getString(R.string.delete_account_error, e.getMessage());
                         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                         binding.getRoot().announceForAccessibility(msg);

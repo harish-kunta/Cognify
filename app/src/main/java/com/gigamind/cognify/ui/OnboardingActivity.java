@@ -248,6 +248,7 @@ public class OnboardingActivity extends AppCompatActivity {
                                 gAccount.getEmail()
                         ).addOnSuccessListener(v -> launchMainActivity())
                          .addOnFailureListener(err -> {
+                             ExceptionLogger.log("OnboardingActivity", err);
                              String msg = "Failed to update profile: " + err.getMessage();
                              Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                              binding.getRoot().announceForAccessibility(msg);
@@ -259,6 +260,7 @@ public class OnboardingActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
+                    ExceptionLogger.log("OnboardingActivity", e);
                     String msg = "Firebase authentication failed: " + e.getMessage();
                     Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                     binding.getRoot().announceForAccessibility(msg);

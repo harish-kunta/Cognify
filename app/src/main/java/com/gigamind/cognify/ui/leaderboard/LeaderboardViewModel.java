@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.UserFields;
+import com.gigamind.cognify.util.ExceptionLogger;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -65,6 +66,7 @@ public class LeaderboardViewModel extends ViewModel {
                     isFetching = false;
                 })
                 .addOnFailureListener(e -> {
+                    ExceptionLogger.log("LeaderboardViewModel", e);
                     // You could post an empty list or a special “error” sentinel.  For simplicity,
                     // we'll post null to indicate failure; the fragment can check for null.
                     _leaderboard.postValue(null);
