@@ -31,15 +31,17 @@ public final class AnimationUtils {
     }
 
     /**
-     * Shake a GridLayout left → right → back to center in quick succession.
+     * Shake a view left → right → back to center in quick succession.
+     * @param view The target view to shake.
+     * @param distancePx How far (in pixels) to translate the view.
      */
-    public static void shake(GridLayout view) {
+    public static void shake(View view, float distancePx) {
         view.animate()
-                .translationX(10)
+                .translationX(distancePx)
                 .setDuration(50)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .withEndAction(() -> view.animate()
-                        .translationX(-10)
+                        .translationX(-distancePx)
                         .setDuration(50)
                         .setInterpolator(new AccelerateDecelerateInterpolator())
                         .withEndAction(() -> view.animate()
@@ -51,6 +53,11 @@ public final class AnimationUtils {
                         .start()
                 )
                 .start();
+    }
+
+    /** Convenience overload using a default shake distance of 10px. */
+    public static void shake(View view) {
+        shake(view, 10f);
     }
 
     /**

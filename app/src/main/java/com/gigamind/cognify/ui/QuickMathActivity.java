@@ -262,19 +262,6 @@ public class QuickMathActivity extends AppCompatActivity {
 
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
-        timerText.animate()
-                .translationX(8)
-                .setDuration(50)
-                .withEndAction(() ->
-                        timerText.animate()
-                                .translationX(-8)
-                                .setDuration(50)
-                                .withEndAction(() ->
-                                        timerText.animate()
-                                                .translationX(0)
-                                                .setDuration(50)
-                                                .start()
-                                ).start()
-                ).start();
+        com.gigamind.cognify.util.AnimationUtils.shake(timerText, 8f);
     }
 }
