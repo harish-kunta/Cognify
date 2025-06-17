@@ -224,6 +224,8 @@
 
     <string name="delete_account">Delete Account</string>
     <string name="delete_account_confirm">This will permanently delete your account and all data. Continue?</string>
+    <string name="hair_long">Long Hair</string>
+    <string name="hair_bun">Hair Bun</string>
     <string name="delete_account_error">Failed to delete account: %1$s</string>
 </resources>
 
