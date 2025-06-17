@@ -6,25 +6,19 @@ import android.os.Build;
 import android.util.Log;
 import com.gigamind.cognify.util.ExceptionLogger;
 
-import androidx.annotation.NonNull;
-
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.gigamind.cognify.work.QuestNotificationScheduler;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.FirebaseApp;
-import com.gigamind.cognify.BuildConfig;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.gigamind.cognify.data.firebase.FirebaseService;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.gigamind.cognify.engine.DictionaryProvider;
 import com.google.firebase.appcheck.FirebaseAppCheck;
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.gigamind.cognify.engine.DictionaryProvider;
 import android.content.SharedPreferences;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import androidx.appcompat.app.AppCompatDelegate;
