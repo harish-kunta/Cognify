@@ -46,10 +46,13 @@
             android:text="@string/skin_color"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/skinSpinner"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/skinRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
         <TextView
             android:layout_width="match_parent"
@@ -58,10 +61,13 @@
             android:text="@string/hair_style"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/hairSpinner"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hairRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
         <TextView
             android:layout_width="match_parent"
@@ -70,10 +76,13 @@
             android:text="@string/eyes_style"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/eyesSpinner"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/eyesRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
         <TextView
             android:layout_width="match_parent"
@@ -82,10 +91,13 @@
             android:text="@string/mouth_style"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/mouthSpinner"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mouthRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
         <Button
             android:id="@+id/saveAvatarButton"

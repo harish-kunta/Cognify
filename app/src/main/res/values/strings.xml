@@ -178,6 +178,7 @@
     <string name="hair_style">Hair Style</string>
     <string name="eyes_style">Eyes Style</string>
     <string name="mouth_style">Mouth Style</string>
+    <string name="avatar_option_desc">Avatar option</string>
     <string name="win_rate">Win Rate</string>
     <!-- Trophy Room -->
     <string name="trophy_room">Trophy Room</string>
@@ -219,3 +220,4 @@
     <string name="delete_account_confirm">This will permanently delete your account and all data. Continue?</string>
     <string name="delete_account_error">Failed to delete account: %1$s</string>
 </resources>
+
