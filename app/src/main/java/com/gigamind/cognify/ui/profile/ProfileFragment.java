@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.gigamind.cognify.ui.profile.AvatarCustomizationFragment;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
@@ -40,15 +39,6 @@ public class ProfileFragment extends Fragment {
     private TextView userEmailText;
     private TextView userJoinedText;
     private ImageView settingsIcon;
-    private ImageView avatarFace;
-    private ImageView avatarHair;
-    private ImageView avatarEyes;
-    private ImageView avatarMouth;
-    private ImageView avatarBody;
-    private ImageView avatarNose;
-    private ImageView avatarEars;
-    private ImageView avatarFacialHair;
-    private ImageView avatarAccessory;
     private TextView streakValueText;
     private TextView xpValueText;
     private TextView gamesPlayedValue;
@@ -81,15 +71,6 @@ public class ProfileFragment extends Fragment {
         userEmailText       = view.findViewById(R.id.userEmail);
         userJoinedText      = view.findViewById(R.id.userJoined);
         settingsIcon        = view.findViewById(R.id.settingsIcon);
-        avatarFace          = view.findViewById(R.id.avatarFace);
-        avatarHair          = view.findViewById(R.id.avatarHair);
-        avatarEyes          = view.findViewById(R.id.avatarEyes);
-        avatarMouth         = view.findViewById(R.id.avatarMouth);
-        avatarBody          = view.findViewById(R.id.avatarBody);
-        avatarNose          = view.findViewById(R.id.avatarNose);
-        avatarEars          = view.findViewById(R.id.avatarEars);
-        avatarFacialHair    = view.findViewById(R.id.avatarFacialHair);
-        avatarAccessory     = view.findViewById(R.id.avatarAccessory);
         streakValueText     = view.findViewById(R.id.streakValue);
         xpValueText         = view.findViewById(R.id.xpValue);
         gamesPlayedValue    = view.findViewById(R.id.gamesPlayedValue);
@@ -130,7 +111,6 @@ public class ProfileFragment extends Fragment {
             } else {
                 userJoinedText.setText("");
             }
-            applyAvatarCustomization();
         } else {
             // Guest user
             userNameText.setText(getString(R.string.guest));
@@ -194,13 +174,6 @@ public class ProfileFragment extends Fragment {
             bottomNav.setSelectedItemId(R.id.navigation_settings);
         });
 
-        avatarFace.setOnClickListener(v ->
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.nav_host_fragment, new AvatarCustomizationFragment())
-                        .addToBackStack(null)
-                        .commit()
-        );
-
         inviteFriendsButton.setOnClickListener(v -> {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
@@ -226,181 +199,9 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void applyAvatarCustomization() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(Constants.PREF_APP, Context.MODE_PRIVATE);
-        int skin = prefs.getInt(Constants.AVATAR_SKIN, 0);
-        int hair = prefs.getInt(Constants.AVATAR_HAIR, 0);
-        int eyes = prefs.getInt(Constants.AVATAR_EYES, 0);
-        int mouth = prefs.getInt(Constants.AVATAR_MOUTH, 0);
-        int body = prefs.getInt(Constants.AVATAR_BODY, 0);
-        int nose = prefs.getInt(Constants.AVATAR_NOSE, 0);
-        int ears = prefs.getInt(Constants.AVATAR_EARS, 0);
-        int facial = prefs.getInt(Constants.AVATAR_FACIAL_HAIR, 0);
-        int accessory = prefs.getInt(Constants.AVATAR_ACCESSORY, 0);
-        int faceShape = prefs.getInt(Constants.AVATAR_FACE_SHAPE, 0);
-
-        switch (skin) {
-            case 0:
-                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_very_light));
-                break;
-            case 1:
-                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_light));
-                break;
-            case 2:
-                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_medium));
-                break;
-            case 3:
-                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_dark));
-                break;
-            case 4:
-                avatarFace.setColorFilter(getResources().getColor(R.color.avatar_skin_very_dark));
-                break;
-        }
-
-        switch (faceShape) {
-            case 0:
-                avatarFace.setImageResource(R.drawable.avatar_face);
-                break;
-            case 1:
-                avatarFace.setImageResource(R.drawable.avatar_face_square);
-                break;
-            case 2:
-                avatarFace.setImageResource(R.drawable.avatar_face_oval);
-                break;
-        }
-
-        switch (hair) {
-            case 0:
-                avatarHair.setImageResource(R.drawable.avatar_hair_1);
-                break;
-            case 1:
-                avatarHair.setImageResource(R.drawable.avatar_hair_2);
-                break;
-            case 2:
-                avatarHair.setImageResource(R.drawable.avatar_hair_3);
-                break;
-            case 3:
-                avatarHair.setImageResource(R.drawable.avatar_hair_4);
-                break;
-            case 4:
-                avatarHair.setImageResource(R.drawable.avatar_hair_5);
-                break;
-            case 5:
-                avatarHair.setImageResource(R.drawable.avatar_hair_6);
-                break;
-            case 6:
-                avatarHair.setImageResource(R.drawable.avatar_hair_7);
-                break;
-        }
-
-        switch (eyes) {
-            case 0:
-                avatarEyes.setImageResource(R.drawable.avatar_eyes_1);
-                break;
-            case 1:
-                avatarEyes.setImageResource(R.drawable.avatar_eyes_2);
-                break;
-            case 2:
-                avatarEyes.setImageResource(R.drawable.avatar_eyes_3);
-                break;
-            case 3:
-                avatarEyes.setImageResource(R.drawable.avatar_eyes_4);
-                break;
-            case 4:
-                avatarEyes.setImageResource(R.drawable.avatar_eyes_5);
-                break;
-            case 5:
-                avatarEyes.setImageResource(R.drawable.avatar_eyes_6);
-                break;
-        }
-
-        switch (mouth) {
-            case 0:
-                avatarMouth.setImageResource(R.drawable.avatar_mouth_1);
-                break;
-            case 1:
-                avatarMouth.setImageResource(R.drawable.avatar_mouth_2);
-                break;
-            case 2:
-                avatarMouth.setImageResource(R.drawable.avatar_mouth_3);
-                break;
-            case 3:
-                avatarMouth.setImageResource(R.drawable.avatar_mouth_4);
-                break;
-            case 4:
-                avatarMouth.setImageResource(R.drawable.avatar_mouth_5);
-                break;
-            case 5:
-                avatarMouth.setImageResource(R.drawable.avatar_mouth_6);
-                break;
-        }
-
-        switch (body) {
-            case 0:
-                avatarBody.setImageResource(R.drawable.avatar_body_1);
-                break;
-            case 1:
-                avatarBody.setImageResource(R.drawable.avatar_body_2);
-                break;
-            case 2:
-                avatarBody.setImageResource(R.drawable.avatar_body_3);
-                break;
-        }
-
-        switch (nose) {
-            case 0:
-                avatarNose.setImageResource(R.drawable.avatar_nose_1);
-                break;
-            case 1:
-                avatarNose.setImageResource(R.drawable.avatar_nose_2);
-                break;
-            case 2:
-                avatarNose.setImageResource(R.drawable.avatar_nose_3);
-                break;
-        }
-
-        switch (ears) {
-            case 0:
-                avatarEars.setImageResource(R.drawable.avatar_ears_1);
-                break;
-            case 1:
-                avatarEars.setImageResource(R.drawable.avatar_ears_2);
-                break;
-            case 2:
-                avatarEars.setImageResource(R.drawable.avatar_ears_3);
-                break;
-        }
-
-        switch (facial) {
-            case 0:
-                avatarFacialHair.setImageResource(R.drawable.avatar_facial_hair_1);
-                break;
-            case 1:
-                avatarFacialHair.setImageResource(R.drawable.avatar_facial_hair_2);
-                break;
-            case 2:
-                avatarFacialHair.setImageResource(R.drawable.avatar_facial_hair_3);
-                break;
-        }
-
-        switch (accessory) {
-            case 0:
-                avatarAccessory.setImageResource(R.drawable.avatar_accessory_1);
-                break;
-            case 1:
-                avatarAccessory.setImageResource(R.drawable.avatar_accessory_2);
-                break;
-            case 2:
-                avatarAccessory.setImageResource(R.drawable.avatar_accessory_3);
-                break;
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
-        // Refresh avatar in case customization changed while this fragment was paused
-        applyAvatarCustomization();
     }
 
     @Override
