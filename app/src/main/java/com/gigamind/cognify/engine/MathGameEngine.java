@@ -76,7 +76,7 @@ public class MathGameEngine {
     }
 
     public int getScore(boolean correct) {
-        return correct ? 10 : 0;
+        return correct ? 10 : -5;
     }
 
     public int getCurrentAnswer() {
