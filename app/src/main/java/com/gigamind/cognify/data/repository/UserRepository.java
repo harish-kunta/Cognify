@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.SetOptions;
 import com.gigamind.cognify.util.DateUtils;
+import com.gigamind.cognify.util.ExceptionLogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -121,6 +122,7 @@ public class UserRepository {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
+                    ExceptionLogger.log("UserRepository", e);
                     // Could log network / permission error, but don’t crash.
                     return;
                 }
@@ -192,6 +194,7 @@ public class UserRepository {
 
         return userRef.get().continueWithTask(task -> {
             if (!task.isSuccessful()) {
+                ExceptionLogger.log("UserRepository", task.getException());
                 throw task.getException();
             }
 
@@ -256,6 +259,7 @@ public class UserRepository {
                     .continueWithTask(fetchTask -> {
                         // If fetch failed, do local only
                         if (!fetchTask.isSuccessful() || fetchTask.getResult() == null) {
+                            ExceptionLogger.log("UserRepository", fetchTask.getException());
                             updateLocalOnly(gameType, score, xpEarned, isWin, today, yesterday, nowMillis);
                             return Tasks.forResult(null);
                         }
@@ -326,9 +330,13 @@ public class UserRepository {
 
                         return firebaseService.getUserDocument()
                                 .set(updates, SetOptions.merge())
-                                .continueWithTask(setTask ->
-                                        firebaseService.logGameSession(gameType, score, xpEarned)
-                                );
+                                .continueWithTask(setTask -> {
+                                    if (!setTask.isSuccessful()) {
+                                        ExceptionLogger.log("UserRepository", setTask.getException());
+                                        return Tasks.forException(setTask.getException());
+                                    }
+                                    return firebaseService.logGameSession(gameType, score, xpEarned);
+                                });
                     });
         }
 
@@ -431,11 +439,17 @@ public class UserRepository {
 
             return ref.putBytes(data)
                     .continueWithTask(task -> {
-                        if (!task.isSuccessful()) throw task.getException();
+                        if (!task.isSuccessful()) {
+                            ExceptionLogger.log("UserRepository", task.getException());
+                            throw task.getException();
+                        }
                         return ref.getDownloadUrl();
                     })
                     .continueWithTask(urlTask -> {
-                        if (!urlTask.isSuccessful()) throw urlTask.getException();
+                        if (!urlTask.isSuccessful()) {
+                            ExceptionLogger.log("UserRepository", urlTask.getException());
+                            throw urlTask.getException();
+                        }
                         String url = urlTask.getResult().toString();
                         prefs.edit().putString(KEY_PROFILE_PICTURE, url).apply();
                         Map<String, Object> map = new HashMap<>();

@@ -8,6 +8,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.gigamind.cognify.util.ExceptionLogger;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -111,6 +112,7 @@ public class FirebaseService {
     public Task<Void> deleteAccountAndData() {
         FirebaseUser user = getCurrentUser();
         if (user == null) {
+            ExceptionLogger.log("FirebaseService", new Exception("No user signed in"));
             return Tasks.forException(new Exception("No user signed in"));
         }
 
@@ -121,6 +123,7 @@ public class FirebaseService {
 
         return deleteData.continueWithTask(task -> {
             if (!task.isSuccessful()) {
+                ExceptionLogger.log("FirebaseService", task.getException());
                 return Tasks.forException(task.getException());
             }
             return user.delete();
