@@ -1,4 +1,6 @@
-package com.gigamind.cognify.util;
+package com.gigamind.cognify.animation;
+
+import com.gigamind.cognify.util.Constants;
 
 /**
  * Simple service locator for {@link ViewAnimator} instances. Allows swapping

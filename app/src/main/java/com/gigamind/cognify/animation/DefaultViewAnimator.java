@@ -1,4 +1,4 @@
-package com.gigamind.cognify.util;
+package com.gigamind.cognify.animation;
 
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;

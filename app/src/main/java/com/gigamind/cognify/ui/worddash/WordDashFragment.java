@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
+import com.gigamind.cognify.animation.AnimationUtils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
@@ -72,7 +72,7 @@ public class WordDashFragment extends Fragment {
 
         // Initialize SharedPreferences, repositories and helpers
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        com.gigamind.cognify.util.AnimatorProvider.updateFromPreferences(requireContext());
+        com.gigamind.cognify.animation.AnimatorProvider.updateFromPreferences(requireContext());
         userRepository = new UserRepository(requireContext());
         tutorialHelper = new TutorialHelper(requireContext());
 
@@ -127,7 +127,7 @@ public class WordDashFragment extends Fragment {
     private void setupClickListeners() {
         View.OnClickListener animatedClickListener = v -> {
             if (areAnimationsEnabled()) {
-                v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
+                AnimationUtils.bounce(v);
             }
             if (!tutorialHelper.isTutorialCompleted()) {
                 String msg = getString(R.string.play_tip);
@@ -171,7 +171,7 @@ public class WordDashFragment extends Fragment {
     }
 
     private boolean areAnimationsEnabled() {
-        return com.gigamind.cognify.util.AnimatorProvider.isAnimationsEnabled();
+        return com.gigamind.cognify.animation.AnimatorProvider.isAnimationsEnabled();
     }
 
     @Override
