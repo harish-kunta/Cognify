@@ -32,6 +32,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.gigamind.cognify.util.ExceptionLogger;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
@@ -203,6 +204,7 @@ public class SettingsFragment extends Fragment {
             Intent intent = googleSignInClient.getSignInIntent();
             startActivityForResult(intent, RC_REAUTH);
         } catch (Exception e) {
+            ExceptionLogger.log("SettingsFragment", e);
             String msg = getString(R.string.google_sign_in_failed);
             Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
             binding.getRoot().announceForAccessibility(msg);
@@ -250,6 +252,7 @@ public class SettingsFragment extends Fragment {
                     reauthenticateAndDelete(account.getIdToken());
                 }
             } catch (ApiException e) {
+                ExceptionLogger.log("SettingsFragment", e);
                 String msg = getString(R.string.delete_account_error, e.getMessage());
                 Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                 binding.getRoot().announceForAccessibility(msg);

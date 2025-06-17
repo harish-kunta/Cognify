@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.gigamind.cognify.databinding.ActivitySplashBinding;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.SoundManager;
+import com.gigamind.cognify.util.ExceptionLogger;
 
 public class SplashActivity extends AppCompatActivity {
     private ActivitySplashBinding binding;
@@ -55,7 +56,9 @@ public class SplashActivity extends AppCompatActivity {
                     try {
                         int s = Integer.parseInt(scoreStr);
                         gameIntent.putExtra(Constants.EXTRA_CHALLENGE_SCORE, s);
-                    } catch (NumberFormatException ignored) {}
+                    } catch (NumberFormatException e) {
+                        ExceptionLogger.log("SplashActivity", e);
+                    }
                 }
                 gameIntent.putExtra(Constants.EXTRA_CHALLENGE_TYPE, type);
                 startActivity(gameIntent);
