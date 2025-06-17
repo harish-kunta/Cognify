@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
@@ -15,6 +16,7 @@ public class FirebaseService {
     private static FirebaseService instance;
     private final FirebaseAuth auth;
     private final FirebaseFirestore firestore;
+    private final FirebaseStorage storage;
 
     // Collection paths
     public static final String COLLECTION_USERS = "users";
@@ -23,6 +25,7 @@ public class FirebaseService {
     private FirebaseService() {
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
     }
 
     public static synchronized FirebaseService getInstance() {
@@ -38,6 +41,10 @@ public class FirebaseService {
 
     public FirebaseFirestore getFirestore() {
         return firestore;
+    }
+
+    public FirebaseStorage getStorage() {
+        return storage;
     }
 
     public FirebaseUser getCurrentUser() {

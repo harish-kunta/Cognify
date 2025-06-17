@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.util.Base64;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -151,11 +152,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        String encoded = userRepository.getProfilePicture();
-        if (encoded != null && !encoded.isEmpty()) {
-            byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            currentUserAvatar.setImageBitmap(bmp);
+        String stored = userRepository.getProfilePicture();
+        if (stored != null && !stored.isEmpty()) {
+            if (stored.startsWith("http")) {
+                Glide.with(this).load(stored).into(currentUserAvatar);
+            } else {
+                byte[] bytes = Base64.decode(stored, Base64.DEFAULT);
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                currentUserAvatar.setImageBitmap(bmp);
+            }
         }
     }
 

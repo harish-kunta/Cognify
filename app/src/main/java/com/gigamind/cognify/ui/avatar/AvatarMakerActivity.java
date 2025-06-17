@@ -3,11 +3,9 @@ package com.gigamind.cognify.ui.avatar;
 import android.os.Bundle;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import java.io.ByteArrayOutputStream;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -176,12 +174,9 @@ public class AvatarMakerActivity extends AppCompatActivity {
             Bitmap bitmap = Bitmap.createBitmap(avatarContainer.getWidth(), avatarContainer.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             avatarContainer.draw(canvas);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            String encoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
 
-            userRepository.saveProfilePicture(encoded);
-            finish();
+            userRepository.saveProfilePicture(bitmap)
+                    .addOnSuccessListener(task -> finish());
         });
     }
 }

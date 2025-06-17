@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.util.Base64;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -156,9 +157,13 @@ public class ProfileFragment extends Fragment {
                             String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
                             winRateValue.setText(rate);
                             if (encodedPic != null && !encodedPic.isEmpty()) {
-                                byte[] bytes = Base64.decode(encodedPic, Base64.DEFAULT);
-                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                profileAvatar.setImageBitmap(bmp);
+                                if (encodedPic.startsWith("http")) {
+                                    Glide.with(ProfileFragment.this).load(encodedPic).into(profileAvatar);
+                                } else {
+                                    byte[] bytes = Base64.decode(encodedPic, Base64.DEFAULT);
+                                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    profileAvatar.setImageBitmap(bmp);
+                                }
                             }
                         });
                     }
@@ -224,11 +229,15 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        String encoded = userRepository.getProfilePicture();
-        if (encoded != null && !encoded.isEmpty()) {
-            byte[] bytes = Base64.decode(encoded, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            profileAvatar.setImageBitmap(bmp);
+        String stored = userRepository.getProfilePicture();
+        if (stored != null && !stored.isEmpty()) {
+            if (stored.startsWith("http")) {
+                Glide.with(this).load(stored).into(profileAvatar);
+            } else {
+                byte[] bytes = Base64.decode(stored, Base64.DEFAULT);
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                profileAvatar.setImageBitmap(bmp);
+            }
         }
     }
 
