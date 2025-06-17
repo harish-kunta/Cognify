@@ -24,6 +24,9 @@ public class SoundManager {
     private final int correctSoundId;
     private final int wrongSoundId;
     private final int heartbeatSoundId;
+    // Reuse existing sounds for additional cues
+    private final int toggleSoundId;
+    private final int milestoneSoundId;
     private final Context context;
     private final Vibrator vibrator;
 
@@ -60,6 +63,10 @@ public class SoundManager {
 
         heartbeatSoundId = soundPool.load(context, R.raw.heartbeat, 1);
         loadedMap.put(heartbeatSoundId, false);
+
+        // For toggles and milestone cues we simply reuse existing files
+        toggleSoundId = buttonSoundId;
+        milestoneSoundId = successSoundId;
 
         soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
             if (status == 0) {
@@ -100,6 +107,16 @@ public class SoundManager {
 
     public void playHeartbeat() {
         playSound(heartbeatSoundId);
+    }
+
+    /** Plays a short click sound for toggle switches */
+    public void playToggle() {
+        playSound(toggleSoundId);
+    }
+
+    /** Plays a rewarding sound for streak milestones */
+    public void playMilestone() {
+        playSound(milestoneSoundId);
     }
 
     private void playSound(int soundId) {

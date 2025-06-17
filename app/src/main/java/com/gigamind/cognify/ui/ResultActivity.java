@@ -148,6 +148,10 @@ public class ResultActivity extends AppCompatActivity {
         String uid = (firebaseUser != null) ? firebaseUser.getUid() : null;
         StreakNotificationScheduler.scheduleFromSharedPrefs(uid, this);
 
+        if (newStreak > 0 && newStreak != oldStreak && newStreak % 5 == 0) {
+            SoundManager.getInstance(this).playMilestone();
+        }
+
         // (10) Animate everything in sequence:
         animateHeader();
         animateNumbersSequentially(

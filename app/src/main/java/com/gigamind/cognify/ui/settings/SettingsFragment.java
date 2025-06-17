@@ -22,6 +22,7 @@ import com.gigamind.cognify.ui.OnboardingActivity;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.gigamind.cognify.data.firebase.FirebaseService;
+import com.gigamind.cognify.util.SoundManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -80,14 +81,20 @@ public class SettingsFragment extends Fragment {
         }
 
         // Set up listeners
-        binding.soundEffectsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                prefs.edit().putBoolean(KEY_SOUND_ENABLED, isChecked).apply());
+        binding.soundEffectsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean(KEY_SOUND_ENABLED, isChecked).apply();
+                SoundManager.getInstance(requireContext()).playToggle();
+        });
 
-        binding.hapticsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                prefs.edit().putBoolean(KEY_HAPTICS_ENABLED, isChecked).apply());
+        binding.hapticsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean(KEY_HAPTICS_ENABLED, isChecked).apply();
+                SoundManager.getInstance(requireContext()).playToggle();
+        });
 
-        binding.animationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                prefs.edit().putBoolean(KEY_ANIMATIONS_ENABLED, isChecked).apply());
+        binding.animationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean(KEY_ANIMATIONS_ENABLED, isChecked).apply();
+                SoundManager.getInstance(requireContext()).playToggle();
+        });
 
         binding.darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.edit().putBoolean(KEY_DARK_MODE_ENABLED, isChecked).apply();
@@ -96,6 +103,7 @@ public class SettingsFragment extends Fragment {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
+            SoundManager.getInstance(requireContext()).playToggle();
         });
     }
 
