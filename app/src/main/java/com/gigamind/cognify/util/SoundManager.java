@@ -3,6 +3,8 @@ package com.gigamind.cognify.util;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
+import android.content.SharedPreferences;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,12 +18,14 @@ public class SoundManager {
     private final int buttonSoundId;
     private final int successSoundId;
     private final int welcomeSoundId;
+    private final Context context;
 
     // Track when each sound has finished loading
     private final Map<Integer, Boolean> loadedMap = new HashMap<>();
     private final Set<Integer> pendingSounds = new HashSet<>();
 
     private SoundManager(Context context) {
+        this.context = context.getApplicationContext();
         AudioAttributes attrs = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -70,12 +74,19 @@ public class SoundManager {
     }
 
     private void playSound(int soundId) {
+        if (!isSoundEnabled()) return;
         Boolean isLoaded = loadedMap.get(soundId);
         if (isLoaded != null && isLoaded) {
             soundPool.play(soundId, 1f, 1f, 0, 0, 1f);
         } else {
             pendingSounds.add(soundId);
         }
+    }
+
+    private boolean isSoundEnabled() {
+        SharedPreferences prefs = context.getSharedPreferences(
+                Constants.PREF_APP, Context.MODE_PRIVATE);
+        return prefs.getBoolean(Constants.PREF_SOUND_ENABLED, true);
     }
 
     public void release() {
