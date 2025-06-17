@@ -126,7 +126,6 @@ public class WordDashActivity extends AppCompatActivity {
                             tutorialOverlay.addStep(timerText, getString(R.string.tutorial_step_timer));
                             tutorialOverlay.setOnComplete(() -> {
                                 String msg = getString(R.string.tutorial_complete);
-                                View root = findViewById(android.R.id.content);
                                 Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
                                 root.announceForAccessibility(msg);
                                 tutorialHelper.markTutorialCompleted();
