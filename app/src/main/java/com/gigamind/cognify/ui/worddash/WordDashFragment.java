@@ -138,7 +138,9 @@ public class WordDashFragment extends Fragment {
      */
     private void setupClickListeners() {
         View.OnClickListener animatedClickListener = v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
+            if (areAnimationsEnabled()) {
+                v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
+            }
             if (!tutorialHelper.isTutorialCompleted()) {
                 String msg = getString(R.string.play_tip);
                 Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
@@ -178,6 +180,11 @@ public class WordDashFragment extends Fragment {
                     .format(calendar.getTime());
             prefs.edit().putBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, true).apply();
         }
+    }
+
+    private boolean areAnimationsEnabled() {
+        return requireContext().getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE)
+                .getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
     }
 
     @Override

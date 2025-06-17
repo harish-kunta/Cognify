@@ -212,7 +212,9 @@ public class HomeFragment extends Fragment {
      */
     private void setupClickListeners() {
         View.OnClickListener animatedClickListener = v -> {
-            v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
+            if (areAnimationsEnabled()) {
+                v.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.button_bounce));
+            }
             handleGameLaunch(v);
         };
 
@@ -248,6 +250,11 @@ public class HomeFragment extends Fragment {
                     .format(calendar.getTime());
             prefs.edit().putBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, true).apply();
         }
+    }
+
+    private boolean areAnimationsEnabled() {
+        return requireContext().getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE)
+                .getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
     }
 
     @Override

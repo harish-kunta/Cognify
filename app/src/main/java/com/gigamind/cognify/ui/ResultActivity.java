@@ -60,6 +60,7 @@ public class ResultActivity extends AppCompatActivity {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private GameAnalytics analytics;
+    private boolean animationsEnabled;
     private int finalScore;
     private String finalGameType;
 
@@ -74,6 +75,7 @@ public class ResultActivity extends AppCompatActivity {
         initializeViews();
 
         prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        animationsEnabled = prefs.getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
         userRepository = new UserRepository(this);
         firebaseUser = FirebaseService.getInstance().getCurrentUser();
 
@@ -220,7 +222,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void animateHeader() {
-        // Fade headerText in over 400ms
+        if (!animationsEnabled) {
+            headerText.setAlpha(1f);
+            return;
+        }
         AnimationUtils.fadeIn(headerText, 400);
     }
 
@@ -233,6 +238,20 @@ public class ResultActivity extends AppCompatActivity {
             final boolean willSyncRemote,
             final int wordsFound
     ) {
+        if (!animationsEnabled) {
+            scoreValue.setText(String.valueOf(finalScore));
+            totalWordText.setText(String.valueOf(wordsFound));
+            totalXPValue.setText(String.valueOf(finalTotalXp));
+            streakText.setText("🔥 " + finalStreak + " Day Streak");
+            streakText.setAlpha(1f);
+            if (isNewPb) {
+                newHighScoreText.setVisibility(View.VISIBLE);
+                newHighScoreText.setAlpha(1f);
+            }
+            if (xpGained > 0) SoundManager.getInstance(ResultActivity.this).playSuccess();
+            playContainer.setAlpha(1f);
+            return;
+        }
         // 1) Score count‐up
         ValueAnimator scoreAnim = ValueAnimator.ofInt(0, finalScore);
         scoreAnim.setDuration(600);
@@ -299,6 +318,11 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void animateNewHighScoreBanner() {
+        if (!animationsEnabled) {
+            newHighScoreText.setVisibility(View.VISIBLE);
+            newHighScoreText.setAlpha(1f);
+            return;
+        }
         // 1) Pulse the "New High Score!" text
         newHighScoreText.setAlpha(0f);
         newHighScoreText.setScaleX(0.5f);
@@ -316,6 +340,11 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void showEncouragement(String message) {
+        if (!animationsEnabled) {
+            encouragementText.setText(message.toUpperCase());
+            encouragementText.setAlpha(1f);
+            return;
+        }
         // Apply glow shader
         Shader myShader = new LinearGradient(
                 0, 100, 0, 100,

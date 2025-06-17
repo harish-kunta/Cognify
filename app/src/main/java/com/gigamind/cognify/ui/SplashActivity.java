@@ -31,13 +31,14 @@ public class SplashActivity extends AppCompatActivity {
 
         // Disable heavy animations on low memory devices
         ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        if (am != null && am.isLowRamDevice()) {
+        SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
+        boolean animationsEnabled = prefs.getBoolean(Constants.PREF_ANIMATIONS_ENABLED, true);
+        if (!animationsEnabled || (am != null && am.isLowRamDevice())) {
             binding.splashAnimation.cancelAnimation();
             binding.splashAnimation.setVisibility(View.GONE);
         }
 
         // Check if first time launch
-        SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
         boolean isFirstLaunch = prefs.getBoolean(Constants.PREF_IS_FIRST_LAUNCH, true);
 
         // Deep link handling for challenge
