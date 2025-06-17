@@ -233,5 +233,7 @@
     <string name="hair_curly">Curly Hair</string>
     <string name="delete_account_error">Failed to delete account: %1$s</string>
     <string name="account_deleted">Account deleted successfully</string>
+    <string name="play_services_required">Google Play Services required for sign in.</string>
+    <string name="google_sign_in_failed">Google sign in failed.</string>
 </resources>
 
