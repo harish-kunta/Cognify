@@ -60,9 +60,8 @@ public class SoundManager {
         soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
             if (status == 0) {
                 loadedMap.put(sampleId, true);
-                if (pendingSounds.remove(sampleId)) {
+                if (pendingSounds.remove(sampleId) && isSoundEnabled()) {
                     sp.play(sampleId, 1f, 1f, 0, 0, 1f);
-                    triggerHaptic();
                 }
             }
         });
@@ -96,14 +95,16 @@ public class SoundManager {
     }
 
     private void playSound(int soundId) {
-        if (!isSoundEnabled()) return;
-        Boolean isLoaded = loadedMap.get(soundId);
-        if (isLoaded != null && isLoaded) {
-            soundPool.play(soundId, 1f, 1f, 0, 0, 1f);
-            triggerHaptic();
-        } else {
-            pendingSounds.add(soundId);
+        boolean soundEnabled = isSoundEnabled();
+        if (soundEnabled) {
+            Boolean isLoaded = loadedMap.get(soundId);
+            if (isLoaded != null && isLoaded) {
+                soundPool.play(soundId, 1f, 1f, 0, 0, 1f);
+            } else {
+                pendingSounds.add(soundId);
+            }
         }
+        triggerHaptic();
     }
 
     private boolean isSoundEnabled() {
