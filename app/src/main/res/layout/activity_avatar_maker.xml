@@ -229,13 +229,17 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/saveAvatarButton"
-        android:layout_width="wrap_content"
+        style="@style/Button.Enabled"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusableInTouchMode="true"
+        android:layout_margin="32dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
