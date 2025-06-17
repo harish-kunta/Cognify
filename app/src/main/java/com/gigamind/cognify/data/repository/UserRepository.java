@@ -80,6 +80,10 @@ public class UserRepository {
                         long ts = snapshot.getLong(UserFields.FIELD_LAST_PLAYED_TS);
                         editor.putLong(KEY_LAST_PLAYED_TS, ts);
                     }
+                    if (snapshot.contains(UserFields.FIELD_PROFILE_PICTURE)) {
+                        String pic = snapshot.getString(UserFields.FIELD_PROFILE_PICTURE);
+                        editor.putString(KEY_PROFILE_PICTURE, pic != null ? pic : "");
+                    }
 
                     for (String type : new String[]{Constants.GAME_TYPE_WORD_DASH, Constants.TYPE_QUICK_MATH}) {
                         String xpField = UserFields.totalGameXpField(type);
@@ -142,6 +146,10 @@ public class UserRepository {
                     if (snapshot.contains(KEY_LAST_PLAYED_TS)) {
                         long ts = snapshot.getLong(KEY_LAST_PLAYED_TS);
                         editor.putLong(KEY_LAST_PLAYED_TS, ts);
+                    }
+                    if (snapshot.contains(KEY_PROFILE_PICTURE)) {
+                        String pic = snapshot.getString(KEY_PROFILE_PICTURE);
+                        editor.putString(KEY_PROFILE_PICTURE, pic != null ? pic : "");
                     }
 
                     for (String type : new String[]{Constants.GAME_TYPE_WORD_DASH, Constants.TYPE_QUICK_MATH}) {
