@@ -57,8 +57,12 @@ public class MathGameEngineTest {
         assertTrue(engine.checkAnswer(correct));
         assertFalse(engine.checkAnswer(correct + 1));
 
-        int expected = GameConfig.BASE_SCORE * engine.getCurrentDifficulty();
-        assertEquals(expected, engine.getScore(true));
-        assertEquals(-5, engine.getScore(false));
+        int base = GameConfig.BASE_SCORE * engine.getCurrentDifficulty();
+        // At 0 ms response time, points are doubled
+        assertEquals(base * 2, engine.getScore(true, 0));
+        assertEquals(-5, engine.getScore(false, 0));
+
+        // After MAX_RESPONSE_TIME_MS, base points are awarded
+        assertEquals(base, engine.getScore(true, GameConfig.MAX_RESPONSE_TIME_MS + 1000));
     }
 }
