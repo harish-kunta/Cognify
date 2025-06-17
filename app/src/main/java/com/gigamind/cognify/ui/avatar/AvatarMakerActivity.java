@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.AvatarOptionAdapter;
+import com.gigamind.cognify.adapter.AvatarOptionAdapter.AvatarOption;
 import com.gigamind.cognify.data.repository.UserRepository;
 
 import java.util.Arrays;
@@ -65,15 +66,15 @@ public class AvatarMakerActivity extends AppCompatActivity {
         RecyclerView glassesRecycler = findViewById(R.id.glassesRecyclerView);
         RecyclerView tattooRecycler = findViewById(R.id.tattooRecyclerView);
 
-        List<Integer> hairOptions = Arrays.asList(
-                R.drawable.hair_long,
-                R.drawable.hair_bun,
-                R.drawable.hair_curly,
-                R.drawable.hair_longbob,
-                R.drawable.hair_nottoolong,
-                R.drawable.hair_longhairstraight,
-                R.drawable.hair_longhairstraight2,
-                R.drawable.hair_longhaircurvy
+        List<AvatarOption> hairOptions = Arrays.asList(
+                new AvatarOption(R.drawable.hair_long, R.drawable.hair_long),
+                new AvatarOption(R.drawable.hair_bun, R.drawable.hair_bun),
+                new AvatarOption(R.drawable.hair_curly, R.drawable.hair_curly),
+                new AvatarOption(R.drawable.hair_longbob, R.drawable.hair_longbob),
+                new AvatarOption(R.drawable.hair_nottoolong, R.drawable.hair_nottoolong),
+                new AvatarOption(R.drawable.hair_longhairstraight, R.drawable.hair_longhairstraight),
+                new AvatarOption(R.drawable.hair_longhairstraight2, R.drawable.hair_longhairstraight2),
+                new AvatarOption(R.drawable.hair_longhaircurvy, R.drawable.hair_longhaircurvy)
         );
 
         AvatarOptionAdapter hairAdapter = new AvatarOptionAdapter(hairOptions, resId ->
@@ -81,86 +82,90 @@ public class AvatarMakerActivity extends AppCompatActivity {
         hairRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         hairRecycler.setAdapter(hairAdapter);
 
-        List<Integer> eyesOptions = Arrays.asList(
-                R.drawable.eyes_default,
-                R.drawable.eyes_happy,
-                R.drawable.eyes_hearts,
-                R.drawable.eyes_dizzy,
-                R.drawable.eyes_wink
+        List<AvatarOption> eyesOptions = Arrays.asList(
+                new AvatarOption(R.drawable.eyes_default, R.drawable.eyes_default),
+                new AvatarOption(R.drawable.eyes_happy, R.drawable.eyes_happy),
+                new AvatarOption(R.drawable.eyes_hearts, R.drawable.eyes_hearts),
+                new AvatarOption(R.drawable.eyes_dizzy, R.drawable.eyes_dizzy),
+                new AvatarOption(R.drawable.eyes_wink, R.drawable.eyes_wink)
         );
         AvatarOptionAdapter eyesAdapter = new AvatarOptionAdapter(eyesOptions, resId ->
                 eyesView.setImageResource(resId));
         eyesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         eyesRecycler.setAdapter(eyesAdapter);
 
-        List<Integer> mouthOptions = Arrays.asList(
-                R.drawable.mouth_smile,
-                R.drawable.mouth_twinkle,
-                R.drawable.mouth_tongue,
-                R.drawable.mouth_serious
+        List<AvatarOption> mouthOptions = Arrays.asList(
+                new AvatarOption(R.drawable.mouth_smile, R.drawable.mouth_smile),
+                new AvatarOption(R.drawable.mouth_twinkle, R.drawable.mouth_twinkle),
+                new AvatarOption(R.drawable.mouth_tongue, R.drawable.mouth_tongue),
+                new AvatarOption(R.drawable.mouth_serious, R.drawable.mouth_serious)
         );
         AvatarOptionAdapter mouthAdapter = new AvatarOptionAdapter(mouthOptions, resId ->
                 mouthView.setImageResource(resId));
         mouthRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mouthRecycler.setAdapter(mouthAdapter);
 
-        List<Integer> accessoriesOptions = Arrays.asList(
-                R.drawable.acc_earphones,
-                R.drawable.acc_earring1
+        List<AvatarOption> accessoriesOptions = Arrays.asList(
+                new AvatarOption(R.drawable.ic_none, 0),
+                new AvatarOption(R.drawable.acc_earphones, R.drawable.acc_earphones),
+                new AvatarOption(R.drawable.acc_earring1, R.drawable.acc_earring1)
         );
         AvatarOptionAdapter accessoriesAdapter = new AvatarOptionAdapter(accessoriesOptions, resId ->
                 accessoriesView.setImageResource(resId));
         accessoriesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         accessoriesRecycler.setAdapter(accessoriesAdapter);
 
-        List<Integer> clothesOptions = Arrays.asList(
-                R.drawable.clothes_blazer,
-                R.drawable.clothes_overall
+        List<AvatarOption> clothesOptions = Arrays.asList(
+                new AvatarOption(R.drawable.clothes_blazer, R.drawable.clothes_blazer),
+                new AvatarOption(R.drawable.clothes_overall, R.drawable.clothes_overall)
         );
         AvatarOptionAdapter clothesAdapter = new AvatarOptionAdapter(clothesOptions, resId ->
                 clothesView.setImageResource(resId));
         clothesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         clothesRecycler.setAdapter(clothesAdapter);
 
-        List<Integer> eyebrowsOptions = Arrays.asList(
-                R.drawable.eyebrows_default,
-                R.drawable.eyebrows_angry
+        List<AvatarOption> eyebrowsOptions = Arrays.asList(
+                new AvatarOption(R.drawable.eyebrows_default, R.drawable.eyebrows_default),
+                new AvatarOption(R.drawable.eyebrows_angry, R.drawable.eyebrows_angry)
         );
         AvatarOptionAdapter eyebrowsAdapter = new AvatarOptionAdapter(eyebrowsOptions, resId ->
                 eyebrowsView.setImageResource(resId));
         eyebrowsRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         eyebrowsRecycler.setAdapter(eyebrowsAdapter);
 
-        List<Integer> facialHairOptions = Arrays.asList(
-                R.drawable.facialhair_magnum,
-                R.drawable.facialhair_fancy
+        List<AvatarOption> facialHairOptions = Arrays.asList(
+                new AvatarOption(R.drawable.ic_none, 0),
+                new AvatarOption(R.drawable.facialhair_magnum, R.drawable.facialhair_magnum),
+                new AvatarOption(R.drawable.facialhair_fancy, R.drawable.facialhair_fancy)
         );
         AvatarOptionAdapter facialHairAdapter = new AvatarOptionAdapter(facialHairOptions, resId ->
                 facialHairView.setImageResource(resId));
         facialHairRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         facialHairRecycler.setAdapter(facialHairAdapter);
 
-        List<Integer> glassesOptions = Arrays.asList(
-                R.drawable.glasses_rambo,
-                R.drawable.glasses_nerd
+        List<AvatarOption> glassesOptions = Arrays.asList(
+                new AvatarOption(R.drawable.ic_none, 0),
+                new AvatarOption(R.drawable.glasses_rambo, R.drawable.glasses_rambo),
+                new AvatarOption(R.drawable.glasses_nerd, R.drawable.glasses_nerd)
         );
         AvatarOptionAdapter glassesAdapter = new AvatarOptionAdapter(glassesOptions, resId ->
                 glassesView.setImageResource(resId));
         glassesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         glassesRecycler.setAdapter(glassesAdapter);
 
-        List<Integer> tattooOptions = Arrays.asList(
-                R.drawable.tattoo_harry,
-                R.drawable.tattoo_tribal
+        List<AvatarOption> tattooOptions = Arrays.asList(
+                new AvatarOption(R.drawable.ic_none, 0),
+                new AvatarOption(R.drawable.tattoo_harry, R.drawable.tattoo_harry),
+                new AvatarOption(R.drawable.tattoo_tribal, R.drawable.tattoo_tribal)
         );
         AvatarOptionAdapter tattooAdapter = new AvatarOptionAdapter(tattooOptions, resId ->
                 tattooView.setImageResource(resId));
         tattooRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         tattooRecycler.setAdapter(tattooAdapter);
 
-        List<Integer> skinOptions = Arrays.asList(
-                R.drawable.skin_white,
-                R.drawable.skin_black
+        List<AvatarOption> skinOptions = Arrays.asList(
+                new AvatarOption(R.drawable.skin_white, R.drawable.skin_white),
+                new AvatarOption(R.drawable.skin_black, R.drawable.skin_black)
         );
         AvatarOptionAdapter skinAdapter = new AvatarOptionAdapter(skinOptions, resId ->
                 skinView.setImageResource(resId));
