@@ -105,9 +105,16 @@ public class TutorialOverlay {
         scrim.setHole(hole);
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int popupHeight = view.getMeasuredHeight();
+        int popupWidth = view.getMeasuredWidth();
         int y = loc[1] - popupHeight;
         if (y < 0) y = loc[1] + step.anchor.getHeight();
-        popup.showAtLocation(step.anchor, Gravity.NO_GRAVITY, loc[0], y);
+        int x = loc[0];
+        int screenWidth = root.getWidth();
+        if (x + popupWidth > screenWidth) {
+            x = screenWidth - popupWidth;
+        }
+        if (x < 0) x = 0;
+        popup.showAtLocation(step.anchor, Gravity.NO_GRAVITY, x, y);
 
         next.setOnClickListener(v -> {
             popup.dismiss();
