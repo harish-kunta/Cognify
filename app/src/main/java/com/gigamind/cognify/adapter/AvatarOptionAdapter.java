@@ -34,11 +34,16 @@ public class AvatarOptionAdapter extends RecyclerView.Adapter<AvatarOptionAdapte
 
     private final List<AvatarOption> items;
     private final OnOptionClickListener listener;
-    private int selectedPosition = RecyclerView.NO_POSITION;
+    private int selectedPosition;
 
     public AvatarOptionAdapter(List<AvatarOption> items, OnOptionClickListener listener) {
+        this(items, listener, 0);
+    }
+
+    public AvatarOptionAdapter(List<AvatarOption> items, OnOptionClickListener listener, int initialSelectedPosition) {
         this.items = items;
         this.listener = listener;
+        this.selectedPosition = initialSelectedPosition;
     }
 
     @NonNull
