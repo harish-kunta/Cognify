@@ -250,7 +250,7 @@ public class WordDashActivity extends BaseActivity {
                     v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 }
                 animateButtonPress(button);
-                SoundManager.getInstance(this).playBounce();
+                SoundManager.getInstance(this).playButton();
                 onLetterClick(letters[index]);
             });
 
