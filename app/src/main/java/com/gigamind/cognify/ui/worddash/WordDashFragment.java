@@ -25,6 +25,7 @@ import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.util.TutorialHelper;
+import com.gigamind.cognify.util.GameType;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.gigamind.cognify.data.firebase.FirebaseService;
@@ -72,7 +73,7 @@ public class WordDashFragment extends Fragment {
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         com.gigamind.cognify.animation.AnimatorProvider.updateFromPreferences(requireContext());
         userRepository = new UserRepository(requireContext());
-        tutorialHelper = new TutorialHelper(requireContext());
+        tutorialHelper = new TutorialHelper(requireContext(), GameType.WORD);
 
         // Check signed-in user
         firebaseUser = FirebaseService.getInstance().getCurrentUser();

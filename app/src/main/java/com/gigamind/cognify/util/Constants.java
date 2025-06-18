@@ -26,7 +26,10 @@ public class Constants {
     public static final String PREF_IS_GUEST = "is_guest_mode";
     public static final String PREF_NOTIFICATION = "notification_preferences";
     public static final String PREF_NOTIFICATION_ENABLED = "notifications_enabled";
-    public static final String PREF_TUTORIAL_COMPLETED = "tutorial_completed";
+    // Marks that the onboarding tutorial has been completed
+    public static final String PREF_ONBOARDING_COMPLETED = "tutorial_completed";
+    // Prefix for per-game tutorial completion flags
+    public static final String PREF_TUTORIAL_COMPLETED_PREFIX = "game_tutorial_completed_";
     public static final String PREF_SOUND_ENABLED = "sound_enabled";
     public static final String PREF_HAPTICS_ENABLED = "haptics_enabled";
     public static final String PREF_ANIMATIONS_ENABLED = "animations_enabled";

@@ -16,6 +16,6 @@ public class ConstantsTest {
     void testPreferences() {
         assertNotNull(Constants.PREFS_NAME);
         assertNotNull(Constants.PREF_APP);
-        assertEquals("tutorial_completed", Constants.PREF_TUTORIAL_COMPLETED);
+        assertEquals("tutorial_completed", Constants.PREF_ONBOARDING_COMPLETED);
     }
 }

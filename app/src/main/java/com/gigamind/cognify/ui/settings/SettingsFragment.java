@@ -39,7 +39,7 @@ public class SettingsFragment extends Fragment {
     private static final String KEY_HAPTICS_ENABLED = Constants.PREF_HAPTICS_ENABLED;
     private static final String KEY_ANIMATIONS_ENABLED = Constants.PREF_ANIMATIONS_ENABLED;
     private static final String KEY_DARK_MODE_ENABLED = Constants.PREF_DARK_MODE_ENABLED;
-    private static final String KEY_TUTORIAL_COMPLETED = Constants.PREF_TUTORIAL_COMPLETED;
+    private static final String KEY_ONBOARDING_COMPLETED = Constants.PREF_ONBOARDING_COMPLETED;
 
     @Nullable
     @Override
@@ -106,7 +106,7 @@ public class SettingsFragment extends Fragment {
                     .setTitle(R.string.replay_tutorial)
                     .setMessage(R.string.replay_tutorial_confirm)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        prefs.edit().putBoolean(KEY_TUTORIAL_COMPLETED, false).apply();
+                        prefs.edit().putBoolean(KEY_ONBOARDING_COMPLETED, false).apply();
                         startActivity(new Intent(requireContext(), OnboardingActivity.class));
                         requireActivity().finish();
                     })
@@ -123,7 +123,7 @@ public class SettingsFragment extends Fragment {
                         // Clear all preferences except tutorial completion
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.clear();
-                        editor.putBoolean(KEY_TUTORIAL_COMPLETED, true);
+                        editor.putBoolean(KEY_ONBOARDING_COMPLETED, true);
                         editor.apply();
                     })
                     .setNegativeButton(R.string.no, null)

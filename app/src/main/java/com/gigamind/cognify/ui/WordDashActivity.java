@@ -87,7 +87,7 @@ public class WordDashActivity extends BaseActivity {
         analytics.logScreenView(Constants.ANALYTICS_SCREEN_WORD_DASH);
         analytics.logGameStart(GameType.WORD);
 
-        tutorialHelper = new TutorialHelper(this);
+        tutorialHelper = new TutorialHelper(this, GameType.WORD);
 
         SharedPreferences prefs = getSharedPreferences(Constants.PREF_APP, MODE_PRIVATE);
         hapticsEnabled = prefs.getBoolean(Constants.PREF_HAPTICS_ENABLED, true);
