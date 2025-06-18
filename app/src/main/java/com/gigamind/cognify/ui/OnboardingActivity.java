@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.android.material.snackbar.Snackbar;
+import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -184,6 +185,8 @@ public class OnboardingActivity extends AppCompatActivity {
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
                 .setServerClientId(getString(R.string.default_web_client_id))
+                .setAutoSelectEnabled(true)
+                .setNonce(UUID.randomUUID().toString())
                 .build();
 
         GetCredentialRequest request = new GetCredentialRequest.Builder()
