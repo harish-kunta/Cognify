@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.view.View;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+
+import com.gigamind.cognify.ui.MainActivity;
 
 import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameTimer;
@@ -265,5 +268,43 @@ public class QuickMathActivity extends BaseActivity {
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
         com.gigamind.cognify.animation.AnimationUtils.shake(timerText, 8f);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showExitDialog();
+    }
+
+    private void showExitDialog() {
+        pauseGameTimer();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.exit_game_confirm_title)
+                .setMessage(R.string.exit_game_confirm_message)
+                .setPositiveButton(R.string.exit_game_yes, (d, w) -> {
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                })
+                .setNegativeButton(R.string.continue_playing, (d, w) -> resumeGameTimer())
+                .setOnCancelListener(d -> resumeGameTimer())
+                .show();
+    }
+
+    private void pauseGameTimer() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+            gameTimer = null;
+        }
+        pauseTimestamp = System.currentTimeMillis();
+    }
+
+    private void resumeGameTimer() {
+        if (timeRemaining > 0 && gameTimer == null && !tutorialActive) {
+            if (pauseTimestamp > 0) {
+                long pausedFor = System.currentTimeMillis() - pauseTimestamp;
+                questionStartTime += pausedFor;
+                pauseTimestamp = 0;
+            }
+            startGameTimer();
+        }
     }
 }
