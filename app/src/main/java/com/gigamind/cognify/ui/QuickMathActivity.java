@@ -193,13 +193,13 @@ public class QuickMathActivity extends BaseActivity {
 
         // Visual feedback (could be enhanced with animations)
         answerButtons[buttonIndex].setBackgroundTintList(
-            getColorStateList(isCorrect ? R.color.success : R.color.text_secondary)
+            getColorStateList(isCorrect ? R.color.success : R.color.error)
         );
 
         // Delay before next question to show feedback
         answerButtons[buttonIndex].postDelayed(() -> {
             answerButtons[buttonIndex].setBackgroundTintList(
-                getColorStateList(android.R.color.transparent)
+                getColorStateList(R.color.primary)
             );
             nextQuestion();
         }, 500);

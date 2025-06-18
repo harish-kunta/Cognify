@@ -49,20 +49,6 @@ public class MainActivity extends BaseActivity {
 
         bottomNavigation.setOnItemSelectedListener(item -> {
             SoundManager.getInstance(this).playButton();
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    analytics.logButtonClick("nav_home");
-                    break;
-                case R.id.navigation_leaderboard:
-                    analytics.logButtonClick("nav_leaderboard");
-                    break;
-                case R.id.navigation_profile:
-                    analytics.logButtonClick("nav_profile");
-                    break;
-                case R.id.navigation_settings:
-                    analytics.logButtonClick("nav_settings");
-                    break;
-            }
             return NavigationUI.onNavDestinationSelected(item, navController);
         });
     }
