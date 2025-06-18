@@ -29,6 +29,8 @@ import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.util.DailyChallengeManager;
 import android.graphics.Color;
 import android.content.res.ColorStateList;
+
+import com.gigamind.cognify.util.SoundManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
