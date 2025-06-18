@@ -62,7 +62,8 @@ public class MathGameEngineTest {
                 + (GameConfig.BASE_SCORE / 2);
         int expectedFast = base + GameConfig.LENGTH_BONUS * difficulty;
         assertEquals(expectedFast, engine.getScore(true, 0));
-        assertEquals(-5, engine.getScore(false, 0));
+        int expectedPenalty = -GameConfig.BASE_SCORE * difficulty;
+        assertEquals(expectedPenalty, engine.getScore(false, 0));
 
         // After MAX_RESPONSE_TIME_MS, base points are awarded
         assertEquals(base, engine.getScore(true, GameConfig.MAX_RESPONSE_TIME_MS + 1000));
