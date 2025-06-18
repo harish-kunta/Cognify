@@ -38,6 +38,7 @@
 
     <!-- Button style for dark theme -->
     <style name="Button.Enabled.Dark" parent="Widget.MaterialComponents.Button">
+        <item name="android:soundEffectsEnabled">false</item>
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/colorPrimaryLight</item>
         <item name="rippleColor">@color/colorAccent</item>

@@ -100,6 +100,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setupButtons() {
+        binding.replayTutorialButton.setSoundEffectsEnabled(false);
         binding.replayTutorialButton.setOnClickListener(v -> {
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.replay_tutorial)
@@ -113,6 +114,7 @@ public class SettingsFragment extends Fragment {
                     .show();
         });
 
+        binding.resetProgressButton.setSoundEffectsEnabled(false);
         binding.resetProgressButton.setOnClickListener(v -> {
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.reset_progress)
@@ -128,6 +130,7 @@ public class SettingsFragment extends Fragment {
                     .show();
         });
 
+        binding.deleteAccountButton.setSoundEffectsEnabled(false);
         binding.deleteAccountButton.setOnClickListener(v -> {
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.delete_account)
@@ -142,6 +145,7 @@ public class SettingsFragment extends Fragment {
         binding.deleteAccountButton.setVisibility(service.isUserSignedIn() ? View.VISIBLE : View.GONE);
         if (service.isUserSignedIn()) {
             binding.btnSignIn.setText(R.string.sign_out);
+            binding.btnSignIn.setSoundEffectsEnabled(false);
             binding.btnSignIn.setOnClickListener(v -> {
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.logout_confirm_title)
@@ -171,6 +175,7 @@ public class SettingsFragment extends Fragment {
             });
         } else {
             binding.btnSignIn.setText(R.string.sign_in);
+            binding.btnSignIn.setSoundEffectsEnabled(false);
             binding.btnSignIn.setOnClickListener(v -> {
                 // Start sign in flow
                 startActivity(new Intent(requireContext(), OnboardingActivity.class));

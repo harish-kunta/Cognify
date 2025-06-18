@@ -146,6 +146,7 @@ public class OnboardingActivity extends AppCompatActivity {
             binding.btnContinueAsGuest.setVisibility(View.GONE);
 
             binding.btnLetsGo.setVisibility(View.VISIBLE);
+            binding.btnLetsGo.setSoundEffectsEnabled(false);
             binding.btnLetsGo.setOnClickListener(v -> {
                 SoundManager.getInstance(this).playButton();
                 onboardingCompleted = true;
@@ -157,12 +158,14 @@ public class OnboardingActivity extends AppCompatActivity {
             binding.btnLetsGo.setVisibility(View.GONE);
 
             binding.btnSignIn.setVisibility(View.VISIBLE);
+            binding.btnSignIn.setSoundEffectsEnabled(false);
             binding.btnSignIn.setOnClickListener(v -> {
                 SoundManager.getInstance(this).playButton();
                 signIn();
             });
 
             binding.btnContinueAsGuest.setVisibility(View.VISIBLE);
+            binding.btnContinueAsGuest.setSoundEffectsEnabled(false);
             binding.btnContinueAsGuest.setOnClickListener(v -> {
                 SoundManager.getInstance(this).playButton();
                 continueAsGuest();

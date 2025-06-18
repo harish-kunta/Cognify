@@ -83,7 +83,9 @@ public class TutorialOverlay {
         View view = LayoutInflater.from(activity).inflate(R.layout.tutorial_popup, null);
         TextView text = view.findViewById(R.id.tutorialText);
         MaterialButton next = view.findViewById(R.id.tutorialNextButton);
+        next.setSoundEffectsEnabled(false);
         MaterialButton skip = view.findViewById(R.id.tutorialSkipButton);
+        skip.setSoundEffectsEnabled(false);
         text.setText(step.text);
         next.setText(index == steps.size() - 1 ? activity.getString(R.string.tutorial_got_it)
                 : activity.getString(R.string.tutorial_next));

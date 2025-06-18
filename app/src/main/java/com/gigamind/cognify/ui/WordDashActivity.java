@@ -161,8 +161,11 @@ public class WordDashActivity extends AppCompatActivity {
 
     private void setupButtons() {
         submitButton = findViewById(R.id.submitButton);
+        submitButton.setSoundEffectsEnabled(false);
         clearButton = findViewById(R.id.clearButton);
+        clearButton.setSoundEffectsEnabled(false);
         backspaceButton = findViewById(R.id.backspaceButton);
+        backspaceButton.setSoundEffectsEnabled(false);
 
         submitButton.setOnClickListener(v -> submitWord());
         clearButton.setOnClickListener(v -> clearWord());
@@ -207,6 +210,8 @@ public class WordDashActivity extends AppCompatActivity {
                     new ContextThemeWrapper(this, R.style.Button_Letter);
 
             MaterialButton button = new MaterialButton(themedContext, null, 0);
+
+            button.setSoundEffectsEnabled(false);
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;  // Use weight to distribute columns evenly

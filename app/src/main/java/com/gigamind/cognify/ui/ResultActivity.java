@@ -172,8 +172,11 @@ public class ResultActivity extends AppCompatActivity {
         newHighScoreText = findViewById(R.id.newHighScoreText);
         encouragementText = findViewById(R.id.encouragementText);
         playAgainButton = findViewById(R.id.playAgainButton);
+        playAgainButton.setSoundEffectsEnabled(false);
         homeButton = findViewById(R.id.homeButton);
+        homeButton.setSoundEffectsEnabled(false);
         challengeButton = findViewById(R.id.challengeButton);
+        challengeButton.setSoundEffectsEnabled(false);
         playContainer = (LinearLayout) playAgainButton.getParent();
         confettiView = findViewById(R.id.confettiView);
 
