@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.gigamind.cognify.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ImageView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,7 @@ public class HomeFragment extends Fragment {
     private TextView streakCount;
     private TextView dailyPerk;
     private CircleImageView currentUserAvatar;
+    private ImageView dailyChallengeLogo;
     /** Flag cached from setupDailyChallenge to know which game is today's challenge */
     private boolean isWordDay;
     private SharedPreferences prefs;
@@ -111,6 +113,7 @@ public class HomeFragment extends Fragment {
         streakCount = binding.streakCount;
         dailyPerk = binding.dailyPerk;
         currentUserAvatar = binding.currentUserAvatar;
+        dailyChallengeLogo = binding.dailyChallengeLogo;
         wordGamePlayButton = binding.wordGameCard.playButton;
         quickMathPlayButton = binding.mathGameCard.playButton;
     }
@@ -157,6 +160,8 @@ public class HomeFragment extends Fragment {
                 ? getString(R.string.word_dash)
                 : getString(R.string.quick_math);
         dailyChallengeTitle.setText(challengeType);
+        dailyChallengeLogo.setImageResource(
+                isWordDay ? R.drawable.ic_word_logo : R.drawable.ic_math_logo);
 
         String perk = DailyChallengeManager.getTodayPerk(requireContext());
         dailyPerk.setText(getString(R.string.perk_format, perk));
