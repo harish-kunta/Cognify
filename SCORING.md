@@ -22,25 +22,22 @@ score = BASE_SCORE * lengthFactor^2 + complexityBonus * lengthFactor
 
 ## Quick Math
 
-Quick Math presents rapid arithmetic questions with weighted difficulty. Each
-answer yields points as follows:
+Quick Math presents rapid arithmetic questions with weighted difficulty. The
+formula mirrors the exponential rules from **Word Dash** so that both games
+grant comparable points. Each answer yields points as follows:
 
 ```
 if wrong:
     score = -5
 else:
-    base = BASE_SCORE * difficulty^2
-    timeFactor = 1 + (MAX_RESPONSE_TIME_MS - responseTime) / MAX_RESPONSE_TIME_MS
-    score = round(base * timeFactor)
+    diffFactor = difficulty
+    base = BASE_SCORE * diffFactor^2
+    bonus = LENGTH_BONUS * diffFactor
+            * (MAX_RESPONSE_TIME_MS - responseTime) / MAX_RESPONSE_TIME_MS
+    score = round(base + bonus)
 ```
 
-At the end of the round, scores are normalised:
-
-```
-normalizedScore = (totalScore / questionsAnswered) * SCORE_NORMALIZATION_SCALE
-```
-
-where `SCORE_NORMALIZATION_SCALE` is `10`.
+The final game score is the sum of all question scores (no normalisation).
 
 ## Experience & Bonuses
 
