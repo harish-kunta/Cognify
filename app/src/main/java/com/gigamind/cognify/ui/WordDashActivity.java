@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -63,6 +64,7 @@ public class WordDashActivity extends BaseActivity {
     private MaterialButton submitButton;
     private MaterialButton clearButton;
     private MaterialButton backspaceButton;
+    private ImageView closeGame;
     private boolean hapticsEnabled = true;
     private View loadingIndicator;
     private long timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
@@ -101,6 +103,7 @@ public class WordDashActivity extends BaseActivity {
         loadingIndicator.setVisibility(View.VISIBLE);
         View root = findViewById(android.R.id.content);
         root.announceForAccessibility(getString(R.string.loading_dictionary));
+
 
         // 2) Kick off dictionary loading. As soon as it's ready, we build gameEngine and letter grid.
         DictionaryProvider.getDictionaryAsync(
@@ -161,6 +164,9 @@ public class WordDashActivity extends BaseActivity {
         letterGrid = findViewById(R.id.letterGrid);
         foundWordsRecycler = findViewById(R.id.foundWordsRecycler);
         loadingIndicator = findViewById(R.id.loadingIndicator);
+        closeGame = findViewById(R.id.close_game);
+
+        closeGame.setOnClickListener(view -> showExitDialog());
     }
 
     private void setupButtons() {
@@ -459,11 +465,6 @@ public class WordDashActivity extends BaseActivity {
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
         com.gigamind.cognify.animation.AnimationUtils.shake(timerText, 8f);
-    }
-
-    @Override
-    public void onBackPressed() {
-        showExitDialog();
     }
 
     private void showExitDialog() {

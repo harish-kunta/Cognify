@@ -2,6 +2,7 @@ package com.gigamind.cognify.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class QuickMathActivity extends BaseActivity {
     private MathGameEngine gameEngine;
+    private ImageView closeGame;
     private TextView scoreText;
     private TextView timerText;
     private TextView equationText;
@@ -65,6 +67,9 @@ public class QuickMathActivity extends BaseActivity {
         scoreText = findViewById(R.id.scoreText);
         timerText = findViewById(R.id.timerText);
         equationText = findViewById(R.id.equationText);
+        closeGame = findViewById(R.id.close_game);
+
+        closeGame.setOnClickListener(view -> showExitDialog());
         
         answerButtons = new MaterialButton[4];
         answerButtons[0] = findViewById(R.id.answer1Button);
@@ -268,11 +273,6 @@ public class QuickMathActivity extends BaseActivity {
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
         com.gigamind.cognify.animation.AnimationUtils.shake(timerText, 8f);
-    }
-
-    @Override
-    public void onBackPressed() {
-        showExitDialog();
     }
 
     private void showExitDialog() {
