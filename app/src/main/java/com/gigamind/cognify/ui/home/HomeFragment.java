@@ -173,7 +173,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    /** Displays the rotating daily quest on the quest card. */
+    /** Displays the rotating daily quest on the welcome card. */
     private void setupQuestCard() {
         Quest quest = QuestManager.getDailyQuest();
         questTitle.setText(getString(R.string.daily_quest));
