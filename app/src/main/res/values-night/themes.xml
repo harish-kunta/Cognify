@@ -19,6 +19,7 @@
         
         <!-- Button style -->
         <item name="materialButtonStyle">@style/Button.Enabled.Dark</item>
+        <item name="android:soundEffectsEnabled">false</item>
     </style>
 
     <style name="Theme.Cognify.NoActionBar">

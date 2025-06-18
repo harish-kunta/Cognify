@@ -20,6 +20,7 @@
         
         <!-- Button style -->
         <item name="materialButtonStyle">@style/Button.Enabled</item>
+        <item name="android:soundEffectsEnabled">false</item>
     </style>
 
     <!-- Custom CardView style -->
