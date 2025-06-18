@@ -69,7 +69,10 @@ public class QuickMathActivity extends BaseActivity {
         equationText = findViewById(R.id.equationText);
         closeGame = findViewById(R.id.close_game);
 
-        closeGame.setOnClickListener(view -> showExitDialog());
+        closeGame.setOnClickListener(view -> {
+            SoundManager.getInstance(this).playPop();
+            showExitDialog();
+        });
         
         answerButtons = new MaterialButton[4];
         answerButtons[0] = findViewById(R.id.answer1Button);
@@ -86,7 +89,10 @@ public class QuickMathActivity extends BaseActivity {
         // Set up click listeners for answer buttons
         for (int i = 0; i < answerButtons.length; i++) {
             final int index = i;
-            answerButtons[i].setOnClickListener(v -> checkAnswer(index));
+            answerButtons[i].setOnClickListener(v -> {
+                SoundManager.getInstance(this).playButton();
+                checkAnswer(index);
+            });
         }
 
         tutorialHelper = new TutorialHelper(this);

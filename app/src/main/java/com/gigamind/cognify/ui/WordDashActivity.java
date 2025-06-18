@@ -166,7 +166,10 @@ public class WordDashActivity extends BaseActivity {
         loadingIndicator = findViewById(R.id.loadingIndicator);
         closeGame = findViewById(R.id.close_game);
 
-        closeGame.setOnClickListener(view -> showExitDialog());
+        closeGame.setOnClickListener(view -> {
+            SoundManager.getInstance(this).playPop();
+            showExitDialog();
+        });
     }
 
     private void setupButtons() {
@@ -174,9 +177,18 @@ public class WordDashActivity extends BaseActivity {
         clearButton = findViewById(R.id.clearButton);
         backspaceButton = findViewById(R.id.backspaceButton);
 
-        submitButton.setOnClickListener(v -> submitWord());
-        clearButton.setOnClickListener(v -> clearWord());
-        backspaceButton.setOnClickListener(this::handleBackspace);
+        submitButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
+            submitWord();
+        });
+        clearButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
+            clearWord();
+        });
+        backspaceButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
+            handleBackspace(v);
+        });
     }
 
     private void observeGameState() {
@@ -237,6 +249,7 @@ public class WordDashActivity extends BaseActivity {
                     v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 }
                 animateButtonPress(button);
+                SoundManager.getInstance(this).playBounce();
                 onLetterClick(letters[index]);
             });
 

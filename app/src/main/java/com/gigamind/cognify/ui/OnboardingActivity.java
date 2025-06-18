@@ -114,6 +114,7 @@ public class OnboardingActivity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 analytics.logOnboardingPage(position);
+                SoundManager.getInstance(OnboardingActivity.this).playSwipe();
             }
         });
 
