@@ -22,6 +22,7 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.util.UserFields;
+import com.gigamind.cognify.util.BadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,7 +44,8 @@ public class ProfileFragment extends Fragment {
     private TextView streakValueText;
     private TextView xpValueText;
     private TextView gamesPlayedValue;
-    private TextView winRateValue;
+    private TextView trophyValue;
+    private ImageView trophyIcon;
     private Button inviteFriendsButton;
     private Button shareStreakButton;
     private Button trophyRoomButton;
@@ -76,7 +78,8 @@ public class ProfileFragment extends Fragment {
         streakValueText     = view.findViewById(R.id.streakValue);
         xpValueText         = view.findViewById(R.id.xpValue);
         gamesPlayedValue    = view.findViewById(R.id.gamesPlayedValue);
-        winRateValue        = view.findViewById(R.id.winRateValue);
+        trophyValue         = view.findViewById(R.id.trophyValue);
+        trophyIcon          = view.findViewById(R.id.trophyIcon);
         inviteFriendsButton = view.findViewById(R.id.inviteFriendsButton);
         trophyRoomButton        = view.findViewById(R.id.trophyRoomButton);
         shareStreakButton       = view.findViewById(R.id.shareStreakButton);
@@ -130,7 +133,8 @@ public class ProfileFragment extends Fragment {
         streakValueText.setText("");
         xpValueText.setText("");
         gamesPlayedValue.setText("");
-        winRateValue.setText("");
+        trophyValue.setText("");
+        trophyIcon.setImageDrawable(null);
 
         if (firebaseUser != null) {
             // 2) Attach the Firestore listener
@@ -141,8 +145,9 @@ public class ProfileFragment extends Fragment {
                     final int streak = userRepository.getCurrentStreak();
                     final int totalXp = userRepository.getTotalXP();
                     final int games = userRepository.getTotalGames();
-                    final int wins = userRepository.getTotalWins();
-                    final int losses = userRepository.getTotalLosses();
+                    final int badgeIndex = BadgeUtils.badgeIndexForXp(totalXp);
+                    final int trophyRes = BadgeUtils.badgeIconResId(badgeIndex);
+                    final String trophyName = BadgeUtils.NAMES[badgeIndex];
                     final String encodedPic = userRepository.getProfilePicture();
 
                     // Always update UI on main thread
@@ -151,9 +156,8 @@ public class ProfileFragment extends Fragment {
                             streakValueText.setText(String.valueOf(streak));
                             xpValueText.setText(String.valueOf(totalXp));
                             gamesPlayedValue.setText(String.valueOf(games));
-                            int total = wins + losses;
-                            String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
-                            winRateValue.setText(rate);
+                            trophyValue.setText(trophyName);
+                            trophyIcon.setImageResource(trophyRes);
                             if (encodedPic != null && !encodedPic.isEmpty()) {
                                 AvatarLoader.load(userRepository, profileAvatar);
                             }
@@ -166,14 +170,12 @@ public class ProfileFragment extends Fragment {
             int streak  = userRepository.getCurrentStreak();
             int totalXp = userRepository.getTotalXP();
             int games   = userRepository.getTotalGames();
-            int wins    = userRepository.getTotalWins();
-            int losses  = userRepository.getTotalLosses();
             streakValueText.setText(String.valueOf(streak));
             xpValueText.setText(String.valueOf(totalXp));
             gamesPlayedValue.setText(String.valueOf(games));
-            int total = wins + losses;
-            String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
-            winRateValue.setText(rate);
+            int badgeIndex = BadgeUtils.badgeIndexForXp(totalXp);
+            trophyValue.setText(BadgeUtils.NAMES[badgeIndex]);
+            trophyIcon.setImageResource(BadgeUtils.badgeIconResId(badgeIndex));
             loadAvatar();
         }
     }
