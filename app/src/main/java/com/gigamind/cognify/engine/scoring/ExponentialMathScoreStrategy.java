@@ -17,7 +17,10 @@ public class ExponentialMathScoreStrategy implements MathScoreStrategy {
         }
 
         int diffFactor = difficulty;
-        int base = GameConfig.BASE_SCORE * diffFactor * diffFactor;
+        // Mirror the tempered quadratic growth used in the word game so that
+        // questions across all operations award comparable points.
+        int base = (GameConfig.BASE_SCORE / 2) * diffFactor * diffFactor
+                + (GameConfig.BASE_SCORE / 2);
         long clamped = Math.min(responseTimeMs, GameConfig.MAX_RESPONSE_TIME_MS);
 
         double bonusFactor = (double) (GameConfig.MAX_RESPONSE_TIME_MS - clamped)

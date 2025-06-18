@@ -29,7 +29,7 @@ if wrong:
     score = -5
 else:
     diffFactor = difficulty
-    base = BASE_SCORE * diffFactor^2
+    base = (BASE_SCORE / 2) * diffFactor^2 + (BASE_SCORE / 2)
     bonus = LENGTH_BONUS * diffFactor
             * (MAX_RESPONSE_TIME_MS - responseTime) / MAX_RESPONSE_TIME_MS
     score = round(base + bonus)
