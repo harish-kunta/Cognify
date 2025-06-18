@@ -173,7 +173,6 @@ public class HomeFragment extends Fragment {
 
         if (isDailyCompleted) {
             dailyChallengeTitle.setText(getString(R.string.completed_today));
-            cardView.setEnabled(false);
         }
     }
 
