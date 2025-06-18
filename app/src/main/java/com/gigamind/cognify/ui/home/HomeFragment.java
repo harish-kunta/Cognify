@@ -52,7 +52,6 @@ public class HomeFragment extends Fragment {
     private CardView playQuickMathButton;
     private RelativeLayout cardView;
     private TextView streakCount;
-    private TextView questTitle;
     private TextView questDescription;
     private TextView questReward;
     private CircleImageView currentUserAvatar;
@@ -117,7 +116,6 @@ public class HomeFragment extends Fragment {
         playQuickMathButton = binding.mathGameCard.getRoot();
         cardView = binding.welcomeCardView;
         streakCount = binding.streakCount;
-        questTitle = binding.questTitle;
         questDescription = binding.questDescription;
         questReward = binding.questReward;
         currentUserAvatar = binding.currentUserAvatar;
@@ -181,7 +179,6 @@ public class HomeFragment extends Fragment {
     /** Displays the rotating daily quest on the welcome card. */
     private void setupQuestCard() {
         Quest quest = QuestManager.getDailyQuest();
-        questTitle.setText(getString(R.string.daily_quest));
         questDescription.setText(quest.description);
         questReward.setText(getString(R.string.quest_reward, quest.reward));
     }
