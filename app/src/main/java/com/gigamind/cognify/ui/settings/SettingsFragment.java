@@ -23,6 +23,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.SoundManager;
 import com.gigamind.cognify.util.GoogleSignInHelper;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -202,6 +203,7 @@ public class SettingsFragment extends Fragment {
                 .addOnSuccessListener(aVoid -> FirebaseService.getInstance().deleteAccountAndData()
                         .addOnSuccessListener(v -> {
                             String msg = getString(R.string.account_deleted);
+                            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show();
                             Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_SHORT).show();
                             binding.getRoot().announceForAccessibility(msg);
                             startActivity(new Intent(requireActivity(), OnboardingActivity.class)
