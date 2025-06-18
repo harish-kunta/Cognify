@@ -25,8 +25,6 @@ import com.gigamind.cognify.ui.QuickMathActivity;
 import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.AvatarLoader;
-import com.gigamind.cognify.model.Quest;
-import com.gigamind.cognify.util.QuestManager;
 import com.gigamind.cognify.util.DailyChallengeManager;
 import android.graphics.Color;
 import android.content.res.ColorStateList;
@@ -50,8 +48,6 @@ public class HomeFragment extends Fragment {
     private CardView playQuickMathButton;
     private RelativeLayout cardView;
     private TextView streakCount;
-    private TextView questDescription;
-    private TextView questReward;
     private TextView dailyPerk;
     private CircleImageView currentUserAvatar;
     /** Flag cached from setupDailyChallenge to know which game is today's challenge */
@@ -96,8 +92,6 @@ public class HomeFragment extends Fragment {
         // 2) Set up daily challenge text
         setupDailyChallenge();
 
-        // 2b) Set up quest card
-        setupQuestCard();
 
         // 3) Configure game cards
         setupGameCards();
@@ -115,8 +109,6 @@ public class HomeFragment extends Fragment {
         playQuickMathButton = binding.mathGameCard.getRoot();
         cardView = binding.welcomeCardView;
         streakCount = binding.streakCount;
-        questDescription = binding.questDescription;
-        questReward = binding.questReward;
         dailyPerk = binding.dailyPerk;
         currentUserAvatar = binding.currentUserAvatar;
         wordGamePlayButton = binding.wordGameCard.playButton;
@@ -175,13 +167,6 @@ public class HomeFragment extends Fragment {
             dailyChallengeTitle.setText(getString(R.string.completed_today));
             cardView.setEnabled(false);
         }
-    }
-
-    /** Displays the rotating daily quest on the welcome card. */
-    private void setupQuestCard() {
-        Quest quest = QuestManager.getDailyQuest();
-        questDescription.setText(quest.description);
-        questReward.setText(getString(R.string.quest_reward, quest.reward));
     }
 
     /** Sets titles, backgrounds and button colors for the game cards. */

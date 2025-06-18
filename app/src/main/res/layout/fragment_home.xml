@@ -126,21 +126,6 @@
                             android:textColor="#FFFF00"
                             android:textSize="14sp" />
 
-                        <TextView
-                            android:id="@+id/questDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="@android:color/white"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/questReward"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:textColor="#FFFF00"
-                            android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
 
