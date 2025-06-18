@@ -12,8 +12,6 @@ public final class GameConfig {
     // Max time considered for full points in Quick Math
     public static final long MAX_RESPONSE_TIME_MS = 5_000;
 
-    // Scale factor used when normalizing Quick Math scores
-    public static final int SCORE_NORMALIZATION_SCALE = 10;
 
     // Word game settings
     public static final int MIN_WORD_LENGTH = 3;
