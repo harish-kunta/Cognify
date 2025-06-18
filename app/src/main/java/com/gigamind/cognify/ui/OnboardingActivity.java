@@ -50,6 +50,11 @@ public class OnboardingActivity extends AppCompatActivity {
     private GameAnalytics analytics;
     private boolean onboardingCompleted = false;
 
+    private void showLoading(boolean show) {
+        binding.loadingIndicator.setVisibility(show ? View.VISIBLE : View.GONE);
+        binding.buttonsContainer.setVisibility(show ? View.INVISIBLE : View.VISIBLE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,10 +150,7 @@ public class OnboardingActivity extends AppCompatActivity {
                 SoundManager.getInstance(this).playButton();
                 onboardingCompleted = true;
                 analytics.logOnboardingCompleted();
-                Intent i = new Intent(OnboardingActivity.this, MainActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                finish();
+                launchMainActivity();
             });
         } else {
             // Not signed in
@@ -169,6 +171,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        showLoading(true);
         GoogleSignInHelper.signIn(this, new GoogleSignInHelper.Callback() {
             @Override
             public void onSuccess(String idToken) {
@@ -181,11 +184,13 @@ public class OnboardingActivity extends AppCompatActivity {
                 String msg = getString(R.string.google_sign_in_failed);
                 Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                 binding.getRoot().announceForAccessibility(msg);
+                showLoading(false);
             }
         });
     }
 
     private void continueAsGuest() {
+        showLoading(true);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(Constants.PREF_IS_GUEST, true);
         editor.putInt(UserRepository.KEY_CURRENT_STREAK, 0);
@@ -196,8 +201,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         onboardingCompleted = true;
         analytics.logOnboardingCompleted();
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        launchMainActivity();
     }
 
     // No onActivityResult needed for CredentialManager flow
@@ -218,11 +222,13 @@ public class OnboardingActivity extends AppCompatActivity {
                              String msg = "Failed to update profile: " + err.getMessage();
                              Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                              binding.getRoot().announceForAccessibility(msg);
+                             showLoading(false);
                          });
                     } else {
                         String msg = "Authentication succeeded but no user found.";
                         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                         binding.getRoot().announceForAccessibility(msg);
+                        showLoading(false);
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -230,6 +236,7 @@ public class OnboardingActivity extends AppCompatActivity {
                     String msg = "Firebase authentication failed: " + e.getMessage();
                     Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
                     binding.getRoot().announceForAccessibility(msg);
+                    showLoading(false);
                 });
     }
 
@@ -248,6 +255,7 @@ public class OnboardingActivity extends AppCompatActivity {
         Intent intent = new Intent(OnboardingActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         finish();
     }
     // If the user manually taps "back," we might want to re-ask next time, so do not override onBackPressed here.
