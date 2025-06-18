@@ -3,7 +3,7 @@ package com.gigamind.cognify.ui;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gigamind.cognify.analytics.GameAnalytics;
 import com.gigamind.cognify.util.SoundManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private MediaPlayer buttonSound;
 
     private NavController navController;

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.gigamind.cognify.util.NotificationPermissionHelper;
 
@@ -40,7 +40,7 @@ import java.util.List;
  * We show a rationale dialog until the user either grants the permission
  * (Android 13+) or explicitly taps getString(R.string.no_thanks) to decline.
  */
-public class OnboardingActivity extends AppCompatActivity {
+public class OnboardingActivity extends BaseActivity {
 
     private ActivityOnboardingBinding binding;
     private FirebaseService firebaseService;

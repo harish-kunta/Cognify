@@ -7,14 +7,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.util.BadgeUtils;
 
 /** Simple activity showing unlocked badge tiers. */
-public class TrophyRoomActivity extends AppCompatActivity {
+public class TrophyRoomActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

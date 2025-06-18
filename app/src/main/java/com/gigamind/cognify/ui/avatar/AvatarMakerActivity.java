@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.AvatarOptionAdapter;
@@ -19,7 +19,7 @@ import com.gigamind.cognify.data.repository.UserRepository;
 import java.util.Arrays;
 import java.util.List;
 
-public class AvatarMakerActivity extends AppCompatActivity {
+public class AvatarMakerActivity extends BaseActivity {
     private ImageView hairView;
     private ImageView eyesView;
     private ImageView mouthView;

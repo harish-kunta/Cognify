@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.gigamind.cognify.R;
@@ -45,7 +45,7 @@ import com.gigamind.cognify.util.SoundManager;
 import com.gigamind.cognify.util.DateUtils;
 import java.util.Random;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends BaseActivity {
 
     private static final String[] ENCOURAGEMENTS = {
             "Amazing!", "Unstoppable!", "You nailed it!", "Keep it going!", "🔥 Hot streak!"

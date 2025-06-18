@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.gigamind.cognify.util.SoundManager;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gigamind.cognify.R;
@@ -40,7 +40,7 @@ import java.util.List;
  * WordDashActivity defers any use of `gameEngine` (and thus loading letters)
  * until the dictionary is fully loaded from assets. This prevents NPE and speeds up launch.
  */
-public class WordDashActivity extends AppCompatActivity {
+public class WordDashActivity extends BaseActivity {
     private WordGameEngine gameEngine;
     private GameStateManager gameStateManager;
     private TextView scoreText, timerText, currentWordText;
