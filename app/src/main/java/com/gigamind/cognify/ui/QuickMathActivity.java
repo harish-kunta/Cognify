@@ -171,6 +171,7 @@ public class QuickMathActivity extends BaseActivity {
         currentScore += points;
         questionCount++;
         scoreText.setText(String.valueOf(currentScore));
+        showPointsPopup(points);
 
         // Visual feedback (could be enhanced with animations)
         answerButtons[buttonIndex].setBackgroundTintList(
@@ -258,6 +259,13 @@ public class QuickMathActivity extends BaseActivity {
         for (MaterialButton btn : answerButtons) {
             btn.setEnabled(enabled);
         }
+    }
+
+    private void showPointsPopup(int points) {
+        View root = findViewById(android.R.id.content);
+        String msg = getString(R.string.points_popup_format, points);
+        Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
+        root.announceForAccessibility(msg);
     }
 
     private void triggerFinalCountdown() {
