@@ -17,13 +17,19 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.ActivityOnboardingBinding;
 import com.gigamind.cognify.util.OnboardingItem;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
+import android.os.CancellationSignal;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.GetCredentialException;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.PasswordCredential;
+import androidx.credentials.PublicKeyCredential;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.googleid.GetGoogleIdOption;
+import androidx.credentials.googleid.GoogleIdTokenCredential;
+import androidx.credentials.googleid.GoogleIdTokenParsingException;
 import com.gigamind.cognify.util.ExceptionLogger;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.gigamind.cognify.analytics.GameAnalytics;
 import com.google.firebase.auth.AuthCredential;
@@ -42,10 +48,9 @@ import java.util.List;
  * (Android 13+) or explicitly taps getString(R.string.no_thanks) to decline.
  */
 public class OnboardingActivity extends AppCompatActivity {
-    private static final int RC_SIGN_IN = 9001;
 
     private ActivityOnboardingBinding binding;
-    private GoogleSignInClient googleSignInClient;
+    private CredentialManager credentialManager;
     private FirebaseService firebaseService;
     private SharedPreferences prefs;
     private UserRepository userRepository;
@@ -68,12 +73,8 @@ public class OnboardingActivity extends AppCompatActivity {
         firebaseService = FirebaseService.getInstance();
         userRepository = new UserRepository(this);
 
-        // Configure Google Sign In (web client ID stored in strings.xml)
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        googleSignInClient = GoogleSignIn.getClient(this, gso);
+        // Initialize CredentialManager for Google ID sign in
+        credentialManager = CredentialManager.create(this);
 
         // 1) Configure notification permission helper (Android 13+)
         notificationPermissionHelper = new NotificationPermissionHelper(
@@ -179,24 +180,54 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void signIn() {
-        int status = com.google.android.gms.common.GoogleApiAvailability
-                .getInstance()
-                .isGooglePlayServicesAvailable(this);
-        if (status != com.google.android.gms.common.ConnectionResult.SUCCESS) {
-            String msg = getString(R.string.play_services_required);
-            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-            binding.getRoot().announceForAccessibility(msg);
-            return;
-        }
+        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId(getString(R.string.default_web_client_id))
+                .build();
 
-        try {
-            Intent signInIntent = googleSignInClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
-        } catch (Exception e) {
-            ExceptionLogger.log("OnboardingActivity", e);
-            String msg = getString(R.string.google_sign_in_failed);
-            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-            binding.getRoot().announceForAccessibility(msg);
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build();
+
+        credentialManager.getCredentialAsync(
+                request,
+                this,
+                new CancellationSignal(),
+                getMainExecutor(),
+                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        handleSignIn(result);
+                    }
+
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        ExceptionLogger.log("OnboardingActivity", e);
+                        String msg = getString(R.string.google_sign_in_failed);
+                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                        binding.getRoot().announceForAccessibility(msg);
+                    }
+                }
+        );
+    }
+
+    private void handleSignIn(GetCredentialResponse result) {
+        androidx.credentials.Credential credential = result.getCredential();
+        if (credential instanceof CustomCredential) {
+            CustomCredential cc = (CustomCredential) credential;
+            if (GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(cc.getType())) {
+                try {
+                    GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
+                    firebaseAuthWithGoogle(googleIdTokenCredential.getIdToken());
+                } catch (GoogleIdTokenParsingException e) {
+                    ExceptionLogger.log("OnboardingActivity", e);
+                }
+            } else {
+                ExceptionLogger.log("OnboardingActivity", new Exception("Unexpected credential type"));
+            }
+        } else if (credential instanceof PasswordCredential || credential instanceof PublicKeyCredential) {
+            // Unsupported credential types for this flow
+            ExceptionLogger.log("OnboardingActivity", new Exception("Unexpected credential"));
         }
     }
 
@@ -215,28 +246,9 @@ public class OnboardingActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    // No onActivityResult needed for CredentialManager flow
 
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn
-                    .getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                if (account != null) {
-                    firebaseAuthWithGoogle(account.getIdToken(), account);
-                }
-            } catch (ApiException e) {
-                ExceptionLogger.log("OnboardingActivity", e);
-                String msg = "Google sign-in failed: " + e.getMessage();
-                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                binding.getRoot().announceForAccessibility(msg);
-            }
-        }
-    }
-
-    private void firebaseAuthWithGoogle(String idToken, GoogleSignInAccount gAccount) {
+    private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         firebaseService.getAuth().signInWithCredential(credential)
                 .addOnSuccessListener(authResult -> {
@@ -244,8 +256,8 @@ public class OnboardingActivity extends AppCompatActivity {
                     if (user != null) {
                         userRepository.createOrUpdateUser(
                                 user.getUid(),
-                                gAccount.getDisplayName(),
-                                gAccount.getEmail()
+                                user.getDisplayName(),
+                                user.getEmail()
                         ).addOnSuccessListener(v -> launchMainActivity())
                          .addOnFailureListener(err -> {
                              ExceptionLogger.log("OnboardingActivity", err);

@@ -23,12 +23,18 @@ import com.gigamind.cognify.util.Constants;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.SoundManager;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
+import android.os.CancellationSignal;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.GetCredentialException;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.PasswordCredential;
+import androidx.credentials.PublicKeyCredential;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.googleid.GetGoogleIdOption;
+import androidx.credentials.googleid.GoogleIdTokenCredential;
+import androidx.credentials.googleid.GoogleIdTokenParsingException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -38,8 +44,7 @@ import com.gigamind.cognify.util.ExceptionLogger;
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
     private SharedPreferences prefs;
-    private GoogleSignInClient googleSignInClient;
-    private static final int RC_REAUTH = 9002;
+    private CredentialManager credentialManager;
     private static final String KEY_SOUND_ENABLED = Constants.PREF_SOUND_ENABLED;
     private static final String KEY_HAPTICS_ENABLED = Constants.PREF_HAPTICS_ENABLED;
     private static final String KEY_ANIMATIONS_ENABLED = Constants.PREF_ANIMATIONS_ENABLED;
@@ -59,11 +64,7 @@ public class SettingsFragment extends Fragment {
 
         prefs = requireActivity().getSharedPreferences(Constants.PREF_APP, 0);
         com.gigamind.cognify.animation.AnimatorProvider.updateFromPreferences(requireContext());
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        googleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+        credentialManager = CredentialManager.create(requireContext());
         setupPreferences();
         setupButtons();
     }
@@ -189,35 +190,52 @@ public class SettingsFragment extends Fragment {
     }
 
     private void startDeleteFlow() {
-        int status = com.google.android.gms.common.GoogleApiAvailability
-                .getInstance()
-                .isGooglePlayServicesAvailable(requireContext());
-        if (status != com.google.android.gms.common.ConnectionResult.SUCCESS) {
-            String msg = getString(R.string.play_services_required);
-            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-            binding.getRoot().announceForAccessibility(msg);
-            return;
-        }
+        GetGoogleIdOption option = new GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(true)
+                .setServerClientId(getString(R.string.default_web_client_id))
+                .build();
 
-        googleSignInClient.silentSignIn().addOnCompleteListener(task -> {
-            GoogleSignInAccount account = task.isSuccessful() ? task.getResult() : null;
-            if (account != null && account.getIdToken() != null) {
-                reauthenticateAndDelete(account.getIdToken());
-            } else {
-                launchSignInIntent();
-            }
-        });
+        GetCredentialRequest request = new GetCredentialRequest.Builder()
+                .addCredentialOption(option)
+                .build();
+
+        credentialManager.getCredentialAsync(
+                request,
+                requireContext(),
+                new CancellationSignal(),
+                requireContext().getMainExecutor(),
+                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        handleDeleteSignIn(result);
+                    }
+
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        String msg = getString(R.string.google_sign_in_failed);
+                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                        binding.getRoot().announceForAccessibility(msg);
+                    }
+                }
+        );
     }
 
-    private void launchSignInIntent() {
-        try {
-            Intent intent = googleSignInClient.getSignInIntent();
-            startActivityForResult(intent, RC_REAUTH);
-        } catch (Exception e) {
-            ExceptionLogger.log("SettingsFragment", e);
-            String msg = getString(R.string.google_sign_in_failed);
-            Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-            binding.getRoot().announceForAccessibility(msg);
+    private void handleDeleteSignIn(GetCredentialResponse result) {
+        androidx.credentials.Credential credential = result.getCredential();
+        if (credential instanceof CustomCredential) {
+            CustomCredential cc = (CustomCredential) credential;
+            if (GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(cc.getType())) {
+                try {
+                    GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
+                    reauthenticateAndDelete(googleIdTokenCredential.getIdToken());
+                } catch (GoogleIdTokenParsingException e) {
+                    ExceptionLogger.log("SettingsFragment", e);
+                }
+            } else {
+                ExceptionLogger.log("SettingsFragment", new Exception("Unexpected credential type"));
+            }
+        } else if (credential instanceof PasswordCredential || credential instanceof PublicKeyCredential) {
+            ExceptionLogger.log("SettingsFragment", new Exception("Unexpected credential"));
         }
     }
 
@@ -243,7 +261,7 @@ public class SettingsFragment extends Fragment {
                         }))
                 .addOnFailureListener(e -> {
                     if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                        launchSignInIntent();
+                        startDeleteFlow();
                     } else {
                         ExceptionLogger.log("SettingsFragment", e);
                         String msg = getString(R.string.delete_account_error, e.getMessage());
@@ -253,24 +271,7 @@ public class SettingsFragment extends Fragment {
                 });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_REAUTH) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                if (account != null) {
-                    reauthenticateAndDelete(account.getIdToken());
-                }
-            } catch (ApiException e) {
-                ExceptionLogger.log("SettingsFragment", e);
-                String msg = getString(R.string.delete_account_error, e.getMessage());
-                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                binding.getRoot().announceForAccessibility(msg);
-            }
-        }
-    }
+    // No onActivityResult needed for CredentialManager flow
 
     @Override
     public void onDestroyView() {
