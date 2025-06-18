@@ -58,7 +58,8 @@ public class MathGameEngineTest {
         assertFalse(engine.checkAnswer(correct + 1));
 
         int difficulty = engine.getCurrentDifficulty();
-        int base = GameConfig.BASE_SCORE * difficulty * difficulty;
+        int base = (GameConfig.BASE_SCORE / 2) * difficulty * difficulty
+                + (GameConfig.BASE_SCORE / 2);
         int expectedFast = base + GameConfig.LENGTH_BONUS * difficulty;
         assertEquals(expectedFast, engine.getScore(true, 0));
         assertEquals(-5, engine.getScore(false, 0));
