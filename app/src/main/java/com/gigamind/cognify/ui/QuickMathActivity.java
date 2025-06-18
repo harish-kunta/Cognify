@@ -192,17 +192,14 @@ public class QuickMathActivity extends AppCompatActivity {
             gameTimer = null;
         }
         timeRemaining = 0;
-        int normalized = questionCount > 0
-                ? Math.round((float) currentScore / questionCount
-                        * GameConfig.SCORE_NORMALIZATION_SCALE)
-                : 0;
+        int finalScore = currentScore;
         analytics.logGameEnd(GameType.MATH,
-            normalized,
+            finalScore,
             (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             true);
         
         Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra(Constants.INTENT_SCORE, normalized);
+        intent.putExtra(Constants.INTENT_SCORE, finalScore);
         intent.putExtra(Constants.INTENT_TIME, (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000));
         intent.putExtra(Constants.INTENT_TYPE, Constants.TYPE_QUICK_MATH);
         startActivity(intent);
@@ -222,12 +219,9 @@ public class QuickMathActivity extends AppCompatActivity {
             gameTimer = null;
         }
         pauseTimestamp = System.currentTimeMillis();
-        int normalized = questionCount > 0
-                ? Math.round((float) currentScore / questionCount
-                        * GameConfig.SCORE_NORMALIZATION_SCALE)
-                : 0;
+        int finalScore = currentScore;
         analytics.logGameEnd(GameType.MATH,
-            normalized,
+            finalScore,
             (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000),
             false);
     }
