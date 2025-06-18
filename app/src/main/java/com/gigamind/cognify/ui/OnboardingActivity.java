@@ -192,28 +192,28 @@ public class OnboardingActivity extends AppCompatActivity {
                 .addCredentialOption(googleIdOption)
                 .build();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            credentialManager.getCredentialAsync(
-                    this,
-                    request,
-                            new CancellationSignal(),
-                            getMainExecutor(),
-                            new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
-                                @Override
-                                public void onResult(GetCredentialResponse result) {
-                                    handleSignIn(result);
-                                }
+        // CredentialManager supports back to API 21 via Play Services, so no
+        // SDK version check is necessary here.
+        credentialManager.getCredentialAsync(
+                this,
+                request,
+                new CancellationSignal(),
+                getMainExecutor(),
+                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+                        handleSignIn(result);
+                    }
 
-                                @Override
-                                public void onError(GetCredentialException e) {
-                                    ExceptionLogger.log("OnboardingActivity", e);
-                                    String msg = getString(R.string.google_sign_in_failed);
-                                    Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                                    binding.getRoot().announceForAccessibility(msg);
-                                }
-                            }
-                    );
-        }
+                    @Override
+                    public void onError(GetCredentialException e) {
+                        ExceptionLogger.log("OnboardingActivity", e);
+                        String msg = getString(R.string.google_sign_in_failed);
+                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                        binding.getRoot().announceForAccessibility(msg);
+                    }
+                }
+        );
     }
 
     private void handleSignIn(GetCredentialResponse result) {
