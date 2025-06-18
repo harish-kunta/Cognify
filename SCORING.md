@@ -11,13 +11,11 @@ Word Dash challenges you to form words from a random 4×4 grid. Words are valid 
 - **Complexity bonus:** uncommon letters earn more:
   - `+8` for each J, Q, X or Z
   - `+4` for each K, W, V or Y
-- **Exponential strategy:** by default the game uses an exponential strategy where
-  the base score grows with the square of the word length. Complexity bonuses are
-  multiplied by this length factor as well.
+- **Balanced exponential strategy:** scores still grow with the square of the word length but are scaled down to avoid huge jumps. Complexity bonuses are multiplied by this length factor.
 
 ```
 lengthFactor = wordLength - MIN_WORD_LENGTH + 1
-score = BASE_SCORE * lengthFactor^2 + complexityBonus * lengthFactor
+score = (BASE_SCORE / 2) * lengthFactor^2 + (BASE_SCORE / 2) + complexityBonus * lengthFactor
 ```
 
 ## Quick Math
