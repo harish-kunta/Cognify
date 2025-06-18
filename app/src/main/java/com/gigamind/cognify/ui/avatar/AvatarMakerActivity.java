@@ -15,6 +15,7 @@ import com.gigamind.cognify.R;
 import com.gigamind.cognify.adapter.AvatarOptionAdapter;
 import com.gigamind.cognify.adapter.AvatarOptionAdapter.AvatarOption;
 import com.gigamind.cognify.data.repository.UserRepository;
+import com.gigamind.cognify.util.Constants;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,15 @@ public class AvatarMakerActivity extends AppCompatActivity {
     private Button saveAvatarButton;
     private UserRepository userRepository;
 
+    private int findOptionIndex(List<AvatarOption> options, int resId) {
+        for (int i = 0; i < options.size(); i++) {
+            if (options.get(i).applyResId == resId) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +62,27 @@ public class AvatarMakerActivity extends AppCompatActivity {
         avatarContainer = findViewById(R.id.avatarContainer);
         saveAvatarButton = findViewById(R.id.saveAvatarButton);
         userRepository = new UserRepository(this);
+
+        int savedHair = userRepository.getAvatarOption(Constants.AVATAR_HAIR);
+        if (savedHair != 0) hairView.setImageResource(savedHair);
+        int savedEyes = userRepository.getAvatarOption(Constants.AVATAR_EYES);
+        if (savedEyes != 0) eyesView.setImageResource(savedEyes);
+        int savedMouth = userRepository.getAvatarOption(Constants.AVATAR_MOUTH);
+        if (savedMouth != 0) mouthView.setImageResource(savedMouth);
+        int savedSkin = userRepository.getAvatarOption(Constants.AVATAR_SKIN);
+        if (savedSkin != 0) skinView.setImageResource(savedSkin);
+        int savedAccessory = userRepository.getAvatarOption(Constants.AVATAR_ACCESSORY);
+        if (savedAccessory != 0) accessoriesView.setImageResource(savedAccessory);
+        int savedClothes = userRepository.getAvatarOption(Constants.AVATAR_BODY);
+        if (savedClothes != 0) clothesView.setImageResource(savedClothes);
+        int savedBrows = userRepository.getAvatarOption(Constants.AVATAR_EYEBROWS);
+        if (savedBrows != 0) eyebrowsView.setImageResource(savedBrows);
+        int savedFacial = userRepository.getAvatarOption(Constants.AVATAR_FACIAL_HAIR);
+        if (savedFacial != 0) facialHairView.setImageResource(savedFacial);
+        int savedGlasses = userRepository.getAvatarOption(Constants.AVATAR_GLASSES);
+        if (savedGlasses != 0) glassesView.setImageResource(savedGlasses);
+        int savedTattoo = userRepository.getAvatarOption(Constants.AVATAR_TATTOO);
+        if (savedTattoo != 0) tattooView.setImageResource(savedTattoo);
 
         RecyclerView hairRecycler = findViewById(R.id.hairRecyclerView);
         RecyclerView eyesRecycler = findViewById(R.id.eyesRecyclerView);
@@ -75,8 +106,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.hair_longhaircurvy, R.drawable.hair_longhaircurvy)
         );
 
-        AvatarOptionAdapter hairAdapter = new AvatarOptionAdapter(hairOptions, resId ->
-                hairView.setImageResource(resId));
+        int hairIndex = findOptionIndex(hairOptions, savedHair);
+        AvatarOptionAdapter hairAdapter = new AvatarOptionAdapter(hairOptions, resId -> {
+                hairView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_HAIR, resId);
+        }, hairIndex);
         hairRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         hairRecycler.setAdapter(hairAdapter);
 
@@ -87,8 +121,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.eyes_dizzy, R.drawable.eyes_dizzy),
                 new AvatarOption(R.drawable.eyes_wink, R.drawable.eyes_wink)
         );
-        AvatarOptionAdapter eyesAdapter = new AvatarOptionAdapter(eyesOptions, resId ->
-                eyesView.setImageResource(resId));
+        int eyesIndex = findOptionIndex(eyesOptions, savedEyes);
+        AvatarOptionAdapter eyesAdapter = new AvatarOptionAdapter(eyesOptions, resId -> {
+                eyesView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_EYES, resId);
+        }, eyesIndex);
         eyesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         eyesRecycler.setAdapter(eyesAdapter);
 
@@ -98,8 +135,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.mouth_tongue, R.drawable.mouth_tongue),
                 new AvatarOption(R.drawable.mouth_serious, R.drawable.mouth_serious)
         );
-        AvatarOptionAdapter mouthAdapter = new AvatarOptionAdapter(mouthOptions, resId ->
-                mouthView.setImageResource(resId));
+        int mouthIndex = findOptionIndex(mouthOptions, savedMouth);
+        AvatarOptionAdapter mouthAdapter = new AvatarOptionAdapter(mouthOptions, resId -> {
+                mouthView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_MOUTH, resId);
+        }, mouthIndex);
         mouthRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mouthRecycler.setAdapter(mouthAdapter);
 
@@ -108,8 +148,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.acc_earphones, R.drawable.acc_earphones),
                 new AvatarOption(R.drawable.acc_earring1, R.drawable.acc_earring1)
         );
-        AvatarOptionAdapter accessoriesAdapter = new AvatarOptionAdapter(accessoriesOptions, resId ->
-                accessoriesView.setImageResource(resId));
+        int accIndex = findOptionIndex(accessoriesOptions, savedAccessory);
+        AvatarOptionAdapter accessoriesAdapter = new AvatarOptionAdapter(accessoriesOptions, resId -> {
+                accessoriesView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_ACCESSORY, resId);
+        }, accIndex);
         accessoriesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         accessoriesRecycler.setAdapter(accessoriesAdapter);
 
@@ -117,8 +160,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.clothes_blazer, R.drawable.clothes_blazer),
                 new AvatarOption(R.drawable.clothes_overall, R.drawable.clothes_overall)
         );
-        AvatarOptionAdapter clothesAdapter = new AvatarOptionAdapter(clothesOptions, resId ->
-                clothesView.setImageResource(resId));
+        int clothesIndex = findOptionIndex(clothesOptions, savedClothes);
+        AvatarOptionAdapter clothesAdapter = new AvatarOptionAdapter(clothesOptions, resId -> {
+                clothesView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_BODY, resId);
+        }, clothesIndex);
         clothesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         clothesRecycler.setAdapter(clothesAdapter);
 
@@ -126,8 +172,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.eyebrows_default, R.drawable.eyebrows_default),
                 new AvatarOption(R.drawable.eyebrows_angry, R.drawable.eyebrows_angry)
         );
-        AvatarOptionAdapter eyebrowsAdapter = new AvatarOptionAdapter(eyebrowsOptions, resId ->
-                eyebrowsView.setImageResource(resId));
+        int browsIndex = findOptionIndex(eyebrowsOptions, savedBrows);
+        AvatarOptionAdapter eyebrowsAdapter = new AvatarOptionAdapter(eyebrowsOptions, resId -> {
+                eyebrowsView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_EYEBROWS, resId);
+        }, browsIndex);
         eyebrowsRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         eyebrowsRecycler.setAdapter(eyebrowsAdapter);
 
@@ -136,8 +185,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.facialhair_magnum, R.drawable.facialhair_magnum),
                 new AvatarOption(R.drawable.facialhair_fancy, R.drawable.facialhair_fancy)
         );
-        AvatarOptionAdapter facialHairAdapter = new AvatarOptionAdapter(facialHairOptions, resId ->
-                facialHairView.setImageResource(resId));
+        int facialIndex = findOptionIndex(facialHairOptions, savedFacial);
+        AvatarOptionAdapter facialHairAdapter = new AvatarOptionAdapter(facialHairOptions, resId -> {
+                facialHairView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_FACIAL_HAIR, resId);
+        }, facialIndex);
         facialHairRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         facialHairRecycler.setAdapter(facialHairAdapter);
 
@@ -146,8 +198,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.glasses_rambo, R.drawable.glasses_rambo),
                 new AvatarOption(R.drawable.glasses_nerd, R.drawable.glasses_nerd)
         );
-        AvatarOptionAdapter glassesAdapter = new AvatarOptionAdapter(glassesOptions, resId ->
-                glassesView.setImageResource(resId));
+        int glassesIndex = findOptionIndex(glassesOptions, savedGlasses);
+        AvatarOptionAdapter glassesAdapter = new AvatarOptionAdapter(glassesOptions, resId -> {
+                glassesView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_GLASSES, resId);
+        }, glassesIndex);
         glassesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         glassesRecycler.setAdapter(glassesAdapter);
 
@@ -156,8 +211,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.tattoo_harry, R.drawable.tattoo_harry),
                 new AvatarOption(R.drawable.tattoo_tribal, R.drawable.tattoo_tribal)
         );
-        AvatarOptionAdapter tattooAdapter = new AvatarOptionAdapter(tattooOptions, resId ->
-                tattooView.setImageResource(resId));
+        int tattooIndex = findOptionIndex(tattooOptions, savedTattoo);
+        AvatarOptionAdapter tattooAdapter = new AvatarOptionAdapter(tattooOptions, resId -> {
+                tattooView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_TATTOO, resId);
+        }, tattooIndex);
         tattooRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         tattooRecycler.setAdapter(tattooAdapter);
 
@@ -165,8 +223,11 @@ public class AvatarMakerActivity extends AppCompatActivity {
                 new AvatarOption(R.drawable.skin_white, R.drawable.skin_white),
                 new AvatarOption(R.drawable.skin_black, R.drawable.skin_black)
         );
-        AvatarOptionAdapter skinAdapter = new AvatarOptionAdapter(skinOptions, resId ->
-                skinView.setImageResource(resId));
+        int skinIndex = findOptionIndex(skinOptions, savedSkin);
+        AvatarOptionAdapter skinAdapter = new AvatarOptionAdapter(skinOptions, resId -> {
+                skinView.setImageResource(resId);
+                userRepository.saveAvatarOption(Constants.AVATAR_SKIN, resId);
+        }, skinIndex);
         skinRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         skinRecycler.setAdapter(skinAdapter);
 
