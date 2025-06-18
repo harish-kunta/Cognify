@@ -26,7 +26,7 @@ grant comparable points. Each answer yields points as follows:
 
 ```
 if wrong:
-    score = -5
+    score = -BASE_SCORE * difficulty
 else:
     diffFactor = difficulty
     base = (BASE_SCORE / 2) * diffFactor^2 + (BASE_SCORE / 2)
