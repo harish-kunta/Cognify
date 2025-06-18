@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.databinding.FragmentLeaderboardBinding;
 import com.gigamind.cognify.ui.OnboardingActivity;
+import com.gigamind.cognify.analytics.GameAnalytics;
+import com.gigamind.cognify.util.Constants;
 
 /**
  * A fragment that displays the top‐100 leaderboard.  If the user is not signed in,
@@ -27,6 +29,7 @@ public class LeaderboardFragment extends Fragment {
     private LeaderboardAdapter adapter;
     private FirebaseService firebaseService;
     private LeaderboardViewModel viewModel;
+    private GameAnalytics analytics;
 
     @Nullable
     @Override
@@ -46,6 +49,8 @@ public class LeaderboardFragment extends Fragment {
 
         firebaseService = FirebaseService.getInstance();
         viewModel = new ViewModelProvider(this).get(LeaderboardViewModel.class);
+        analytics = GameAnalytics.getInstance(requireContext());
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_LEADERBOARD);
 
         setupRecyclerView();
         setupListeners();
@@ -63,6 +68,7 @@ public class LeaderboardFragment extends Fragment {
         // Pull‐to‐refresh always forces a refresh.
         binding.swipeRefresh.setOnRefreshListener(() -> {
             if (firebaseService.isUserSignedIn()) {
+                analytics.logButtonClick("refresh_leaderboard");
                 viewModel.refresh();
             } else {
                 binding.swipeRefresh.setRefreshing(false);
@@ -71,11 +77,13 @@ public class LeaderboardFragment extends Fragment {
 
         // Retry button in case of error:
         binding.retryButton.setOnClickListener(v -> {
+            analytics.logButtonClick("retry_leaderboard");
             checkAndLoad();
         });
 
         // If user taps “Sign In,” we send them to OnboardingActivity (or your login screen)
         binding.signInButton.setOnClickListener(v -> {
+            analytics.logButtonClick("signin_leaderboard");
             startActivity(new Intent(requireContext(), OnboardingActivity.class));
         });
     }

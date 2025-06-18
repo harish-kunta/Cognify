@@ -31,6 +31,7 @@ import android.graphics.Color;
 import android.content.res.ColorStateList;
 
 import com.gigamind.cognify.util.SoundManager;
+import com.gigamind.cognify.analytics.GameAnalytics;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -62,6 +63,7 @@ public class HomeFragment extends Fragment {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private ListenerRegistration homeListener;
+    private GameAnalytics analytics;
 
     @Nullable
     @Override
@@ -82,6 +84,9 @@ public class HomeFragment extends Fragment {
 
         // Initialize views
         initializeViews();
+
+        analytics = GameAnalytics.getInstance(requireContext());
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_HOME);
 
         // Initialize SharedPreferences and UserRepository
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
@@ -218,6 +223,7 @@ public class HomeFragment extends Fragment {
 
         currentUserAvatar.setOnClickListener(v -> {
             SoundManager.getInstance(requireContext()).playButton();
+            analytics.logButtonClick("open_profile_avatar");
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNavigation);
             bottomNav.setSelectedItemId(R.id.navigation_profile);
         });
@@ -241,11 +247,14 @@ public class HomeFragment extends Fragment {
         boolean openWordDash;
         if (v.getId() == R.id.wordGameCard || v == binding.wordGameCard.playButton) {
             openWordDash = true;
+            analytics.logButtonClick(isDaily ? "play_word_dash_daily" : "play_word_dash");
         } else if (v.getId() == R.id.mathGameCard || v == binding.mathGameCard.playButton) {
             openWordDash = false;
+            analytics.logButtonClick(isDaily ? "play_quick_math_daily" : "play_quick_math");
         } else {
             // Daily challenge card or title - follow today's designated game
             openWordDash = isWordDay;
+            analytics.logButtonClick("play_daily_challenge");
         }
 
         Intent intent;

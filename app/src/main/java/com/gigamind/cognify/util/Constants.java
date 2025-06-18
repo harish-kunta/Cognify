@@ -48,6 +48,10 @@ public class Constants {
     public static final String ANALYTICS_SCREEN_RESULT = "result_screen";
     public static final String ANALYTICS_SCREEN_WORD_DASH = "word_dash_game";
     public static final String ANALYTICS_SCREEN_QUICK_MATH = "quick_math_game";
+    public static final String ANALYTICS_SCREEN_HOME = "home_screen";
+    public static final String ANALYTICS_SCREEN_PROFILE = "profile_screen";
+    public static final String ANALYTICS_SCREEN_LEADERBOARD = "leaderboard_screen";
+    public static final String ANALYTICS_SCREEN_SETTINGS = "settings_screen";
 
     // Avatar customization keys
     public static final String AVATAR_SKIN = "avatar_skin";
