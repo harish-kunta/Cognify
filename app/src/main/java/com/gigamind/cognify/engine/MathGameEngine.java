@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.gigamind.cognify.util.GameConfig;
-import com.gigamind.cognify.engine.scoring.DefaultMathScoreStrategy;
+import com.gigamind.cognify.engine.scoring.ExponentialMathScoreStrategy;
 import com.gigamind.cognify.engine.scoring.MathScoreStrategy;
 
 public class MathGameEngine {
@@ -18,13 +18,13 @@ public class MathGameEngine {
     private int currentDifficulty;
 
     public MathGameEngine() {
-        this(new DefaultMathScoreStrategy());
+        this(new ExponentialMathScoreStrategy());
     }
 
     public MathGameEngine(MathScoreStrategy strategy) {
         random = new Random();
         currentOptions = new ArrayList<>();
-        scoreStrategy = strategy != null ? strategy : new DefaultMathScoreStrategy();
+        scoreStrategy = strategy != null ? strategy : new ExponentialMathScoreStrategy();
     }
 
     public void generateQuestion() {

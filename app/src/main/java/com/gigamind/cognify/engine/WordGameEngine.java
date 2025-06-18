@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.gigamind.cognify.engine.scoring.DefaultWordScoreStrategy;
+import com.gigamind.cognify.engine.scoring.ExponentialWordScoreStrategy;
 import com.gigamind.cognify.engine.scoring.ScoreStrategy;
 import com.gigamind.cognify.engine.GridGenerator;
 import com.gigamind.cognify.engine.RandomGridGenerator;
@@ -28,7 +28,7 @@ public class WordGameEngine {
     private char[] currentGrid;
 
     public WordGameEngine(Set<String> dictionary) {
-        this(dictionary, new DefaultWordScoreStrategy(), new RandomGridGenerator());
+        this(dictionary, new ExponentialWordScoreStrategy(), new RandomGridGenerator());
     }
 
     public WordGameEngine(Set<String> dictionary, ScoreStrategy strategy) {
@@ -37,7 +37,7 @@ public class WordGameEngine {
 
     public WordGameEngine(Set<String> dictionary, ScoreStrategy strategy, GridGenerator generator) {
         this.dictionary = dictionary;
-        this.scoreStrategy = strategy != null ? strategy : new DefaultWordScoreStrategy();
+        this.scoreStrategy = strategy != null ? strategy : new ExponentialWordScoreStrategy();
         this.gridGenerator = generator != null ? generator : new RandomGridGenerator();
         this.currentGrid = generateGrid();
     }
@@ -48,7 +48,7 @@ public class WordGameEngine {
      * built‑in "words.txt" file.
      */
     public WordGameEngine(Context context) {
-        this(context, new DefaultWordScoreStrategy());
+        this(context, new ExponentialWordScoreStrategy());
     }
 
     public WordGameEngine(Context context, ScoreStrategy strategy) {

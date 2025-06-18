@@ -57,7 +57,8 @@ public class MathGameEngineTest {
         assertTrue(engine.checkAnswer(correct));
         assertFalse(engine.checkAnswer(correct + 1));
 
-        int base = GameConfig.BASE_SCORE * engine.getCurrentDifficulty();
+        int difficulty = engine.getCurrentDifficulty();
+        int base = GameConfig.BASE_SCORE * difficulty * difficulty;
         // At 0 ms response time, points are doubled
         assertEquals(base * 2, engine.getScore(true, 0));
         assertEquals(-5, engine.getScore(false, 0));
