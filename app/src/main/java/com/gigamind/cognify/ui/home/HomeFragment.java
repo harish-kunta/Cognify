@@ -174,10 +174,12 @@ public class HomeFragment extends Fragment {
         // Word Dash card
         binding.wordGameCard.cardTitle.setText(getString(R.string.word_dash));
         binding.wordGameCard.container.setBackgroundResource(R.drawable.bg_card_word);
+        binding.wordGameCard.logoImage.setImageResource(R.drawable.ic_word_logo);
 
         // Quick Math card overrides default accent color
         binding.mathGameCard.cardTitle.setText(getString(R.string.quick_math));
         binding.mathGameCard.container.setBackgroundResource(R.drawable.bg_card_math);
+        binding.mathGameCard.logoImage.setImageResource(R.drawable.ic_math_logo);
         int mathColor = Color.parseColor("#B8860B");
         binding.mathGameCard.playButton.setBackgroundTintList(ColorStateList.valueOf(mathColor));
         binding.mathGameCard.playButton.setRippleColor(ColorStateList.valueOf(mathColor));
