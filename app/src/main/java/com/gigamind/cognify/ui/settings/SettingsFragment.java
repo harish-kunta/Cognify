@@ -8,10 +8,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -20,21 +20,22 @@ import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.FragmentSettingsBinding;
 import com.gigamind.cognify.ui.OnboardingActivity;
 import com.gigamind.cognify.util.Constants;
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.SoundManager;
 import android.os.CancellationSignal;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
-import androidx.credentials.GetCredentialException;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.PasswordCredential;
 import androidx.credentials.PublicKeyCredential;
 import androidx.credentials.CustomCredential;
-import androidx.credentials.googleid.GetGoogleIdOption;
-import androidx.credentials.googleid.GoogleIdTokenCredential;
-import androidx.credentials.googleid.GoogleIdTokenParsingException;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -200,24 +201,24 @@ public class SettingsFragment extends Fragment {
                 .build();
 
         credentialManager.getCredentialAsync(
-                request,
                 requireContext(),
-                new CancellationSignal(),
-                requireContext().getMainExecutor(),
-                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
-                    @Override
-                    public void onResult(GetCredentialResponse result) {
-                        handleDeleteSignIn(result);
-                    }
+                request,
+                        new CancellationSignal(),
+                        requireContext().getMainExecutor(),
+                        new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                            @Override
+                            public void onResult(GetCredentialResponse result) {
+                                handleDeleteSignIn(result);
+                            }
 
-                    @Override
-                    public void onError(GetCredentialException e) {
-                        String msg = getString(R.string.google_sign_in_failed);
-                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                        binding.getRoot().announceForAccessibility(msg);
-                    }
-                }
-        );
+                            @Override
+                            public void onError(GetCredentialException e) {
+                                String msg = getString(R.string.google_sign_in_failed);
+                                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                                binding.getRoot().announceForAccessibility(msg);
+                            }
+                        }
+                );
     }
 
     private void handleDeleteSignIn(GetCredentialResponse result) {
@@ -225,12 +226,8 @@ public class SettingsFragment extends Fragment {
         if (credential instanceof CustomCredential) {
             CustomCredential cc = (CustomCredential) credential;
             if (GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(cc.getType())) {
-                try {
-                    GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
-                    reauthenticateAndDelete(googleIdTokenCredential.getIdToken());
-                } catch (GoogleIdTokenParsingException e) {
-                    ExceptionLogger.log("SettingsFragment", e);
-                }
+                GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
+                reauthenticateAndDelete(googleIdTokenCredential.getIdToken());
             } else {
                 ExceptionLogger.log("SettingsFragment", new Exception("Unexpected credential type"));
             }

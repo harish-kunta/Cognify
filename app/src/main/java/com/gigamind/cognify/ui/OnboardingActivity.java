@@ -2,9 +2,14 @@ package com.gigamind.cognify.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,15 +25,13 @@ import com.gigamind.cognify.util.OnboardingItem;
 import android.os.CancellationSignal;
 import androidx.credentials.CredentialManager;
 import androidx.credentials.CredentialManagerCallback;
-import androidx.credentials.GetCredentialException;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.PasswordCredential;
 import androidx.credentials.PublicKeyCredential;
 import androidx.credentials.CustomCredential;
-import androidx.credentials.googleid.GetGoogleIdOption;
-import androidx.credentials.googleid.GoogleIdTokenCredential;
-import androidx.credentials.googleid.GoogleIdTokenParsingException;
+import androidx.credentials.exceptions.GetCredentialException;
+
 import com.gigamind.cognify.util.ExceptionLogger;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.gigamind.cognify.analytics.GameAnalytics;
@@ -189,26 +192,28 @@ public class OnboardingActivity extends AppCompatActivity {
                 .addCredentialOption(googleIdOption)
                 .build();
 
-        credentialManager.getCredentialAsync(
-                request,
-                this,
-                new CancellationSignal(),
-                getMainExecutor(),
-                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
-                    @Override
-                    public void onResult(GetCredentialResponse result) {
-                        handleSignIn(result);
-                    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            credentialManager.getCredentialAsync(
+                    this,
+                    request,
+                            new CancellationSignal(),
+                            getMainExecutor(),
+                            new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                                @Override
+                                public void onResult(GetCredentialResponse result) {
+                                    handleSignIn(result);
+                                }
 
-                    @Override
-                    public void onError(GetCredentialException e) {
-                        ExceptionLogger.log("OnboardingActivity", e);
-                        String msg = getString(R.string.google_sign_in_failed);
-                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                        binding.getRoot().announceForAccessibility(msg);
-                    }
-                }
-        );
+                                @Override
+                                public void onError(GetCredentialException e) {
+                                    ExceptionLogger.log("OnboardingActivity", e);
+                                    String msg = getString(R.string.google_sign_in_failed);
+                                    Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                                    binding.getRoot().announceForAccessibility(msg);
+                                }
+                            }
+                    );
+        }
     }
 
     private void handleSignIn(GetCredentialResponse result) {
@@ -216,12 +221,8 @@ public class OnboardingActivity extends AppCompatActivity {
         if (credential instanceof CustomCredential) {
             CustomCredential cc = (CustomCredential) credential;
             if (GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(cc.getType())) {
-                try {
-                    GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
-                    firebaseAuthWithGoogle(googleIdTokenCredential.getIdToken());
-                } catch (GoogleIdTokenParsingException e) {
-                    ExceptionLogger.log("OnboardingActivity", e);
-                }
+                GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
+                firebaseAuthWithGoogle(googleIdTokenCredential.getIdToken());
             } else {
                 ExceptionLogger.log("OnboardingActivity", new Exception("Unexpected credential type"));
             }
