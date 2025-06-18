@@ -75,8 +75,8 @@
     <string name="version">Version</string>
 
     <!-- Game Types -->
-    <string name="word_dash">Word Dash</string>
-    <string name="quick_math">Quick Math</string>
+    <string name="word_dash">Word\nDash</string>
+    <string name="quick_math">Quick\nMath</string>
 
     <!-- Changed “Let’s Go” to use plain apostrophe -->
     <string name="lets_go">Lets Go</string>
