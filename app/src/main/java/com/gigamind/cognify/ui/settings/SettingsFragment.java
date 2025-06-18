@@ -40,6 +40,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.gigamind.cognify.util.ExceptionLogger;
+import java.util.UUID;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
@@ -193,6 +194,8 @@ public class SettingsFragment extends Fragment {
         GetGoogleIdOption option = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(true)
                 .setServerClientId(getString(R.string.default_web_client_id))
+                .setAutoSelectEnabled(true)
+                .setNonce(UUID.randomUUID().toString())
                 .build();
 
         GetCredentialRequest request = new GetCredentialRequest.Builder()
