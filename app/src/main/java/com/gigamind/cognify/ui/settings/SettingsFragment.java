@@ -101,6 +101,7 @@ public class SettingsFragment extends Fragment {
 
     private void setupButtons() {
         binding.replayTutorialButton.setOnClickListener(v -> {
+            SoundManager.getInstance(requireContext()).playButton();
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.replay_tutorial)
                     .setMessage(R.string.replay_tutorial_confirm)
@@ -114,6 +115,7 @@ public class SettingsFragment extends Fragment {
         });
 
         binding.resetProgressButton.setOnClickListener(v -> {
+            SoundManager.getInstance(requireContext()).playButton();
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.reset_progress)
                     .setMessage(R.string.reset_progress_confirm)
@@ -129,6 +131,7 @@ public class SettingsFragment extends Fragment {
         });
 
         binding.deleteAccountButton.setOnClickListener(v -> {
+            SoundManager.getInstance(requireContext()).playButton();
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.delete_account)
                     .setMessage(R.string.delete_account_confirm)
@@ -143,6 +146,7 @@ public class SettingsFragment extends Fragment {
         if (service.isUserSignedIn()) {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
+                SoundManager.getInstance(requireContext()).playButton();
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.logout_confirm_title)
                         .setMessage(R.string.logout_confirm_message)
@@ -172,6 +176,7 @@ public class SettingsFragment extends Fragment {
         } else {
             binding.btnSignIn.setText(R.string.sign_in);
             binding.btnSignIn.setOnClickListener(v -> {
+                SoundManager.getInstance(requireContext()).playButton();
                 // Start sign in flow
                 startActivity(new Intent(requireContext(), OnboardingActivity.class));
             });

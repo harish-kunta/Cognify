@@ -83,6 +83,10 @@ public class ResultActivity extends BaseActivity {
         finalGameType = getIntent().getStringExtra(INTENT_TYPE);
         int wordsFound = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
 
+        if (finalScore <= 0) {
+            SoundManager.getInstance(this).playLose();
+        }
+
         // (1) Compute how much XP was earned (PB + streak bonus)
         int xpEarned = calculateXpEarned(finalScore, finalGameType);
 
@@ -386,6 +390,7 @@ public class ResultActivity extends BaseActivity {
 
     private void setupButtons(String gameType) {
         playAgainButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
             Class<?> cls = gameType.equals(Constants.TYPE_QUICK_MATH)
                     ? QuickMathActivity.class
                     : WordDashActivity.class;
@@ -395,13 +400,17 @@ public class ResultActivity extends BaseActivity {
         });
 
         homeButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
             Intent homeIntent = new Intent(this, MainActivity.class);
             homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(homeIntent);
             finish();
         });
 
-        challengeButton.setOnClickListener(v -> shareChallenge());
+        challengeButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
+            shareChallenge();
+        });
     }
 
     @Override

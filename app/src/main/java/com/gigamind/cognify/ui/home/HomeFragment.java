@@ -202,6 +202,7 @@ public class HomeFragment extends Fragment {
             if (areAnimationsEnabled()) {
                 AnimationUtils.bounce(v);
             }
+            SoundManager.getInstance(requireContext()).playButton();
             handleGameLaunch(v);
         };
 
@@ -214,6 +215,7 @@ public class HomeFragment extends Fragment {
         cardView.setOnClickListener(animatedClickListener);
 
         currentUserAvatar.setOnClickListener(v -> {
+            SoundManager.getInstance(requireContext()).playButton();
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNavigation);
             bottomNav.setSelectedItemId(R.id.navigation_profile);
         });
