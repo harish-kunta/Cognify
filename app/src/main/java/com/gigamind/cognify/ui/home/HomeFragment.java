@@ -27,6 +27,7 @@ import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.model.Quest;
 import com.gigamind.cognify.util.QuestManager;
+import com.gigamind.cognify.util.DailyChallengeManager;
 import android.graphics.Color;
 import android.content.res.ColorStateList;
 import com.google.android.material.button.MaterialButton;
@@ -35,9 +36,6 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * HomeFragment now uses UserRepository to fetch and display the user's streak,
@@ -54,6 +52,7 @@ public class HomeFragment extends Fragment {
     private TextView streakCount;
     private TextView questDescription;
     private TextView questReward;
+    private TextView dailyPerk;
     private CircleImageView currentUserAvatar;
     /** Flag cached from setupDailyChallenge to know which game is today's challenge */
     private boolean isWordDay;
@@ -118,6 +117,7 @@ public class HomeFragment extends Fragment {
         streakCount = binding.streakCount;
         questDescription = binding.questDescription;
         questReward = binding.questReward;
+        dailyPerk = binding.dailyPerk;
         currentUserAvatar = binding.currentUserAvatar;
         wordGamePlayButton = binding.wordGameCard.playButton;
         quickMathPlayButton = binding.mathGameCard.playButton;
@@ -158,21 +158,22 @@ public class HomeFragment extends Fragment {
      * then disables it if already completed today (based on local prefs).
      */
     private void setupDailyChallenge() {
-        Calendar calendar = Calendar.getInstance();
-        // Cache today's challenge so click handling knows which game to launch
-        isWordDay = (calendar.get(Calendar.DAY_OF_WEEK) % 2) == 0;
+        // Determine todays challenge and perk via helper
+        String type = DailyChallengeManager.getTodayType(requireContext());
+        isWordDay = Constants.GAME_TYPE_WORD.equals(type);
         String challengeType = isWordDay
                 ? getString(R.string.word_dash)
                 : getString(R.string.quick_math);
         dailyChallengeTitle.setText(challengeType);
 
-        // Use a consistent "YYYY-DDD" key in prefs to mark completion
-        String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US).format(calendar.getTime());
-        boolean isDailyCompleted = prefs.getBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, false);
+        String perk = DailyChallengeManager.getTodayPerk(requireContext());
+        dailyPerk.setText(getString(R.string.perk_format, perk));
+
+        boolean isDailyCompleted = DailyChallengeManager.isCompleted(requireContext());
 
         if (isDailyCompleted) {
             dailyChallengeTitle.setText(getString(R.string.completed_today));
-            dailyChallengeTitle.setEnabled(false);
+            cardView.setEnabled(false);
         }
     }
 
@@ -224,6 +225,12 @@ public class HomeFragment extends Fragment {
     private void handleGameLaunch(View v) {
         boolean isDaily = (v.getId() == R.id.welcomeCardView
                 || v.getId() == R.id.dailyChallengeTitle);
+        if (isDaily && DailyChallengeManager.isCompleted(requireContext())) {
+            Snackbar.make(binding.getRoot(),
+                    getString(R.string.daily_completed_msg),
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
 
         boolean openWordDash;
         if (v.getId() == R.id.wordGameCard || v == binding.wordGameCard.playButton) {
@@ -247,11 +254,7 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
 
         if (isDaily) {
-            // Mark today's challenge as completed in prefs
-            Calendar calendar = Calendar.getInstance();
-            String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US)
-                    .format(calendar.getTime());
-            prefs.edit().putBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, true).apply();
+            DailyChallengeManager.markCompleted(requireContext());
         }
     }
 

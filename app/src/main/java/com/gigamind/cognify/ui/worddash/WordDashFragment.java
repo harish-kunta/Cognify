@@ -31,9 +31,7 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import com.gigamind.cognify.util.DailyChallengeManager;
 
 /**
  * HomeFragment now uses UserRepository to fetch and display the user's streak,
@@ -150,6 +148,12 @@ public class WordDashFragment extends Fragment {
      */
     private void handleGameLaunch(View v) {
         boolean isDaily = (v.getId() == R.id.welcomeCardView);
+        if (isDaily && DailyChallengeManager.isCompleted(requireContext())) {
+            Snackbar.make(binding.getRoot(),
+                    getString(R.string.daily_completed_msg),
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent;
         if (v.getId() == R.id.playWordDashButton) {
             intent = new Intent(getContext(), WordDashActivity.class);
@@ -162,11 +166,7 @@ public class WordDashFragment extends Fragment {
         startActivity(intent);
 
         if (isDaily) {
-            // Mark today's challenge as completed in prefs
-            Calendar calendar = Calendar.getInstance();
-            String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US)
-                    .format(calendar.getTime());
-            prefs.edit().putBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, true).apply();
+            DailyChallengeManager.markCompleted(requireContext());
         }
     }
 
