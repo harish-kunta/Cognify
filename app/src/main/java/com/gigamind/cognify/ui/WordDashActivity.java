@@ -280,6 +280,7 @@ public class WordDashActivity extends BaseActivity {
             analytics.logWordFound(word, timeSpent);
             SoundManager.getInstance(this).playCorrect();
             animateScoreIncrease();
+            showPointsPopup(points);
 
             foundWordsList.add(word);
             foundWordsAdapter.submitList(new ArrayList<>(foundWordsList));
@@ -328,6 +329,13 @@ public class WordDashActivity extends BaseActivity {
     private void clearWord() {
         currentWord.setLength(0);
         currentWordText.setText("");
+    }
+
+    private void showPointsPopup(int points) {
+        View root = findViewById(android.R.id.content);
+        String msg = getString(R.string.points_popup_format, points);
+        Snackbar.make(root, msg, Snackbar.LENGTH_SHORT).show();
+        root.announceForAccessibility(msg);
     }
 
     private void startGame() {
