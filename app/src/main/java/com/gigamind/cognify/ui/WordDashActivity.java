@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.gigamind.cognify.util.SoundManager;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.gigamind.cognify.ui.BaseActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +29,7 @@ import com.gigamind.cognify.util.GameType;
 import com.gigamind.cognify.util.GameTimer;
 import com.gigamind.cognify.util.TutorialHelper;
 import com.gigamind.cognify.ui.TutorialOverlay;
+import com.gigamind.cognify.ui.MainActivity;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -55,6 +57,7 @@ public class WordDashActivity extends BaseActivity {
 
     private GameAnalytics analytics;
     private long wordStartTime;
+    private long timeRemaining;
     private TutorialHelper tutorialHelper;
     private boolean tutorialActive = false;
     private TutorialOverlay tutorialOverlay;
@@ -80,6 +83,7 @@ public class WordDashActivity extends BaseActivity {
         analytics = GameAnalytics.getInstance(this);
         analytics.logScreenView(Constants.ANALYTICS_SCREEN_WORD_DASH);
         analytics.logGameStart(GameType.WORD);
+        timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
 
         tutorialHelper = new TutorialHelper(this);
 
@@ -339,20 +343,26 @@ public class WordDashActivity extends BaseActivity {
     }
 
     private void startGame() {
-        gameStateManager.startGame(GameConfig.WORD_DASH_DURATION_MS);
-        startGameTimer();
+        timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
+        gameStateManager.startGame(timeRemaining);
+        startGameTimer(timeRemaining);
     }
 
     private void startGameTimer() {
+        startGameTimer(timeRemaining);
+    }
+
+    private void startGameTimer(long duration) {
         if (gameTimer != null) {
             gameTimer.stop();
         }
         gameTimer = new GameTimer.Builder()
-                .duration(GameConfig.WORD_DASH_DURATION_MS)
+                .duration(duration)
                 .tickInterval(1000)
                 .listener(new GameTimer.Listener() {
                     @Override
                     public void onTick(long millisRemaining) {
+                        timeRemaining = millisRemaining;
                         gameStateManager.updateTimeRemaining(millisRemaining);
                         if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS) {
                             triggerFinalCountdown();
@@ -361,6 +371,7 @@ public class WordDashActivity extends BaseActivity {
 
                     @Override
                     public void onFinish() {
+                        timeRemaining = 0;
                         endGame();
                     }
                 })
@@ -452,5 +463,34 @@ public class WordDashActivity extends BaseActivity {
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
         com.gigamind.cognify.animation.AnimationUtils.shake(timerText, 8f);
+    }
+
+    private void showExitDialog() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.exit_game_title)
+                .setMessage(R.string.exit_game_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton(R.string.no, (dialog, which) -> {
+                    startGameTimer(timeRemaining);
+                })
+                .setOnCancelListener(d -> startGameTimer(timeRemaining))
+                .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!tutorialActive) {
+            showExitDialog();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
