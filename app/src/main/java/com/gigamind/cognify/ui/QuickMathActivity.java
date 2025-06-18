@@ -13,6 +13,7 @@ import com.gigamind.cognify.ui.MainActivity;
 import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameTimer;
 import com.gigamind.cognify.util.TutorialHelper;
+import com.gigamind.cognify.util.GameType;
 import com.gigamind.cognify.ui.TutorialOverlay;
 
 import com.gigamind.cognify.ui.BaseActivity;
@@ -22,7 +23,6 @@ import com.gigamind.cognify.engine.MathGameEngine;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.material.button.MaterialButton;
 import com.gigamind.cognify.analytics.GameAnalytics;
-import com.gigamind.cognify.util.GameType;
 import com.gigamind.cognify.util.SoundManager;
 
 import java.util.List;
@@ -96,7 +96,7 @@ public class QuickMathActivity extends BaseActivity {
             });
         }
 
-        tutorialHelper = new TutorialHelper(this);
+        tutorialHelper = new TutorialHelper(this, GameType.MATH);
 
         disableGameInteractions();
         if (!tutorialHelper.isTutorialCompleted()) {
