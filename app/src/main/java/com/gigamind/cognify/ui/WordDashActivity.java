@@ -69,6 +69,7 @@ public class WordDashActivity extends BaseActivity {
     private View loadingIndicator;
     private long timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
     private long pauseTimestamp;
+    private boolean finalCountdownPlayed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -363,6 +364,7 @@ public class WordDashActivity extends BaseActivity {
 
     private void startGame() {
         timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
+        finalCountdownPlayed = false;
         gameStateManager.startGame(timeRemaining);
         startGameTimer();
     }
@@ -379,8 +381,9 @@ public class WordDashActivity extends BaseActivity {
                     public void onTick(long millisRemaining) {
                         timeRemaining = millisRemaining;
                         gameStateManager.updateTimeRemaining(millisRemaining);
-                        if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS) {
+                        if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS && !finalCountdownPlayed) {
                             triggerFinalCountdown();
+                            finalCountdownPlayed = true;
                         }
                     }
 
