@@ -27,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.gigamind.cognify.analytics.GameAnalytics;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -54,6 +55,7 @@ public class ProfileFragment extends Fragment {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private ListenerRegistration userDocListener;
+    private GameAnalytics analytics;
 
     @Nullable
     @Override
@@ -88,6 +90,8 @@ public class ProfileFragment extends Fragment {
         // 2) Initialize FirebaseUser & UserRepository
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
         userRepository = new UserRepository(requireContext());
+        analytics = GameAnalytics.getInstance(requireContext());
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_PROFILE);
 
         // 3) Populate static profile info (name, email, joined date)
         populateUserInfo();
@@ -183,11 +187,13 @@ public class ProfileFragment extends Fragment {
     private void setupClickListeners() {
         // (Alternatively, open a real SettingsActivity)
         settingsIcon.setOnClickListener(v -> {
+            analytics.logButtonClick("open_settings_from_profile");
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNavigation);
             bottomNav.setSelectedItemId(R.id.navigation_settings);
         });
 
         inviteFriendsButton.setOnClickListener(v -> {
+            analytics.logButtonClick("invite_friends");
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             String friendCode = (firebaseUser != null) ? firebaseUser.getUid() : "guest";
@@ -198,6 +204,7 @@ public class ProfileFragment extends Fragment {
 
 
         shareStreakButton.setOnClickListener(v -> {
+            analytics.logButtonClick("share_streak");
             int streak = userRepository.getCurrentStreak();
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
@@ -207,10 +214,12 @@ public class ProfileFragment extends Fragment {
         });
 
         trophyRoomButton.setOnClickListener(v -> {
+            analytics.logButtonClick("open_trophy_room");
             Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.trophy.TrophyRoomActivity.class);
             startActivity(intent);
         });
         profileAvatar.setOnClickListener(v -> {
+            analytics.logButtonClick("edit_avatar");
             Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.avatar.AvatarMakerActivity.class);
             startActivity(intent);
         });
