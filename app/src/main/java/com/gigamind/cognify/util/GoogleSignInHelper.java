@@ -26,11 +26,11 @@ public class GoogleSignInHelper {
         void onError(Exception e);
     }
 
-    public static void signIn(Activity activity, Callback callback) {
+    public static void signIn(Activity activity, boolean filterByAuthorizedAccounts, Callback callback) {
         CredentialManager credentialManager = CredentialManager.create(activity);
 
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
+                .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setServerClientId(activity.getString(R.string.default_web_client_id))
                 .setAutoSelectEnabled(true)
                 .setNonce(UUID.randomUUID().toString())
@@ -57,6 +57,10 @@ public class GoogleSignInHelper {
                     }
                 }
         );
+    }
+
+    public static void signIn(Activity activity, Callback callback) {
+        signIn(activity, false, callback);
     }
 
     private static void handleResult(GetCredentialResponse result, Callback callback) {
