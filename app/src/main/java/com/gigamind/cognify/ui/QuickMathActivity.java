@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.gigamind.cognify.util.GameConfig;
 import com.gigamind.cognify.util.GameTimer;
@@ -20,6 +21,7 @@ import com.google.android.material.button.MaterialButton;
 import com.gigamind.cognify.analytics.GameAnalytics;
 import com.gigamind.cognify.util.GameType;
 import com.gigamind.cognify.util.SoundManager;
+import com.gigamind.cognify.ui.MainActivity;
 
 import java.util.List;
 
@@ -265,5 +267,35 @@ public class QuickMathActivity extends BaseActivity {
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
         com.gigamind.cognify.animation.AnimationUtils.shake(timerText, 8f);
+    }
+
+    private void showExitDialog() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+            gameTimer = null;
+        }
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.exit_game_title)
+                .setMessage(R.string.exit_game_message)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton(R.string.no, (dialog, which) -> {
+                    startGameTimer();
+                })
+                .setOnCancelListener(d -> startGameTimer())
+                .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!tutorialActive) {
+            showExitDialog();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

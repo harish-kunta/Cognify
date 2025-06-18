@@ -233,6 +233,8 @@
 
     <string name="welcome_card_title">Welcome to Cognify!</string>
     <string name="welcome_card_subtitle">Lets start to Learn and Play the game</string>
+    <string name="exit_game_title">Exit Game?</string>
+    <string name="exit_game_message">All points earned will be lost. Do you want to exit?</string>
     <string name="points_popup_format">%+d points</string>
 </resources>
 
