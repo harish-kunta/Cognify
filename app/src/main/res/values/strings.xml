@@ -198,6 +198,7 @@
     <string name="badge_legend">Legend</string>
     <string name="perk_format">Perk: %1$s</string>
     <string name="daily_completed_msg">Daily challenge already completed today.</string>
+    <string name="today_challenge_format">Today: %1$s</string>
     <string name="play_tip">You\u2019ll see a quick tutorial first.</string>
     <string name="tutorial_start_hint">Tap letters to form a word, then hit Submit.</string>
     <string name="tutorial_complete">Great! Tutorial complete.</string>

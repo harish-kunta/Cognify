@@ -45,6 +45,7 @@ public class HomeFragment extends Fragment {
     MaterialButton quickMathPlayButton;
     private FragmentHomeBinding binding;
     private TextView dailyChallengeTitle;
+    private TextView dailyChallengeGame;
     private CardView playWordDashButton;
     private CardView playQuickMathButton;
     private RelativeLayout cardView;
@@ -107,6 +108,7 @@ public class HomeFragment extends Fragment {
      */
     private void initializeViews() {
         dailyChallengeTitle = binding.dailyChallengeTitle;
+        dailyChallengeGame = binding.dailyChallengeGame;
         playWordDashButton = binding.wordGameCard.getRoot();
         playQuickMathButton = binding.mathGameCard.getRoot();
         cardView = binding.welcomeCardView;
@@ -159,7 +161,8 @@ public class HomeFragment extends Fragment {
         String challengeType = isWordDay
                 ? getString(R.string.word_dash)
                 : getString(R.string.quick_math);
-        dailyChallengeTitle.setText(challengeType);
+        dailyChallengeTitle.setText(R.string.daily_challenge);
+        dailyChallengeGame.setText(getString(R.string.today_challenge_format, challengeType));
         dailyChallengeLogo.setImageResource(
                 isWordDay ? R.drawable.ic_word_logo : R.drawable.ic_math_logo);
 
@@ -203,6 +206,7 @@ public class HomeFragment extends Fragment {
         };
 
         dailyChallengeTitle.setOnClickListener(animatedClickListener);
+        dailyChallengeGame.setOnClickListener(animatedClickListener);
         playWordDashButton.setOnClickListener(animatedClickListener);
         playQuickMathButton.setOnClickListener(animatedClickListener);
         wordGamePlayButton.setOnClickListener(animatedClickListener);
@@ -216,7 +220,8 @@ public class HomeFragment extends Fragment {
      */
     private void handleGameLaunch(View v) {
         boolean isDaily = (v.getId() == R.id.welcomeCardView
-                || v.getId() == R.id.dailyChallengeTitle);
+                || v.getId() == R.id.dailyChallengeTitle
+                || v.getId() == R.id.dailyChallengeGame);
         if (isDaily && DailyChallengeManager.isCompleted(requireContext())) {
             Snackbar.make(binding.getRoot(),
                     getString(R.string.daily_completed_msg),
