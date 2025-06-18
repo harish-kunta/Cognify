@@ -68,6 +68,9 @@ public class QuickMathActivity extends AppCompatActivity {
         answerButtons[1] = findViewById(R.id.answer2Button);
         answerButtons[2] = findViewById(R.id.answer3Button);
         answerButtons[3] = findViewById(R.id.answer4Button);
+        for (MaterialButton btn : answerButtons) {
+            btn.setSoundEffectsEnabled(false);
+        }
 
         // Initialize game
         gameEngine = new MathGameEngine();

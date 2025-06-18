@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Bind BottomNavigationView with NavController
         bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigation.setSoundEffectsEnabled(false);
         if (navController != null) {
             NavigationUI.setupWithNavController(bottomNavigation, navController);
         }

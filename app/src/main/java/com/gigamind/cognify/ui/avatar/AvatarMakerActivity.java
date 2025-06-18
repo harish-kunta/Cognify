@@ -51,6 +51,7 @@ public class AvatarMakerActivity extends AppCompatActivity {
         tattooView = findViewById(R.id.tattooView);
         avatarContainer = findViewById(R.id.avatarContainer);
         saveAvatarButton = findViewById(R.id.saveAvatarButton);
+        saveAvatarButton.setSoundEffectsEnabled(false);
         userRepository = new UserRepository(this);
 
         RecyclerView hairRecycler = findViewById(R.id.hairRecyclerView);

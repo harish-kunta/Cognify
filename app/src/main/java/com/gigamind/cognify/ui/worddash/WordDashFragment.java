@@ -93,7 +93,9 @@ public class WordDashFragment extends Fragment {
     private void initializeViews() {
         streakCount = binding.streakCount;
         wordGamePlayButton = binding.playWordDashButton;
+        wordGamePlayButton.setSoundEffectsEnabled(false);
         userProfileButton = binding.currentUserAvatar;
+        userProfileButton.setSoundEffectsEnabled(false);
     }
 
     /**

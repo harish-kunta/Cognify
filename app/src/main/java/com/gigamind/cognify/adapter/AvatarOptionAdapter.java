@@ -69,6 +69,7 @@ public class AvatarOptionAdapter extends RecyclerView.Adapter<AvatarOptionAdapte
             card.setStrokeWidth(0);
         }
 
+        holder.imageView.setSoundEffectsEnabled(false);
         holder.imageView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onOptionClicked(option.applyResId);

@@ -70,11 +70,13 @@ public class LeaderboardFragment extends Fragment {
         });
 
         // Retry button in case of error:
+        binding.retryButton.setSoundEffectsEnabled(false);
         binding.retryButton.setOnClickListener(v -> {
             checkAndLoad();
         });
 
         // If user taps “Sign In,” we send them to OnboardingActivity (or your login screen)
+        binding.signInButton.setSoundEffectsEnabled(false);
         binding.signInButton.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), OnboardingActivity.class));
         });

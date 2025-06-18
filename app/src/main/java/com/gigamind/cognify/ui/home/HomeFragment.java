@@ -114,15 +114,21 @@ public class HomeFragment extends Fragment {
     private void initializeViews() {
         dailyChallengeTitle = binding.dailyChallengeTitle;
         playWordDashButton = binding.wordGameCard.getRoot();
+        playWordDashButton.setSoundEffectsEnabled(false);
         playQuickMathButton = binding.mathGameCard.getRoot();
+        playQuickMathButton.setSoundEffectsEnabled(false);
         cardView = binding.welcomeCardView;
+        cardView.setSoundEffectsEnabled(false);
         streakCount = binding.streakCount;
         questTitle = binding.questTitle;
         questDescription = binding.questDescription;
         questReward = binding.questReward;
         currentUserAvatar = binding.currentUserAvatar;
+        currentUserAvatar.setSoundEffectsEnabled(false);
         wordGamePlayButton = binding.wordGameCard.playButton;
+        wordGamePlayButton.setSoundEffectsEnabled(false);
         quickMathPlayButton = binding.mathGameCard.playButton;
+        quickMathPlayButton.setSoundEffectsEnabled(false);
     }
 
     /**
