@@ -32,7 +32,7 @@ public class GoogleSignInHelper {
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setServerClientId(activity.getString(R.string.default_web_client_id))
-                .setAutoSelectEnabled(true)
+                .setAutoSelectEnabled(false)
                 .setNonce(UUID.randomUUID().toString())
                 .build();
 
