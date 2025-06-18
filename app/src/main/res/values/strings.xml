@@ -142,6 +142,10 @@
         If you log out now, your score and streak wont be saved. Do you really want to sign out?
     </string>
     <string name="logout_confirm_positive">Yes, Sign Out</string>
+    <string name="exit_game_confirm_title">Exit Game?</string>
+    <string name="exit_game_confirm_message">All points will be lost. Do you want to exit?</string>
+    <string name="exit_game_yes">Yes, Exit</string>
+    <string name="continue_playing">Continue Playing</string>
     <string name="unknown_user">Unknown User</string>
     <string name="guest">Guest</string>
     <string name="joined_prefix">Joined %1$s</string>

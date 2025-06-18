@@ -9,6 +9,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import com.gigamind.cognify.util.SoundManager;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,6 +29,7 @@ import com.gigamind.cognify.util.GameType;
 import com.gigamind.cognify.util.GameTimer;
 import com.gigamind.cognify.util.TutorialHelper;
 import com.gigamind.cognify.ui.TutorialOverlay;
+import com.gigamind.cognify.ui.MainActivity;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -63,6 +65,8 @@ public class WordDashActivity extends BaseActivity {
     private MaterialButton backspaceButton;
     private boolean hapticsEnabled = true;
     private View loadingIndicator;
+    private long timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
+    private long pauseTimestamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -339,7 +343,8 @@ public class WordDashActivity extends BaseActivity {
     }
 
     private void startGame() {
-        gameStateManager.startGame(GameConfig.WORD_DASH_DURATION_MS);
+        timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
+        gameStateManager.startGame(timeRemaining);
         startGameTimer();
     }
 
@@ -348,11 +353,12 @@ public class WordDashActivity extends BaseActivity {
             gameTimer.stop();
         }
         gameTimer = new GameTimer.Builder()
-                .duration(GameConfig.WORD_DASH_DURATION_MS)
+                .duration(timeRemaining)
                 .tickInterval(1000)
                 .listener(new GameTimer.Listener() {
                     @Override
                     public void onTick(long millisRemaining) {
+                        timeRemaining = millisRemaining;
                         gameStateManager.updateTimeRemaining(millisRemaining);
                         if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS) {
                             triggerFinalCountdown();
@@ -361,6 +367,7 @@ public class WordDashActivity extends BaseActivity {
 
                     @Override
                     public void onFinish() {
+                        timeRemaining = 0;
                         endGame();
                     }
                 })
@@ -452,5 +459,43 @@ public class WordDashActivity extends BaseActivity {
     private void triggerFinalCountdown() {
         SoundManager.getInstance(this).playHeartbeat();
         com.gigamind.cognify.animation.AnimationUtils.shake(timerText, 8f);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showExitDialog();
+    }
+
+    private void showExitDialog() {
+        pauseGameTimer();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.exit_game_confirm_title)
+                .setMessage(R.string.exit_game_confirm_message)
+                .setPositiveButton(R.string.exit_game_yes, (d, w) -> {
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                })
+                .setNegativeButton(R.string.continue_playing, (d, w) -> resumeGameTimer())
+                .setOnCancelListener(d -> resumeGameTimer())
+                .show();
+    }
+
+    private void pauseGameTimer() {
+        if (gameTimer != null) {
+            gameTimer.stop();
+            gameTimer = null;
+        }
+        pauseTimestamp = System.currentTimeMillis();
+    }
+
+    private void resumeGameTimer() {
+        if (timeRemaining > 0 && gameTimer == null && !tutorialActive) {
+            if (pauseTimestamp > 0) {
+                long pausedFor = System.currentTimeMillis() - pauseTimestamp;
+                wordStartTime += pausedFor;
+                pauseTimestamp = 0;
+            }
+            startGameTimer();
+        }
     }
 }
