@@ -89,8 +89,6 @@
     <string name="streak_channel_name">Streak Reminder</string>
     <string name="streak_channel_desc">Notifies if you havent played in 24 hours</string>
 
-    <string name="welcome_card_title">Welcome to Cognify!</string>
-    <string name="welcome_card_subtitle">Lets start to Learn and Play the game</string>
 
     <string name="leaderboards">Leaderboards</string>
     <string name="play_more_games">Play More Games</string>

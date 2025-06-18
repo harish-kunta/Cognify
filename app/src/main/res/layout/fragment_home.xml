@@ -96,27 +96,31 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <!-- Heading -->
+                    <!-- Daily Quest Info -->
                     <TextView
-                        android:id="@+id/titleText"
+                        android:id="@+id/questTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/welcome_card_title"
+                        android:layout_marginTop="12dp"
                         android:textColor="@android:color/white"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <!-- Main Message -->
                     <TextView
-                        android:id="@+id/ctaText"
+                        android:id="@+id/questDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/titleText"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/welcome_card_subtitle"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/questReward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:textColor="#FFFF00"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="14sp" />
 
                     <!-- Icon Label -->
                     <LinearLayout
@@ -157,49 +161,6 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/questCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="@android:color/transparent"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp">
-
-            <LinearLayout
-                android:id="@+id/dailyQuestContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/questTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/daily_quest"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/questDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/questReward"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="#FFFF00"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
         <!-- Game Modes Section -->
         <TextView
