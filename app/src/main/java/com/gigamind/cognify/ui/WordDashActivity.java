@@ -70,6 +70,7 @@ public class WordDashActivity extends BaseActivity {
     private long timeRemaining = GameConfig.WORD_DASH_DURATION_MS;
     private long pauseTimestamp;
     private boolean finalCountdownPlayed = false;
+    private boolean isDailyChallenge = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,7 @@ public class WordDashActivity extends BaseActivity {
         setContentView(R.layout.activity_word_dash);
 
         int challengeScore = getIntent().getIntExtra(Constants.EXTRA_CHALLENGE_SCORE, -1);
+        isDailyChallenge = getIntent().getBooleanExtra(Constants.INTENT_IS_DAILY, false);
         if (challengeScore >= 0) {
             String msg = getString(R.string.challenge_toast, challengeScore);
             View root = findViewById(android.R.id.content);
@@ -416,6 +418,7 @@ public class WordDashActivity extends BaseActivity {
                 Constants.GAME_TYPE_WORD_DASH);
         intent.putExtra(Constants.INTENT_FOUND_WORDS,
                 foundWordsList.size());
+        intent.putExtra(Constants.INTENT_IS_DAILY, isDailyChallenge);
         startActivity(intent);
         finish();
     }

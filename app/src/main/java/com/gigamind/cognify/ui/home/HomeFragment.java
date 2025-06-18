@@ -231,7 +231,7 @@ public class HomeFragment extends Fragment {
 
     /**
      * Decides which game to launch (WordDash or QuickMath) based on the view clicked
-     * and whether it was the daily challenge. Also marks daily challenge complete.
+     * and whether it was the daily challenge.
      */
     private void handleGameLaunch(View v) {
         boolean isDaily = (v.getId() == R.id.welcomeCardView
@@ -267,10 +267,6 @@ public class HomeFragment extends Fragment {
         }
         intent.putExtra(Constants.INTENT_IS_DAILY, isDaily);
         startActivity(intent);
-
-        if (isDaily) {
-            DailyChallengeManager.markCompleted(requireContext());
-        }
     }
 
     private boolean areAnimationsEnabled() {
