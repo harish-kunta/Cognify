@@ -74,10 +74,6 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.flexbox)
 
-    implementation(libs.credentials)
-    implementation(libs.credentials.play.services.auth)
-    implementation (libs.googleid)
-
     testImplementation(libs.junit)
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")

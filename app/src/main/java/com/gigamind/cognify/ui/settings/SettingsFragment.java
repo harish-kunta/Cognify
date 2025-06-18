@@ -22,7 +22,6 @@ import com.gigamind.cognify.ui.OnboardingActivity;
 import com.gigamind.cognify.util.Constants;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.SoundManager;
