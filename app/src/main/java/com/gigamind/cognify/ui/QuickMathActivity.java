@@ -11,7 +11,7 @@ import com.gigamind.cognify.util.GameTimer;
 import com.gigamind.cognify.util.TutorialHelper;
 import com.gigamind.cognify.ui.TutorialOverlay;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.gigamind.cognify.R;
 import com.gigamind.cognify.engine.MathGameEngine;
@@ -23,7 +23,7 @@ import com.gigamind.cognify.util.SoundManager;
 
 import java.util.List;
 
-public class QuickMathActivity extends AppCompatActivity {
+public class QuickMathActivity extends BaseActivity {
     private MathGameEngine gameEngine;
     private TextView scoreText;
     private TextView timerText;

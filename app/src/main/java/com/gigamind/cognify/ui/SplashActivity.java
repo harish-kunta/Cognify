@@ -9,14 +9,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.gigamind.cognify.databinding.ActivitySplashBinding;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.SoundManager;
 import com.gigamind.cognify.util.ExceptionLogger;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
     private ActivitySplashBinding binding;
     private static final long SPLASH_DELAY = 2000; // 2 seconds
 
