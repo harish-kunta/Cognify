@@ -99,7 +99,7 @@
                     android:layout_marginBottom="32dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/word_dash_blocks_desc"
-                    android:src="@drawable/ic_abc" />
+                    android:src="@drawable/ic_word_logo" />
 
                 <!-- Play Button -->
                 <com.google.android.material.button.MaterialButton

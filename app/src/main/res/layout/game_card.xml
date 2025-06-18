@@ -28,6 +28,12 @@
             android:textSize="32sp"
             android:textStyle="bold" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_math_logo"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/playButton"
             style="@style/Button.Play"

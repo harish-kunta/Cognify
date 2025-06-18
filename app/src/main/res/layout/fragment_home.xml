@@ -138,7 +138,7 @@
                     android:layout_marginEnd="0dp"
                     android:layout_marginBottom="-5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_abc_blocks" />
+                    android:src="@drawable/ic_word_logo" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
