@@ -191,7 +191,7 @@ public class ProfileFragment extends Fragment {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             String friendCode = (firebaseUser != null) ? firebaseUser.getUid() : "guest";
-            String message = getString(R.string.invite_message) + "\nCode: " + friendCode;
+            String message = getString(R.string.invite_message);
             shareIntent.putExtra(Intent.EXTRA_TEXT, message);
             startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
         });
