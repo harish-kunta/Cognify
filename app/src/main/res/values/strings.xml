@@ -198,6 +198,8 @@
     <string name="badge_legend">Legend</string>
     <string name="daily_quest">Daily Quest</string>
     <string name="quest_reward">Reward: %1$s</string>
+    <string name="perk_format">Perk: %1$s</string>
+    <string name="daily_completed_msg">Daily challenge already completed today.</string>
     <string name="notif_quest_title">Daily Quest Reminder</string>
     <string name="notif_quest_text">Complete todays quest to earn extra XP!</string>
     <string name="quest_channel_name">Quest Reminder</string>

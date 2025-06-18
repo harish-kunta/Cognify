@@ -35,6 +35,7 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.animation.AnimationUtils;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.DailyChallengeManager;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -84,6 +85,14 @@ public class ResultActivity extends BaseActivity {
 
         // (1) Compute how much XP was earned (PB + streak bonus)
         int xpEarned = calculateXpEarned(finalScore, finalGameType);
+
+        boolean isDaily = getIntent().getBooleanExtra(Constants.INTENT_IS_DAILY, false);
+        if (isDaily) {
+            int bonus = DailyChallengeManager.getTodayPerkXp(this);
+            xpEarned += bonus;
+            String msg = getString(R.string.perk_format, DailyChallengeManager.getTodayPerk(this));
+            Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
+        }
 
         // (2) Update local high‐score synchronously
         boolean isNewPb = updateHighScoreLocal(finalScore, finalGameType);
