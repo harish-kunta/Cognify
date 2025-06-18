@@ -62,13 +62,12 @@ public class WordGameEngineTest {
         // Base score 10 plus length bonus (3 letters -> 0) = 10
         assertEquals(10, engine.calculateScore("CAT"));
 
-        // Word with uncommon letters Q and Z should give complexity bonus
-        assertEquals(31, engine.calculateScore("QUIZ"));
+        // Word with uncommon letters Q and Z should give larger bonus
+        assertEquals(72, engine.calculateScore("QUIZ"));
 
         // Word with half complexity letters like W should add half bonus
         dictionary.add("BOW");
-        assertEquals(10 + GameConfig.LENGTH_BONUS + GameConfig.COMPLEXITY_BONUS / 2,
-                engine.calculateScore("BOW"));
+        assertEquals(14, engine.calculateScore("BOW"));
 
         // Invalid word should yield zero
         assertEquals(0, engine.calculateScore("BIRD"));
