@@ -42,6 +42,7 @@ public class QuickMathActivity extends BaseActivity {
     private boolean questionAnswered;
     private long timeRemaining;
     private long pauseTimestamp;
+    private boolean finalCountdownPlayed = false;
     private TutorialHelper tutorialHelper;
     private boolean tutorialActive = false;
     private TutorialOverlay tutorialOverlay;
@@ -145,8 +146,9 @@ public class QuickMathActivity extends BaseActivity {
                     public void onTick(long millisRemaining) {
                         timeRemaining = millisRemaining;
                         timerText.setText(String.valueOf(millisRemaining / 1000));
-                        if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS) {
+                        if (millisRemaining <= GameConfig.FINAL_COUNTDOWN_MS && !finalCountdownPlayed) {
                             triggerFinalCountdown();
+                            finalCountdownPlayed = true;
                         }
                     }
 
@@ -222,6 +224,7 @@ public class QuickMathActivity extends BaseActivity {
     }
 
     private void startGame() {
+        finalCountdownPlayed = false;
         startGameTimer();
         nextQuestion();
     }
