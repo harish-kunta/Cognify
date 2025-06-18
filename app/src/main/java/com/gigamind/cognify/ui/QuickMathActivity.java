@@ -46,6 +46,7 @@ public class QuickMathActivity extends BaseActivity {
     private TutorialHelper tutorialHelper;
     private boolean tutorialActive = false;
     private TutorialOverlay tutorialOverlay;
+    private boolean isDailyChallenge = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class QuickMathActivity extends BaseActivity {
         setContentView(R.layout.activity_quick_math);
 
         int challengeScore = getIntent().getIntExtra(Constants.EXTRA_CHALLENGE_SCORE, -1);
+        isDailyChallenge = getIntent().getBooleanExtra(Constants.INTENT_IS_DAILY, false);
         if (challengeScore >= 0) {
             String msg = getString(R.string.challenge_toast, challengeScore);
             View rootView = findViewById(android.R.id.content);
@@ -219,6 +221,7 @@ public class QuickMathActivity extends BaseActivity {
         intent.putExtra(Constants.INTENT_SCORE, finalScore);
         intent.putExtra(Constants.INTENT_TIME, (int)(GameConfig.QUICK_MATH_DURATION_MS / 1000));
         intent.putExtra(Constants.INTENT_TYPE, Constants.TYPE_QUICK_MATH);
+        intent.putExtra(Constants.INTENT_IS_DAILY, isDailyChallenge);
         startActivity(intent);
         finish();
     }

@@ -92,6 +92,8 @@ public class ResultActivity extends BaseActivity {
 
         boolean isDaily = getIntent().getBooleanExtra(Constants.INTENT_IS_DAILY, false);
         if (isDaily) {
+            DailyChallengeManager.markCompleted(this);
+            analytics.logDailyChallengeCompleted(finalGameType, finalScore);
             int bonus = DailyChallengeManager.getTodayPerkXp(this);
             xpEarned += bonus;
             String msg = getString(R.string.perk_format, DailyChallengeManager.getTodayPerk(this));
