@@ -196,7 +196,7 @@
     <string name="badge_genius">Genius</string>
     <string name="badge_mastermind">Mastermind</string>
     <string name="badge_legend">Legend</string>
-    <string name="perk_format">Perk: %1$s</string>
+    <string name="perk_format">Bonus: +%1$s</string>
     <string name="daily_completed_msg">Daily challenge already completed today.</string>
     <string name="today_challenge_format">Today: %1$s</string>
     <string name="play_tip">You\u2019ll see a quick tutorial first.</string>

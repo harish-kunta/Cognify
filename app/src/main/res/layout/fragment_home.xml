@@ -92,23 +92,24 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
 
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginEnd="12dp"
-                        android:contentDescription="@string/daily_challenge"
-                        android:src="@drawable/rewards" />
-
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:text="Daily challenge"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/dailyChallengeTitle"
@@ -116,7 +117,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            />
 
                         <TextView
                             android:id="@+id/dailyChallengeGame"
