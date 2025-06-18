@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+
 import com.google.android.material.snackbar.Snackbar;
-import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,15 +19,7 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.databinding.ActivityOnboardingBinding;
 import com.gigamind.cognify.util.OnboardingItem;
-import android.os.CancellationSignal;
-import androidx.credentials.CredentialManager;
-import androidx.credentials.CredentialManagerCallback;
-import androidx.credentials.GetCredentialRequest;
-import androidx.credentials.GetCredentialResponse;
-import androidx.credentials.PasswordCredential;
-import androidx.credentials.PublicKeyCredential;
-import androidx.credentials.CustomCredential;
-import androidx.credentials.exceptions.GetCredentialException;
+
 
 import com.gigamind.cognify.util.ExceptionLogger;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -39,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.SoundManager;
+import com.gigamind.cognify.util.GoogleSignInHelper;
 
 
 import java.util.ArrayList;
@@ -52,7 +43,6 @@ import java.util.List;
 public class OnboardingActivity extends AppCompatActivity {
 
     private ActivityOnboardingBinding binding;
-    private CredentialManager credentialManager;
     private FirebaseService firebaseService;
     private SharedPreferences prefs;
     private UserRepository userRepository;
@@ -74,9 +64,6 @@ public class OnboardingActivity extends AppCompatActivity {
 
         firebaseService = FirebaseService.getInstance();
         userRepository = new UserRepository(this);
-
-        // Initialize CredentialManager for Google ID sign in
-        credentialManager = CredentialManager.create(this);
 
         // 1) Configure notification permission helper (Android 13+)
         notificationPermissionHelper = new NotificationPermissionHelper(
@@ -182,55 +169,20 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     private void signIn() {
-        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(getString(R.string.default_web_client_id))
-                .setAutoSelectEnabled(true)
-                .setNonce(UUID.randomUUID().toString())
-                .build();
-
-        GetCredentialRequest request = new GetCredentialRequest.Builder()
-                .addCredentialOption(googleIdOption)
-                .build();
-
-        // CredentialManager supports back to API 21 via Play Services, so no
-        // SDK version check is necessary here.
-        credentialManager.getCredentialAsync(
-                this,
-                request,
-                new CancellationSignal(),
-                getMainExecutor(),
-                new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
-                    @Override
-                    public void onResult(GetCredentialResponse result) {
-                        handleSignIn(result);
-                    }
-
-                    @Override
-                    public void onError(GetCredentialException e) {
-                        ExceptionLogger.log("OnboardingActivity", e);
-                        String msg = getString(R.string.google_sign_in_failed);
-                        Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                        binding.getRoot().announceForAccessibility(msg);
-                    }
-                }
-        );
-    }
-
-    private void handleSignIn(GetCredentialResponse result) {
-        androidx.credentials.Credential credential = result.getCredential();
-        if (credential instanceof CustomCredential) {
-            CustomCredential cc = (CustomCredential) credential;
-            if (GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(cc.getType())) {
-                GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
-                firebaseAuthWithGoogle(googleIdTokenCredential.getIdToken());
-            } else {
-                ExceptionLogger.log("OnboardingActivity", new Exception("Unexpected credential type"));
+        GoogleSignInHelper.signIn(this, new GoogleSignInHelper.Callback() {
+            @Override
+            public void onSuccess(String idToken) {
+                firebaseAuthWithGoogle(idToken);
             }
-        } else if (credential instanceof PasswordCredential || credential instanceof PublicKeyCredential) {
-            // Unsupported credential types for this flow
-            ExceptionLogger.log("OnboardingActivity", new Exception("Unexpected credential"));
-        }
+
+            @Override
+            public void onError(Exception e) {
+                ExceptionLogger.log("OnboardingActivity", e);
+                String msg = getString(R.string.google_sign_in_failed);
+                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                binding.getRoot().announceForAccessibility(msg);
+            }
+        });
     }
 
     private void continueAsGuest() {
