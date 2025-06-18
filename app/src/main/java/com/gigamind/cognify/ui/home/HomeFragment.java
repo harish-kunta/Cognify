@@ -30,6 +30,7 @@ import com.gigamind.cognify.util.DailyChallengeManager;
 import android.graphics.Color;
 import android.content.res.ColorStateList;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
@@ -211,6 +212,11 @@ public class HomeFragment extends Fragment {
         wordGamePlayButton.setOnClickListener(animatedClickListener);
         quickMathPlayButton.setOnClickListener(animatedClickListener);
         cardView.setOnClickListener(animatedClickListener);
+
+        currentUserAvatar.setOnClickListener(v -> {
+            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNavigation);
+            bottomNav.setSelectedItemId(R.id.navigation_profile);
+        });
     }
 
     /**
