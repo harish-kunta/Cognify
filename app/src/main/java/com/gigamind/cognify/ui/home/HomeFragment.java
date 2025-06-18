@@ -56,6 +56,8 @@ public class HomeFragment extends Fragment {
     private TextView questDescription;
     private TextView questReward;
     private CircleImageView currentUserAvatar;
+    /** Flag cached from setupDailyChallenge to know which game is today's challenge */
+    private boolean isWordDay;
     private SharedPreferences prefs;
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
@@ -159,8 +161,11 @@ public class HomeFragment extends Fragment {
      */
     private void setupDailyChallenge() {
         Calendar calendar = Calendar.getInstance();
-        boolean isWordDay = (calendar.get(Calendar.DAY_OF_WEEK) % 2) == 0;
-        String challengeType = isWordDay ? getString(R.string.word_dash) : getString(R.string.quick_math);
+        // Cache today's challenge so click handling knows which game to launch
+        isWordDay = (calendar.get(Calendar.DAY_OF_WEEK) % 2) == 0;
+        String challengeType = isWordDay
+                ? getString(R.string.word_dash)
+                : getString(R.string.quick_math);
         dailyChallengeTitle.setText(challengeType);
 
         // Use a consistent "YYYY-DDD" key in prefs to mark completion
@@ -220,9 +225,21 @@ public class HomeFragment extends Fragment {
      * and whether it was the daily challenge. Also marks daily challenge complete.
      */
     private void handleGameLaunch(View v) {
-        boolean isDaily = (v.getId() == R.id.welcomeCardView);
+        boolean isDaily = (v.getId() == R.id.welcomeCardView
+                || v.getId() == R.id.dailyChallengeTitle);
+
+        boolean openWordDash;
+        if (v.getId() == R.id.wordGameCard || v == binding.wordGameCard.playButton) {
+            openWordDash = true;
+        } else if (v.getId() == R.id.mathGameCard || v == binding.mathGameCard.playButton) {
+            openWordDash = false;
+        } else {
+            // Daily challenge card or title - follow today's designated game
+            openWordDash = isWordDay;
+        }
+
         Intent intent;
-        if (v.getId() == R.id.wordGameCard || v == binding.wordGameCard.playButton || v.getId() == R.id.welcomeCardView) {
+        if (openWordDash) {
             intent = new Intent(getContext(), WordDashActivity.class);
             intent.putExtra(Constants.INTENT_GAME_TYPE, Constants.GAME_TYPE_WORD);
         } else {
