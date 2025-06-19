@@ -82,8 +82,8 @@ public class MathGameEngine {
         currentOptions.clear();
         currentOptions.add(currentAnswer);
         
-        // Generate 3 fake options that are close to the real answer
-        while (currentOptions.size() < 4) {
+        // Generate 5 fake options that are close to the real answer
+        while (currentOptions.size() < 6) {
             int offset = random.nextInt(11) - 5; // -5..5
             int fake = currentAnswer + offset;
             if (fake <= 0 || currentOptions.contains(fake)) continue;

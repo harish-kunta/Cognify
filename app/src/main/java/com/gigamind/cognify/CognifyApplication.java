@@ -9,12 +9,10 @@ import com.gigamind.cognify.util.ExceptionLogger;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
-import com.gigamind.cognify.work.QuestNotificationScheduler;
 import com.google.firebase.BuildConfig;
 import com.google.firebase.FirebaseApp;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.appcheck.FirebaseAppCheck;
-import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.gigamind.cognify.engine.DictionaryProvider;
@@ -56,13 +54,8 @@ public class CognifyApplication extends Application {
         // (1) Initialize Firebase
         FirebaseApp.initializeApp(this);
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-        if (BuildConfig.DEBUG) {
-            firebaseAppCheck.installAppCheckProviderFactory(
-                    DebugAppCheckProviderFactory.getInstance());
-        } else {
-            firebaseAppCheck.installAppCheckProviderFactory(
+        firebaseAppCheck.installAppCheckProviderFactory(
                     PlayIntegrityAppCheckProviderFactory.getInstance());
-        }
         firebaseAppCheck.setTokenAutoRefreshEnabled(true);
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 
@@ -89,7 +82,6 @@ public class CognifyApplication extends Application {
                                 FirebaseService.getInstance().getCurrentUserId(),
                                 getApplicationContext()
                         );
-                        QuestNotificationScheduler.scheduleDaily(getApplicationContext());
                     }
 
                     // We only need to schedule once on cold start; after that the Worker will
@@ -104,7 +96,6 @@ public class CognifyApplication extends Application {
             // (3) Not signed in → schedule the Worker immediately from whatever prefs we already have
             StreakNotificationScheduler.scheduleFromSharedPrefs(/*firebaseUid=*/ null,
                     getApplicationContext());
-            QuestNotificationScheduler.scheduleDaily(getApplicationContext());
         }
     }
 

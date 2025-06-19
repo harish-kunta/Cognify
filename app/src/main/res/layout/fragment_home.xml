@@ -2,7 +2,8 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -80,72 +81,56 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_tile_gradient">
 
-                <!-- Semi-transparent scrim for improved text contrast -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentEnd="true"
-                    android:background="#80000000" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
 
-                    <!-- Heading -->
-                    <TextView
-                        android:id="@+id/titleText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/welcome_card_title"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <!-- Main Message -->
-                    <TextView
-                        android:id="@+id/ctaText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/titleText"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/welcome_card_subtitle"
-                        android:textColor="#FFFF00"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <!-- Icon Label -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginEnd="8dp"
-                            android:src="@drawable/ic_leaderboard"
-                            app:tint="#FFFF00" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:text="Daily challenge"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/dailyChallengeGame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/dailyPerk"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textColor="#FFFF00"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/dailyChallengeTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/leaderboards"
                             android:textColor="@android:color/white"
-                            android:textSize="14sp" />
-                    </LinearLayout>
+                            android:textSize="16sp"
+                            />
 
+                    </LinearLayout>
                 </LinearLayout>
 
                 <!-- Optional 3D Box (use image) -->
                 <ImageView
+                    android:id="@+id/dailyChallengeLogo"
                     android:layout_width="181dp"
                     android:layout_height="160dp"
                     android:layout_alignParentEnd="true"
@@ -153,67 +138,10 @@
                     android:layout_marginEnd="0dp"
                     android:layout_marginBottom="-5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_abc_blocks" />
+                    android:src="@drawable/ic_word_logo" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/questCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="@android:color/transparent"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="12dp"
-                    android:contentDescription="@string/daily_quest"
-                    android:src="@drawable/rewards" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/questTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/daily_quest"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/questDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/questReward"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="#FFFF00"
-                        android:textSize="14sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
         <!-- Game Modes Section -->
         <TextView
@@ -236,7 +164,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="horizontal"
@@ -245,16 +173,16 @@
             <include
                 android:id="@+id/wordGameCard"
                 layout="@layout/game_card"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_margin="8dp"
                 android:layout_weight="1" />
 
             <include
                 android:id="@+id/mathGameCard"
                 layout="@layout/game_card"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_margin="8dp"
                 android:layout_weight="1" />
         </LinearLayout>

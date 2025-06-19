@@ -31,10 +31,10 @@ public class MathGameEngineTest {
         assertTrue(answer > 1, "Answer should be at least 2");
 
         List<Integer> options = engine.getOptions();
-        assertEquals(4, options.size(), "There should be four options");
+        assertEquals(6, options.size(), "There should be six options");
 
         Set<Integer> unique = new HashSet<>(options);
-        assertEquals(4, unique.size(), "Options should be unique");
+        assertEquals(6, unique.size(), "Options should be unique");
         assertTrue(options.contains(answer), "Options should contain the correct answer");
     }
 
@@ -58,10 +58,12 @@ public class MathGameEngineTest {
         assertFalse(engine.checkAnswer(correct + 1));
 
         int difficulty = engine.getCurrentDifficulty();
-        int base = GameConfig.BASE_SCORE * difficulty * difficulty;
+        int base = (GameConfig.BASE_SCORE / 2) * difficulty * difficulty
+                + (GameConfig.BASE_SCORE / 2);
         int expectedFast = base + GameConfig.LENGTH_BONUS * difficulty;
         assertEquals(expectedFast, engine.getScore(true, 0));
-        assertEquals(-5, engine.getScore(false, 0));
+        int expectedPenalty = -GameConfig.BASE_SCORE * difficulty;
+        assertEquals(expectedPenalty, engine.getScore(false, 0));
 
         // After MAX_RESPONSE_TIME_MS, base points are awarded
         assertEquals(base, engine.getScore(true, GameConfig.MAX_RESPONSE_TIME_MS + 1000));

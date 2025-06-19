@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/bg_elliptical_layer"
     android:padding="16dp">
 
@@ -19,13 +20,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/close_game"
             android:layout_weight="2"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:visibility="invisible" />
+            android:layout_gravity="left"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_close"
+            />
 
         <TextView
             android:id="@+id/scoreText"

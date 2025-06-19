@@ -434,6 +434,21 @@ public class UserRepository {
     }
 
     /**
+     * Persists a drawable resource id for the given avatar attribute.
+     */
+    public void saveAvatarOption(String key, int resId) {
+        prefs.edit().putInt(key, resId).apply();
+    }
+
+    /**
+     * Returns the stored drawable id for the given avatar attribute or 0 if
+     * none has been saved yet.
+     */
+    public int getAvatarOption(String key) {
+        return prefs.getInt(key, 0);
+    }
+
+    /**
      * Returns locally stored “lastPlayedDate” (yyyy-MM-dd).
      */
     public String getLastPlayedDate() {

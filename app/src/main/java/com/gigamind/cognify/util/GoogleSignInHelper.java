@@ -8,16 +8,14 @@ import androidx.credentials.CredentialManagerCallback;
 import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
+import androidx.credentials.exceptions.NoCredentialException;
 import androidx.credentials.CustomCredential;
-import androidx.credentials.PasswordCredential;
-import androidx.credentials.PublicKeyCredential;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+import com.gigamind.cognify.R;
 
 import java.util.UUID;
-
-import com.gigamind.cognify.R;
 
 public class GoogleSignInHelper {
 
@@ -26,23 +24,30 @@ public class GoogleSignInHelper {
         void onError(Exception e);
     }
 
-    public static void signIn(Activity activity, boolean filterByAuthorizedAccounts, Callback callback) {
-        CredentialManager credentialManager = CredentialManager.create(activity);
+    /** Public entry point: will try first with only authorized accounts, then retry against all. */
+    public static void signIn(Activity activity, Callback callback) {
+        signInInternal(activity, /* filterByAuthorizedAccounts= */ true, callback);
+    }
 
-        GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+    private static void signInInternal(Activity activity,
+                                       boolean filterByAuthorizedAccounts,
+                                       Callback callback) {
+        CredentialManager mgr = CredentialManager.create(activity);
+
+        GetGoogleIdOption opt = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setServerClientId(activity.getString(R.string.default_web_client_id))
                 .setAutoSelectEnabled(false)
                 .setNonce(UUID.randomUUID().toString())
                 .build();
 
-        GetCredentialRequest request = new GetCredentialRequest.Builder()
-                .addCredentialOption(googleIdOption)
+        GetCredentialRequest req = new GetCredentialRequest.Builder()
+                .addCredentialOption(opt)
                 .build();
 
-        credentialManager.getCredentialAsync(
+        mgr.getCredentialAsync(
                 activity,
-                request,
+                req,
                 new CancellationSignal(),
                 activity.getMainExecutor(),
                 new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
@@ -53,28 +58,30 @@ public class GoogleSignInHelper {
 
                     @Override
                     public void onError(GetCredentialException e) {
-                        callback.onError(e);
+                        // if our first attempt was only “authorized” accounts and it failed
+                        // because there simply weren’t any, retry once with the full list
+                        if (filterByAuthorizedAccounts && (e instanceof NoCredentialException)) {
+                            signInInternal(activity, /* filterByAuthorizedAccounts= */ false, callback);
+                        } else {
+                            callback.onError(e);
+                        }
                     }
                 }
         );
     }
 
-    public static void signIn(Activity activity, Callback callback) {
-        signIn(activity, false, callback);
-    }
-
     private static void handleResult(GetCredentialResponse result, Callback callback) {
-        androidx.credentials.Credential credential = result.getCredential();
-        if (credential instanceof CustomCredential) {
-            CustomCredential cc = (CustomCredential) credential;
-            if (GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(cc.getType())) {
-                GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential.createFrom(cc.getData());
-                callback.onSuccess(googleIdTokenCredential.getIdToken());
-            } else {
-                callback.onError(new Exception("Unexpected credential type"));
-            }
-        } else if (credential instanceof PasswordCredential || credential instanceof PublicKeyCredential) {
-            callback.onError(new Exception("Unexpected credential"));
+        androidx.credentials.Credential cred = result.getCredential();
+        if (!(cred instanceof CustomCredential)) {
+            callback.onError(new Exception("Unexpected credential type"));
+            return;
         }
+        CustomCredential cc = (CustomCredential) cred;
+        if (!GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL.equals(cc.getType())) {
+            callback.onError(new Exception("Unexpected credential subtype"));
+            return;
+        }
+        GoogleIdTokenCredential gid = GoogleIdTokenCredential.createFrom(cc.getData());
+        callback.onSuccess(gid.getIdToken());
     }
 }

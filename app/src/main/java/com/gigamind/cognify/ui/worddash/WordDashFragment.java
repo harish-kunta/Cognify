@@ -25,15 +25,14 @@ import com.gigamind.cognify.ui.WordDashActivity;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.util.TutorialHelper;
+import com.gigamind.cognify.util.GameType;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import com.gigamind.cognify.util.DailyChallengeManager;
 
 /**
  * HomeFragment now uses UserRepository to fetch and display the user's streak,
@@ -74,7 +73,7 @@ public class WordDashFragment extends Fragment {
         prefs = requireContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         com.gigamind.cognify.animation.AnimatorProvider.updateFromPreferences(requireContext());
         userRepository = new UserRepository(requireContext());
-        tutorialHelper = new TutorialHelper(requireContext());
+        tutorialHelper = new TutorialHelper(requireContext(), GameType.WORD);
 
         // Check signed-in user
         firebaseUser = FirebaseService.getInstance().getCurrentUser();
@@ -146,10 +145,16 @@ public class WordDashFragment extends Fragment {
 
     /**
      * Decides which game to launch (WordDash or QuickMath) based on the view clicked
-     * and whether it was the daily challenge. Also marks daily challenge complete.
+     * and whether it was the daily challenge.
      */
     private void handleGameLaunch(View v) {
         boolean isDaily = (v.getId() == R.id.welcomeCardView);
+        if (isDaily && DailyChallengeManager.isCompleted(requireContext())) {
+            Snackbar.make(binding.getRoot(),
+                    getString(R.string.daily_completed_msg),
+                    Snackbar.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent;
         if (v.getId() == R.id.playWordDashButton) {
             intent = new Intent(getContext(), WordDashActivity.class);
@@ -160,14 +165,6 @@ public class WordDashFragment extends Fragment {
         }
         intent.putExtra(Constants.INTENT_IS_DAILY, isDaily);
         startActivity(intent);
-
-        if (isDaily) {
-            // Mark today's challenge as completed in prefs
-            Calendar calendar = Calendar.getInstance();
-            String todayKey = new SimpleDateFormat("yyyy-DDD", Locale.US)
-                    .format(calendar.getTime());
-            prefs.edit().putBoolean(Constants.PREF_DAILY_COMPLETED_PREFIX + todayKey, true).apply();
-        }
     }
 
     private boolean areAnimationsEnabled() {

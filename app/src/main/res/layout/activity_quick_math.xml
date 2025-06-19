@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/bg_elliptical_layer"
     android:padding="16dp">
 
@@ -19,13 +20,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/close_game"
             android:layout_weight="2"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:visibility="invisible" />
+            android:layout_gravity="left"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_close"
+            />
 
         <TextView
             android:id="@+id/scoreText"
@@ -66,63 +70,86 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:text="@string/quick_math_equation_placeholder"
-        android:textColor="@color/white"
-        android:textSize="48sp"
-        android:textStyle="bold"
+        style="@style/TextAppearance.Equation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleBar" />
 
-    <GridLayout
-        android:id="@+id/answersLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:columnCount="2"
-        android:rowCount="2"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/equationText"
-        app:layout_constraintWidth_percent="0.8">
+        <GridLayout
+            android:id="@+id/answersLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:columnCount="2"
+            android:rowCount="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/equationText"
+            android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/answer1Button"
-            style="@style/Button.Answer"
+            style="@style/Button.Letter.Math"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/answer2Button"
-            style="@style/Button.Answer"
+            style="@style/Button.Letter.Math"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/answer3Button"
-            style="@style/Button.Answer"
+            style="@style/Button.Letter.Math"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:layout_marginEnd="8dp"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/answer4Button"
-            style="@style/Button.Answer"
+            style="@style/Button.Letter.Math"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:layout_marginStart="8dp"
             android:layout_columnWeight="1"
             android:layout_rowWeight="1" />
-    </GridLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/answer5Button"
+            style="@style/Button.Letter.Math"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/answer6Button"
+            style="@style/Button.Letter.Math"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1" />
+        </GridLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

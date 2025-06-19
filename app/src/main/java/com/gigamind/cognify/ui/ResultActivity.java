@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.gigamind.cognify.R;
@@ -35,6 +35,7 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.data.repository.UserRepository;
 import com.gigamind.cognify.animation.AnimationUtils;
 import com.gigamind.cognify.util.Constants;
+import com.gigamind.cognify.util.DailyChallengeManager;
 import com.gigamind.cognify.work.StreakNotificationScheduler;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -45,7 +46,7 @@ import com.gigamind.cognify.util.SoundManager;
 import com.gigamind.cognify.util.DateUtils;
 import java.util.Random;
 
-public class ResultActivity extends AppCompatActivity {
+public class ResultActivity extends BaseActivity {
 
     private static final String[] ENCOURAGEMENTS = {
             "Amazing!", "Unstoppable!", "You nailed it!", "Keep it going!", "🔥 Hot streak!"
@@ -82,8 +83,22 @@ public class ResultActivity extends AppCompatActivity {
         finalGameType = getIntent().getStringExtra(INTENT_TYPE);
         int wordsFound = getIntent().getIntExtra(INTENT_FOUND_WORDS, 0);
 
+        if (finalScore <= 0) {
+            SoundManager.getInstance(this).playLose();
+        }
+
         // (1) Compute how much XP was earned (PB + streak bonus)
         int xpEarned = calculateXpEarned(finalScore, finalGameType);
+
+        boolean isDaily = getIntent().getBooleanExtra(Constants.INTENT_IS_DAILY, false);
+        if (isDaily) {
+            DailyChallengeManager.markCompleted(this);
+            analytics.logDailyChallengeCompleted(finalGameType, finalScore);
+            int bonus = DailyChallengeManager.getTodayPerkXp(this);
+            xpEarned += bonus;
+            String msg = getString(R.string.perk_format, DailyChallengeManager.getTodayPerk(this));
+            Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG).show();
+        }
 
         // (2) Update local high‐score synchronously
         boolean isNewPb = updateHighScoreLocal(finalScore, finalGameType);
@@ -377,6 +392,7 @@ public class ResultActivity extends AppCompatActivity {
 
     private void setupButtons(String gameType) {
         playAgainButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
             Class<?> cls = gameType.equals(Constants.TYPE_QUICK_MATH)
                     ? QuickMathActivity.class
                     : WordDashActivity.class;
@@ -386,13 +402,17 @@ public class ResultActivity extends AppCompatActivity {
         });
 
         homeButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
             Intent homeIntent = new Intent(this, MainActivity.class);
             homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(homeIntent);
             finish();
         });
 
-        challengeButton.setOnClickListener(v -> shareChallenge());
+        challengeButton.setOnClickListener(v -> {
+            SoundManager.getInstance(this).playButton();
+            shareChallenge();
+        });
     }
 
     @Override

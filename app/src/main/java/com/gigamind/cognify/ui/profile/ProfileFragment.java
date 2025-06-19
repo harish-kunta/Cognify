@@ -22,10 +22,12 @@ import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.gigamind.cognify.util.Constants;
 import com.gigamind.cognify.util.AvatarLoader;
 import com.gigamind.cognify.util.UserFields;
+import com.gigamind.cognify.util.BadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.gigamind.cognify.analytics.GameAnalytics;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -43,7 +45,8 @@ public class ProfileFragment extends Fragment {
     private TextView streakValueText;
     private TextView xpValueText;
     private TextView gamesPlayedValue;
-    private TextView winRateValue;
+    private TextView trophyValue;
+    private ImageView trophyIcon;
     private Button inviteFriendsButton;
     private Button shareStreakButton;
     private Button trophyRoomButton;
@@ -52,6 +55,7 @@ public class ProfileFragment extends Fragment {
     private UserRepository userRepository;
     private FirebaseUser firebaseUser;
     private ListenerRegistration userDocListener;
+    private GameAnalytics analytics;
 
     @Nullable
     @Override
@@ -76,7 +80,8 @@ public class ProfileFragment extends Fragment {
         streakValueText     = view.findViewById(R.id.streakValue);
         xpValueText         = view.findViewById(R.id.xpValue);
         gamesPlayedValue    = view.findViewById(R.id.gamesPlayedValue);
-        winRateValue        = view.findViewById(R.id.winRateValue);
+        trophyValue         = view.findViewById(R.id.trophyValue);
+        trophyIcon          = view.findViewById(R.id.trophyIcon);
         inviteFriendsButton = view.findViewById(R.id.inviteFriendsButton);
         trophyRoomButton        = view.findViewById(R.id.trophyRoomButton);
         shareStreakButton       = view.findViewById(R.id.shareStreakButton);
@@ -85,6 +90,8 @@ public class ProfileFragment extends Fragment {
         // 2) Initialize FirebaseUser & UserRepository
         firebaseUser   = FirebaseService.getInstance().getCurrentUser();
         userRepository = new UserRepository(requireContext());
+        analytics = GameAnalytics.getInstance(requireContext());
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_PROFILE);
 
         // 3) Populate static profile info (name, email, joined date)
         populateUserInfo();
@@ -130,7 +137,8 @@ public class ProfileFragment extends Fragment {
         streakValueText.setText("");
         xpValueText.setText("");
         gamesPlayedValue.setText("");
-        winRateValue.setText("");
+        trophyValue.setText("");
+        trophyIcon.setImageDrawable(null);
 
         if (firebaseUser != null) {
             // 2) Attach the Firestore listener
@@ -141,8 +149,9 @@ public class ProfileFragment extends Fragment {
                     final int streak = userRepository.getCurrentStreak();
                     final int totalXp = userRepository.getTotalXP();
                     final int games = userRepository.getTotalGames();
-                    final int wins = userRepository.getTotalWins();
-                    final int losses = userRepository.getTotalLosses();
+                    final int badgeIndex = BadgeUtils.badgeIndexForXp(totalXp);
+                    final int trophyRes = BadgeUtils.badgeIconResId(badgeIndex);
+                    final String trophyName = BadgeUtils.NAMES[badgeIndex];
                     final String encodedPic = userRepository.getProfilePicture();
 
                     // Always update UI on main thread
@@ -151,9 +160,8 @@ public class ProfileFragment extends Fragment {
                             streakValueText.setText(String.valueOf(streak));
                             xpValueText.setText(String.valueOf(totalXp));
                             gamesPlayedValue.setText(String.valueOf(games));
-                            int total = wins + losses;
-                            String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
-                            winRateValue.setText(rate);
+                            trophyValue.setText(trophyName);
+                            trophyIcon.setImageResource(trophyRes);
                             if (encodedPic != null && !encodedPic.isEmpty()) {
                                 AvatarLoader.load(userRepository, profileAvatar);
                             }
@@ -166,14 +174,12 @@ public class ProfileFragment extends Fragment {
             int streak  = userRepository.getCurrentStreak();
             int totalXp = userRepository.getTotalXP();
             int games   = userRepository.getTotalGames();
-            int wins    = userRepository.getTotalWins();
-            int losses  = userRepository.getTotalLosses();
             streakValueText.setText(String.valueOf(streak));
             xpValueText.setText(String.valueOf(totalXp));
             gamesPlayedValue.setText(String.valueOf(games));
-            int total = wins + losses;
-            String rate = total > 0 ? (100 * wins / total) + "%" : "0%";
-            winRateValue.setText(rate);
+            int badgeIndex = BadgeUtils.badgeIndexForXp(totalXp);
+            trophyValue.setText(BadgeUtils.NAMES[badgeIndex]);
+            trophyIcon.setImageResource(BadgeUtils.badgeIconResId(badgeIndex));
             loadAvatar();
         }
     }
@@ -181,21 +187,24 @@ public class ProfileFragment extends Fragment {
     private void setupClickListeners() {
         // (Alternatively, open a real SettingsActivity)
         settingsIcon.setOnClickListener(v -> {
+            analytics.logButtonClick("open_settings_from_profile");
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNavigation);
             bottomNav.setSelectedItemId(R.id.navigation_settings);
         });
 
         inviteFriendsButton.setOnClickListener(v -> {
+            analytics.logButtonClick("invite_friends");
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             String friendCode = (firebaseUser != null) ? firebaseUser.getUid() : "guest";
-            String message = getString(R.string.invite_message) + "\nCode: " + friendCode;
+            String message = getString(R.string.invite_message);
             shareIntent.putExtra(Intent.EXTRA_TEXT, message);
             startActivity(Intent.createChooser(shareIntent, getString(R.string.invite_chooser_title)));
         });
 
 
         shareStreakButton.setOnClickListener(v -> {
+            analytics.logButtonClick("share_streak");
             int streak = userRepository.getCurrentStreak();
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
@@ -205,13 +214,16 @@ public class ProfileFragment extends Fragment {
         });
 
         trophyRoomButton.setOnClickListener(v -> {
+            analytics.logButtonClick("open_trophy_room");
             Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.trophy.TrophyRoomActivity.class);
             startActivity(intent);
         });
-        profileAvatar.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.avatar.AvatarMakerActivity.class);
-            startActivity(intent);
-        });
+    }
+
+    private void openAvatarMaker() {
+        analytics.logButtonClick("edit_avatar");
+        Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.avatar.AvatarMakerActivity.class);
+        startActivity(intent);
     }
 
     @Override

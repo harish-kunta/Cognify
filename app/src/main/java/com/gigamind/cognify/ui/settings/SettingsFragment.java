@@ -25,6 +25,8 @@ import com.gigamind.cognify.util.SoundManager;
 import com.gigamind.cognify.util.GoogleSignInHelper;
 import android.widget.Toast;
 
+import com.gigamind.cognify.analytics.GameAnalytics;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +41,8 @@ public class SettingsFragment extends Fragment {
     private static final String KEY_HAPTICS_ENABLED = Constants.PREF_HAPTICS_ENABLED;
     private static final String KEY_ANIMATIONS_ENABLED = Constants.PREF_ANIMATIONS_ENABLED;
     private static final String KEY_DARK_MODE_ENABLED = Constants.PREF_DARK_MODE_ENABLED;
-    private static final String KEY_TUTORIAL_COMPLETED = Constants.PREF_TUTORIAL_COMPLETED;
+    private static final String KEY_ONBOARDING_COMPLETED = Constants.PREF_ONBOARDING_COMPLETED;
+    private GameAnalytics analytics;
 
     @Nullable
     @Override
@@ -53,6 +56,8 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         prefs = requireActivity().getSharedPreferences(Constants.PREF_APP, 0);
+        analytics = GameAnalytics.getInstance(requireContext());
+        analytics.logScreenView(Constants.ANALYTICS_SCREEN_SETTINGS);
         com.gigamind.cognify.animation.AnimatorProvider.updateFromPreferences(requireContext());
         setupPreferences();
         setupButtons();
@@ -75,17 +80,20 @@ public class SettingsFragment extends Fragment {
         binding.soundEffectsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean(KEY_SOUND_ENABLED, isChecked).apply();
                 SoundManager.getInstance(requireContext()).playToggle();
+                analytics.logButtonClick("toggle_sound" + (isChecked ? "_on" : "_off"));
         });
 
         binding.hapticsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean(KEY_HAPTICS_ENABLED, isChecked).apply();
                 SoundManager.getInstance(requireContext()).playToggle();
+                analytics.logButtonClick("toggle_haptics" + (isChecked ? "_on" : "_off"));
         });
 
         binding.animationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean(KEY_ANIMATIONS_ENABLED, isChecked).apply();
                 com.gigamind.cognify.animation.AnimatorProvider.setAnimationsEnabled(isChecked);
                 SoundManager.getInstance(requireContext()).playToggle();
+                analytics.logButtonClick("toggle_animations" + (isChecked ? "_on" : "_off"));
         });
 
         binding.darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -96,16 +104,19 @@ public class SettingsFragment extends Fragment {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
             SoundManager.getInstance(requireContext()).playToggle();
+            analytics.logButtonClick("toggle_dark_mode" + (isChecked ? "_on" : "_off"));
         });
     }
 
     private void setupButtons() {
         binding.replayTutorialButton.setOnClickListener(v -> {
+            SoundManager.getInstance(requireContext()).playButton();
+            analytics.logButtonClick("replay_tutorial");
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.replay_tutorial)
                     .setMessage(R.string.replay_tutorial_confirm)
                     .setPositiveButton(R.string.yes, (dialog, which) -> {
-                        prefs.edit().putBoolean(KEY_TUTORIAL_COMPLETED, false).apply();
+                        prefs.edit().putBoolean(KEY_ONBOARDING_COMPLETED, false).apply();
                         startActivity(new Intent(requireContext(), OnboardingActivity.class));
                         requireActivity().finish();
                     })
@@ -114,6 +125,8 @@ public class SettingsFragment extends Fragment {
         });
 
         binding.resetProgressButton.setOnClickListener(v -> {
+            SoundManager.getInstance(requireContext()).playButton();
+            analytics.logButtonClick("reset_progress");
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.reset_progress)
                     .setMessage(R.string.reset_progress_confirm)
@@ -121,7 +134,7 @@ public class SettingsFragment extends Fragment {
                         // Clear all preferences except tutorial completion
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.clear();
-                        editor.putBoolean(KEY_TUTORIAL_COMPLETED, true);
+                        editor.putBoolean(KEY_ONBOARDING_COMPLETED, true);
                         editor.apply();
                     })
                     .setNegativeButton(R.string.no, null)
@@ -129,6 +142,8 @@ public class SettingsFragment extends Fragment {
         });
 
         binding.deleteAccountButton.setOnClickListener(v -> {
+            SoundManager.getInstance(requireContext()).playButton();
+            analytics.logButtonClick("delete_account");
             new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.delete_account)
                     .setMessage(R.string.delete_account_confirm)
@@ -143,6 +158,8 @@ public class SettingsFragment extends Fragment {
         if (service.isUserSignedIn()) {
             binding.btnSignIn.setText(R.string.sign_out);
             binding.btnSignIn.setOnClickListener(v -> {
+                SoundManager.getInstance(requireContext()).playButton();
+                analytics.logButtonClick("sign_out");
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.logout_confirm_title)
                         .setMessage(R.string.logout_confirm_message)
@@ -172,6 +189,8 @@ public class SettingsFragment extends Fragment {
         } else {
             binding.btnSignIn.setText(R.string.sign_in);
             binding.btnSignIn.setOnClickListener(v -> {
+                SoundManager.getInstance(requireContext()).playButton();
+                analytics.logButtonClick("sign_in");
                 // Start sign in flow
                 startActivity(new Intent(requireContext(), OnboardingActivity.class));
             });
@@ -179,7 +198,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void startDeleteFlow() {
-        GoogleSignInHelper.signIn(requireActivity(), true, new GoogleSignInHelper.Callback() {
+        GoogleSignInHelper.signIn(requireActivity(), new GoogleSignInHelper.Callback() {
             @Override
             public void onSuccess(String idToken) {
                 reauthenticateAndDelete(idToken);

@@ -24,6 +24,10 @@ public class SoundManager {
     private final int correctSoundId;
     private final int wrongSoundId;
     private final int heartbeatSoundId;
+    private final int bounceSoundId;
+    private final int popSoundId;
+    private final int swipeSoundId;
+    private final int loseSoundId;
     // Reuse existing sounds for additional cues
     private final int toggleSoundId;
     private final int milestoneSoundId;
@@ -63,6 +67,18 @@ public class SoundManager {
 
         heartbeatSoundId = soundPool.load(context, R.raw.heartbeat, 1);
         loadedMap.put(heartbeatSoundId, false);
+
+        bounceSoundId = soundPool.load(context, R.raw.button_bounce, 1);
+        loadedMap.put(bounceSoundId, false);
+
+        popSoundId = soundPool.load(context, R.raw.dialog_pop, 1);
+        loadedMap.put(popSoundId, false);
+
+        swipeSoundId = soundPool.load(context, R.raw.swipe_sound, 1);
+        loadedMap.put(swipeSoundId, false);
+
+        loseSoundId = soundPool.load(context, R.raw.lose_sound, 1);
+        loadedMap.put(loseSoundId, false);
 
         // For toggles and milestone cues we simply reuse existing files
         toggleSoundId = buttonSoundId;
@@ -107,6 +123,26 @@ public class SoundManager {
 
     public void playHeartbeat() {
         playSound(heartbeatSoundId);
+    }
+
+    /** Plays a bouncy click for letter presses */
+    public void playBounce() {
+        playSound(bounceSoundId);
+    }
+
+    /** Subtle pop used when showing dialogs */
+    public void playPop() {
+        playSound(popSoundId);
+    }
+
+    /** Swipe cue for onboarding pages */
+    public void playSwipe() {
+        playSound(swipeSoundId);
+    }
+
+    /** Sad trombone when the player scores zero */
+    public void playLose() {
+        playSound(loseSoundId);
     }
 
     /** Plays a short click sound for toggle switches */

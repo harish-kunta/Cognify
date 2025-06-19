@@ -2,14 +2,19 @@ package com.gigamind.cognify.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.credentials.exceptions.NoCredentialException;
+
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.gigamind.cognify.ui.BaseActivity;
 
 import com.gigamind.cognify.util.NotificationPermissionHelper;
 
@@ -40,7 +45,7 @@ import java.util.List;
  * We show a rationale dialog until the user either grants the permission
  * (Android 13+) or explicitly taps getString(R.string.no_thanks) to decline.
  */
-public class OnboardingActivity extends AppCompatActivity {
+public class OnboardingActivity extends BaseActivity {
 
     private ActivityOnboardingBinding binding;
     private FirebaseService firebaseService;
@@ -114,6 +119,7 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 analytics.logOnboardingPage(position);
+                SoundManager.getInstance(OnboardingActivity.this).playSwipe();
             }
         });
 
@@ -181,10 +187,69 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 ExceptionLogger.log("OnboardingActivity", e);
-                String msg = getString(R.string.google_sign_in_failed);
-                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-                binding.getRoot().announceForAccessibility(msg);
                 showLoading(false);
+
+                if (e instanceof NoCredentialException
+                        || e.getMessage().contains("No credentials available")) {
+
+                    // 1) NoCredentialException → disabled Google Sign-In
+                    new AlertDialog.Builder(OnboardingActivity.this)
+                            .setTitle("Google Sign-In Disabled")
+                            .setMessage("It looks like Google Sign-In is turned off on your device. " +
+                                    "How would you like to enable it?")
+                            .setPositiveButton("Device instructions", (dlg, which) -> {
+                                // show step-by-step in a second dialog
+                                new AlertDialog.Builder(OnboardingActivity.this)
+                                        .setTitle("Enable on your device")
+                                        .setMessage(
+                                                "1. Open **Settings**\n" +
+                                                        "2. Tap **Google**\n" +
+                                                        "3. Tap **Connected apps & services**\n" +
+                                                        "4. Tap **Third-party apps & services**\n" +
+                                                        "5. Tap the ⚙️ next to our app\n" +
+                                                        "6. Enable **Login message**"
+                                        )
+                                        .setPositiveButton(android.R.string.ok, null)
+                                        .show();
+                            })
+                            .setNeutralButton("Cancel", null)
+                            .show();
+
+                } else if (e instanceof java.util.NoSuchElementException
+                        || e.getMessage().toLowerCase().contains("no such element")) {
+
+                    // 2) NoSuchElementException → no Google account on device
+                    new AlertDialog.Builder(OnboardingActivity.this)
+                            .setTitle("No Google Account")
+                            .setMessage("You don’t have a Google account set up on this device. " +
+                                    "Would you like to create one now?")
+                            .setPositiveButton("Create account", (dlg, which) -> {
+                                // launch system “add account” screen, filtered to Google
+                                Intent add = new Intent(Settings.ACTION_ADD_ACCOUNT);
+                                add.putExtra(Settings.EXTRA_AUTHORITIES,
+                                        new String[] { "com.google" });
+                                startActivity(add);
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+
+                } else {
+                    // 3) Anything else → report via email
+                    new AlertDialog.Builder(OnboardingActivity.this)
+                            .setTitle("Sign-In Error")
+                            .setMessage("An unexpected error occurred. Would you like to report it?")
+                            .setPositiveButton("Report via email", (dlg, which) -> {
+                                Intent email = new Intent(Intent.ACTION_SENDTO,
+                                        Uri.parse("mailto:harishtanu007@gmail.com"));
+                                email.putExtra(Intent.EXTRA_SUBJECT, "Sign-In Error Report");
+                                email.putExtra(Intent.EXTRA_TEXT,
+                                        "Error details:\n" + e.getClass().getSimpleName() +
+                                                "\n" + e.getMessage());
+                                startActivity(Intent.createChooser(email, "Send email…"));
+                            })
+                            .setNegativeButton("OK", null)
+                            .show();
+                }
             }
         });
     }

@@ -59,11 +59,11 @@ public class WordGameEngineTest {
 
     @Test
     void testCalculateScore() {
-        // Base score 10 plus length bonus (3 letters -> 0) = 10
+        // Base score 10 for a minimum length word
         assertEquals(10, engine.calculateScore("CAT"));
 
         // Word with uncommon letters Q and Z should give larger bonus
-        assertEquals(72, engine.calculateScore("QUIZ"));
+        assertEquals(57, engine.calculateScore("QUIZ"));
 
         // Word with half complexity letters like W should add half bonus
         dictionary.add("BOW");

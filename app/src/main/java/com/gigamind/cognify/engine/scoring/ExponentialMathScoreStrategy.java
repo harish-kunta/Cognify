@@ -13,11 +13,15 @@ public class ExponentialMathScoreStrategy implements MathScoreStrategy {
     @Override
     public int calculateScore(boolean correct, long responseTimeMs, int difficulty) {
         if (!correct) {
-            return -5;
+            // Penalise wrong answers more heavily based on difficulty
+            return -GameConfig.BASE_SCORE * difficulty;
         }
 
         int diffFactor = difficulty;
-        int base = GameConfig.BASE_SCORE * diffFactor * diffFactor;
+        // Mirror the tempered quadratic growth used in the word game so that
+        // questions across all operations award comparable points.
+        int base = (GameConfig.BASE_SCORE / 2) * diffFactor * diffFactor
+                + (GameConfig.BASE_SCORE / 2);
         long clamped = Math.min(responseTimeMs, GameConfig.MAX_RESPONSE_TIME_MS);
 
         double bonusFactor = (double) (GameConfig.MAX_RESPONSE_TIME_MS - clamped)
