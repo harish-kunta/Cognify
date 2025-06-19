@@ -13,7 +13,6 @@ import com.google.firebase.BuildConfig;
 import com.google.firebase.FirebaseApp;
 import com.gigamind.cognify.data.firebase.FirebaseService;
 import com.google.firebase.appcheck.FirebaseAppCheck;
-import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory;
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.gigamind.cognify.engine.DictionaryProvider;
@@ -55,13 +54,8 @@ public class CognifyApplication extends Application {
         // (1) Initialize Firebase
         FirebaseApp.initializeApp(this);
         FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-        if (BuildConfig.DEBUG) {
-            firebaseAppCheck.installAppCheckProviderFactory(
-                    DebugAppCheckProviderFactory.getInstance());
-        } else {
-            firebaseAppCheck.installAppCheckProviderFactory(
+        firebaseAppCheck.installAppCheckProviderFactory(
                     PlayIntegrityAppCheckProviderFactory.getInstance());
-        }
         firebaseAppCheck.setTokenAutoRefreshEnabled(true);
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
 

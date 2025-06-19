@@ -27,9 +27,11 @@ firebaseAi = "16.0.0"
 glide = "4.16.0"
 firebaseStorage = "21.0.2"
 viewpager2 = "1.1.0"
+firebaseAppCheckDebug = "18.0.0"
+
 
 [libraries]
-firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
+firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" , version.ref = "firebaseAppCheckDebug" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
