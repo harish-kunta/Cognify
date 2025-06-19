@@ -12,7 +12,7 @@ android {
         applicationId = "com.gigamind.cognify"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
+        versionCode = 6
         versionName = "0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
