@@ -148,7 +148,7 @@ public class SettingsFragment extends Fragment {
                     .setTitle(R.string.delete_account)
                     .setMessage(R.string.delete_account_confirm)
                     .setNegativeButton(R.string.cancel, null)
-                    .setPositiveButton(R.string.yes, null /*(dialog, which) -> {//startDeleteFlow()}*/)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> startDeleteFlow())
                     .show();
         });
 
@@ -197,21 +197,21 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-//    private void startDeleteFlow() {
-//        GoogleSignInHelper.signIn(requireActivity(), true, new GoogleSignInHelper.Callback() {
-//            @Override
-//            public void onSuccess(String idToken) {
-//                reauthenticateAndDelete(idToken);
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                String msg = getString(R.string.google_sign_in_failed);
-//                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
-//                binding.getRoot().announceForAccessibility(msg);
-//            }
-//        });
-//    }
+    private void startDeleteFlow() {
+        GoogleSignInHelper.signIn(requireActivity(), new GoogleSignInHelper.Callback() {
+            @Override
+            public void onSuccess(String idToken) {
+                reauthenticateAndDelete(idToken);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                String msg = getString(R.string.google_sign_in_failed);
+                Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG).show();
+                binding.getRoot().announceForAccessibility(msg);
+            }
+        });
+    }
 
     private void reauthenticateAndDelete(String idToken) {
         FirebaseUser user = FirebaseService.getInstance().getAuth().getCurrentUser();
@@ -236,7 +236,7 @@ public class SettingsFragment extends Fragment {
                         }))
                 .addOnFailureListener(e -> {
                     if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                        //startDeleteFlow();
+                        startDeleteFlow();
                     } else {
                         ExceptionLogger.log("SettingsFragment", e);
                         String msg = getString(R.string.delete_account_error, e.getMessage());
