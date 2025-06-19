@@ -31,10 +31,10 @@ public class MathGameEngineTest {
         assertTrue(answer > 1, "Answer should be at least 2");
 
         List<Integer> options = engine.getOptions();
-        assertEquals(4, options.size(), "There should be four options");
+        assertEquals(6, options.size(), "There should be six options");
 
         Set<Integer> unique = new HashSet<>(options);
-        assertEquals(4, unique.size(), "Options should be unique");
+        assertEquals(6, unique.size(), "Options should be unique");
         assertTrue(options.contains(answer), "Options should contain the correct answer");
     }
 

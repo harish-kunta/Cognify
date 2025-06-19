@@ -77,11 +77,13 @@ public class QuickMathActivity extends BaseActivity {
             showExitDialog();
         });
         
-        answerButtons = new MaterialButton[4];
+        answerButtons = new MaterialButton[6];
         answerButtons[0] = findViewById(R.id.answer1Button);
         answerButtons[1] = findViewById(R.id.answer2Button);
         answerButtons[2] = findViewById(R.id.answer3Button);
         answerButtons[3] = findViewById(R.id.answer4Button);
+        answerButtons[4] = findViewById(R.id.answer5Button);
+        answerButtons[5] = findViewById(R.id.answer6Button);
 
         // Initialize game
         gameEngine = new MathGameEngine();
