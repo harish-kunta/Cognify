@@ -218,11 +218,12 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.trophy.TrophyRoomActivity.class);
             startActivity(intent);
         });
-        profileAvatar.setOnClickListener(v -> {
-            analytics.logButtonClick("edit_avatar");
-            Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.avatar.AvatarMakerActivity.class);
-            startActivity(intent);
-        });
+    }
+
+    private void openAvatarMaker() {
+        analytics.logButtonClick("edit_avatar");
+        Intent intent = new Intent(requireContext(), com.gigamind.cognify.ui.avatar.AvatarMakerActivity.class);
+        startActivity(intent);
     }
 
     @Override

@@ -102,14 +102,6 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/dailyChallengeTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@android:color/white"
-                            android:textSize="16sp"
-                            />
-
-                        <TextView
                             android:id="@+id/dailyChallengeGame"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -123,6 +115,14 @@
                             android:layout_marginTop="4dp"
                             android:textColor="#FFFF00"
                             android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/dailyChallengeTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            />
 
                     </LinearLayout>
                 </LinearLayout>

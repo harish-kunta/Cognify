@@ -169,7 +169,7 @@ public class HomeFragment extends Fragment {
         String challengeType = isWordDay
                 ? getString(R.string.word_dash)
                 : getString(R.string.quick_math);
-        dailyChallengeTitle.setText(R.string.daily_challenge);
+        dailyChallengeTitle.setText("");
         dailyChallengeGame.setText(getString(R.string.today_challenge_format, challengeType));
         dailyChallengeLogo.setImageResource(
                 isWordDay ? R.drawable.ic_word_logo : R.drawable.ic_math_logo);

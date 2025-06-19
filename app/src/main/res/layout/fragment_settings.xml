@@ -241,7 +241,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:weightSum="10"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <ImageView
